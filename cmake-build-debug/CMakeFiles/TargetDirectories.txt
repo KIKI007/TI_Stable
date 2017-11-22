@@ -1,0 +1,15 @@
+/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles/TI_Stable_bin.dir
+/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles/igl_viewer.dir
+/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles/igl_opengl_glfw.dir
+/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles/igl_core.dir
+/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles/glew.dir
+/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles/igl_opengl2.dir
+/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles/igl_opengl.dir
+/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/glfw/CMakeFiles/rebuild_cache.dir
+/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/glfw/CMakeFiles/edit_cache.dir
+/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/glfw/src/CMakeFiles/rebuild_cache.dir
+/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/glfw/src/CMakeFiles/edit_cache.dir
+/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/glfw/src/CMakeFiles/glfw.dir
+/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/glfw/src/CMakeFiles/glfw_objects.dir

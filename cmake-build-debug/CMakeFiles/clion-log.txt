@@ -1,0 +1,10 @@
+/Applications/CLion.app/Contents/bin/cmake/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /Users/ziqwang/Documents/Xcode/TI
+-- Creating target: igl::core
+-- Creating target: igl::opengl
+-- Creating target: igl::opengl2
+-- Creating target: igl::opengl_glfw
+-- Using Cocoa for window creation
+-- Creating target: igl::viewer
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /Users/ziqwang/Documents/Xcode/TI/cmake-build-debug

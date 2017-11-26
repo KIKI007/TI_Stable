@@ -3,7 +3,7 @@
 
 # Relative path conversion top directories.
 set(CMAKE_RELATIVE_PATH_TOP_SOURCE "/Users/ziqwang/Documents/GitHub/libigl/external/nanogui/ext/glfw")
-set(CMAKE_RELATIVE_PATH_TOP_BINARY "/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug")
+set(CMAKE_RELATIVE_PATH_TOP_BINARY "/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug")
 
 # Force unix paths in dependencies.
 set(CMAKE_FORCE_UNIX_PATHS 1)

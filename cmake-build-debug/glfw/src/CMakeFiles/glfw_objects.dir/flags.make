@@ -6,5 +6,5 @@ C_FLAGS = -g
 
 C_DEFINES = -D_GLFW_USE_CONFIG_H
 
-C_INCLUDES = -I/Users/ziqwang/Documents/GitHub/libigl/external/nanogui/ext/glfw/include -I/Users/ziqwang/Documents/GitHub/libigl/external/nanogui/ext/glfw/src -I/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/glfw/src 
+C_INCLUDES = -I/Users/ziqwang/Documents/GitHub/libigl/external/nanogui/ext/glfw/include -I/Users/ziqwang/Documents/GitHub/libigl/external/nanogui/ext/glfw/src -I/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/glfw/src 
 

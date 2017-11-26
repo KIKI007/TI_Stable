@@ -43,10 +43,10 @@ RM = /Applications/CLion.app/Contents/bin/cmake/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/ziqwang/Documents/Xcode/TI
+CMAKE_SOURCE_DIR = /Users/ziqwang/Documents/Xcode/TI_Stable
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/ziqwang/Documents/Xcode/TI/cmake-build-debug
+CMAKE_BINARY_DIR = /Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug
 
 # Include any dependencies generated for this target.
 include CMakeFiles/glew.dir/depend.make
@@ -59,7 +59,7 @@ include CMakeFiles/glew.dir/flags.make
 
 CMakeFiles/glew.dir/Users/ziqwang/Documents/GitHub/libigl/external/nanogui/ext/glew/src/glew.c.o: CMakeFiles/glew.dir/flags.make
 CMakeFiles/glew.dir/Users/ziqwang/Documents/GitHub/libigl/external/nanogui/ext/glew/src/glew.c.o: /Users/ziqwang/Documents/GitHub/libigl/external/nanogui/ext/glew/src/glew.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/glew.dir/Users/ziqwang/Documents/GitHub/libigl/external/nanogui/ext/glew/src/glew.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/glew.dir/Users/ziqwang/Documents/GitHub/libigl/external/nanogui/ext/glew/src/glew.c.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/glew.dir/Users/ziqwang/Documents/GitHub/libigl/external/nanogui/ext/glew/src/glew.c.o   -c /Users/ziqwang/Documents/GitHub/libigl/external/nanogui/ext/glew/src/glew.c
 
 CMakeFiles/glew.dir/Users/ziqwang/Documents/GitHub/libigl/external/nanogui/ext/glew/src/glew.c.i: cmake_force
@@ -91,7 +91,7 @@ glew_EXTERNAL_OBJECTS =
 libglew.a: CMakeFiles/glew.dir/Users/ziqwang/Documents/GitHub/libigl/external/nanogui/ext/glew/src/glew.c.o
 libglew.a: CMakeFiles/glew.dir/build.make
 libglew.a: CMakeFiles/glew.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking C static library libglew.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking C static library libglew.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/glew.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/glew.dir/link.txt --verbose=$(VERBOSE)
 
@@ -109,6 +109,6 @@ CMakeFiles/glew.dir/clean:
 .PHONY : CMakeFiles/glew.dir/clean
 
 CMakeFiles/glew.dir/depend:
-	cd /Users/ziqwang/Documents/Xcode/TI/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/ziqwang/Documents/Xcode/TI /Users/ziqwang/Documents/Xcode/TI /Users/ziqwang/Documents/Xcode/TI/cmake-build-debug /Users/ziqwang/Documents/Xcode/TI/cmake-build-debug /Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles/glew.dir/DependInfo.cmake --color=$(COLOR)
+	cd /Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/ziqwang/Documents/Xcode/TI_Stable /Users/ziqwang/Documents/Xcode/TI_Stable /Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug /Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug /Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles/glew.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/glew.dir/depend
 

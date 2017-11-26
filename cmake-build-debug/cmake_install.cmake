@@ -1,4 +1,4 @@
-# Install script for directory: /Users/ziqwang/Documents/Xcode/TI
+# Install script for directory: /Users/ziqwang/Documents/Xcode/TI_Stable
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -29,7 +29,9 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/glfw/cmake_install.cmake")
+  include("/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/cmake_install.cmake")
+  include("/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/nanogui/cmake_install.cmake")
+  include("/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/triangle/cmake_install.cmake")
 
 endif()
 
@@ -41,5 +43,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/Users/ziqwang/Documents/GitHub/libigl/external/nanogui/ext/glew/src/glew.c" "/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles/glew.dir/Users/ziqwang/Documents/GitHub/libigl/external/nanogui/ext/glew/src/glew.c.o"
+  "/Users/ziqwang/Documents/GitHub/libigl/external/nanogui/ext/glew/src/glew.c" "/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles/glew.dir/Users/ziqwang/Documents/GitHub/libigl/external/nanogui/ext/glew/src/glew.c.o"
   )
 set(CMAKE_C_COMPILER_ID "AppleClang")
 

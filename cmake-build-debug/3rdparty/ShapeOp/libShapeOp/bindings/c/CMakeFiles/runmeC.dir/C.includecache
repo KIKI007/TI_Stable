@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../3rdparty/ShapeOp/libShapeOp/api/API.h
+Common.h
+../3rdparty/ShapeOp/libShapeOp/api/Common.h
+
+../3rdparty/ShapeOp/libShapeOp/src/Common.h
+
+/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/bindings/c/runme.c
+API.h
+/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/bindings/c/API.h
+stdio.h
+-
+

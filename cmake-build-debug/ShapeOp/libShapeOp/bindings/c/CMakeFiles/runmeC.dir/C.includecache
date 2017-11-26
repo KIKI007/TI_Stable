@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/ziqwang/Documents/GitHub/libigl/external/ShapeOp/libShapeOp/api/API.h
+Common.h
+/Users/ziqwang/Documents/GitHub/libigl/external/ShapeOp/libShapeOp/api/Common.h
+
+/Users/ziqwang/Documents/GitHub/libigl/external/ShapeOp/libShapeOp/bindings/c/runme.c
+API.h
+/Users/ziqwang/Documents/GitHub/libigl/external/ShapeOp/libShapeOp/bindings/c/API.h
+stdio.h
+-
+
+/Users/ziqwang/Documents/GitHub/libigl/external/ShapeOp/libShapeOp/src/Common.h
+

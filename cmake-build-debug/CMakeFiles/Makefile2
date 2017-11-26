@@ -54,22 +54,22 @@ RM = /Applications/CLion.app/Contents/bin/cmake/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/ziqwang/Documents/Xcode/TI
+CMAKE_SOURCE_DIR = /Users/ziqwang/Documents/Xcode/TI_Stable
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/ziqwang/Documents/Xcode/TI/cmake-build-debug
+CMAKE_BINARY_DIR = /Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug
 
 #=============================================================================
 # Target rules for target CMakeFiles/TI_Stable_bin.dir
 
 # All Build rule for target.
-CMakeFiles/TI_Stable_bin.dir/all: CMakeFiles/igl_viewer.dir/all
-CMakeFiles/TI_Stable_bin.dir/all: CMakeFiles/igl_core.dir/all
 CMakeFiles/TI_Stable_bin.dir/all: CMakeFiles/glew.dir/all
-CMakeFiles/TI_Stable_bin.dir/all: glfw/src/CMakeFiles/glfw.dir/all
+CMakeFiles/TI_Stable_bin.dir/all: 3rdparty/ShapeOp/libShapeOp/CMakeFiles/ShapeOp.dir/all
+CMakeFiles/TI_Stable_bin.dir/all: nanogui/CMakeFiles/nanogui.dir/all
+CMakeFiles/TI_Stable_bin.dir/all: nanogui/ext_build/glfw/src/CMakeFiles/glfw.dir/all
 	$(MAKE) -f CMakeFiles/TI_Stable_bin.dir/build.make CMakeFiles/TI_Stable_bin.dir/depend
 	$(MAKE) -f CMakeFiles/TI_Stable_bin.dir/build.make CMakeFiles/TI_Stable_bin.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles --progress-num= "Built target TI_Stable_bin"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles --progress-num=7,8,9,10 "Built target TI_Stable_bin"
 .PHONY : CMakeFiles/TI_Stable_bin.dir/all
 
 # Include target in all.
@@ -79,9 +79,9 @@ all: CMakeFiles/TI_Stable_bin.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/TI_Stable_bin.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles 92
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles 59
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/TI_Stable_bin.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles 0
 .PHONY : CMakeFiles/TI_Stable_bin.dir/rule
 
 # Convenience name for target.
@@ -100,129 +100,13 @@ clean: CMakeFiles/TI_Stable_bin.dir/clean
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/igl_viewer.dir
-
-# All Build rule for target.
-CMakeFiles/igl_viewer.dir/all: CMakeFiles/igl_core.dir/all
-CMakeFiles/igl_viewer.dir/all: CMakeFiles/glew.dir/all
-CMakeFiles/igl_viewer.dir/all: glfw/src/CMakeFiles/glfw.dir/all
-	$(MAKE) -f CMakeFiles/igl_viewer.dir/build.make CMakeFiles/igl_viewer.dir/depend
-	$(MAKE) -f CMakeFiles/igl_viewer.dir/build.make CMakeFiles/igl_viewer.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles --progress-num=99,100 "Built target igl_viewer"
-.PHONY : CMakeFiles/igl_viewer.dir/all
-
-# Include target in all.
-all: CMakeFiles/igl_viewer.dir/all
-
-.PHONY : all
-
-# Build rule for subdir invocation for target.
-CMakeFiles/igl_viewer.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles 92
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/igl_viewer.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles 0
-.PHONY : CMakeFiles/igl_viewer.dir/rule
-
-# Convenience name for target.
-igl_viewer: CMakeFiles/igl_viewer.dir/rule
-
-.PHONY : igl_viewer
-
-# clean rule for target.
-CMakeFiles/igl_viewer.dir/clean:
-	$(MAKE) -f CMakeFiles/igl_viewer.dir/build.make CMakeFiles/igl_viewer.dir/clean
-.PHONY : CMakeFiles/igl_viewer.dir/clean
-
-# clean rule for target.
-clean: CMakeFiles/igl_viewer.dir/clean
-
-.PHONY : clean
-
-#=============================================================================
-# Target rules for target CMakeFiles/igl_opengl_glfw.dir
-
-# All Build rule for target.
-CMakeFiles/igl_opengl_glfw.dir/all: CMakeFiles/igl_core.dir/all
-CMakeFiles/igl_opengl_glfw.dir/all: CMakeFiles/glew.dir/all
-CMakeFiles/igl_opengl_glfw.dir/all: CMakeFiles/igl_opengl.dir/all
-CMakeFiles/igl_opengl_glfw.dir/all: glfw/src/CMakeFiles/glfw.dir/all
-	$(MAKE) -f CMakeFiles/igl_opengl_glfw.dir/build.make CMakeFiles/igl_opengl_glfw.dir/depend
-	$(MAKE) -f CMakeFiles/igl_opengl_glfw.dir/build.make CMakeFiles/igl_opengl_glfw.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles --progress-num=98 "Built target igl_opengl_glfw"
-.PHONY : CMakeFiles/igl_opengl_glfw.dir/all
-
-# Include target in all.
-all: CMakeFiles/igl_opengl_glfw.dir/all
-
-.PHONY : all
-
-# Build rule for subdir invocation for target.
-CMakeFiles/igl_opengl_glfw.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles 94
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/igl_opengl_glfw.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles 0
-.PHONY : CMakeFiles/igl_opengl_glfw.dir/rule
-
-# Convenience name for target.
-igl_opengl_glfw: CMakeFiles/igl_opengl_glfw.dir/rule
-
-.PHONY : igl_opengl_glfw
-
-# clean rule for target.
-CMakeFiles/igl_opengl_glfw.dir/clean:
-	$(MAKE) -f CMakeFiles/igl_opengl_glfw.dir/build.make CMakeFiles/igl_opengl_glfw.dir/clean
-.PHONY : CMakeFiles/igl_opengl_glfw.dir/clean
-
-# clean rule for target.
-clean: CMakeFiles/igl_opengl_glfw.dir/clean
-
-.PHONY : clean
-
-#=============================================================================
-# Target rules for target CMakeFiles/igl_core.dir
-
-# All Build rule for target.
-CMakeFiles/igl_core.dir/all:
-	$(MAKE) -f CMakeFiles/igl_core.dir/build.make CMakeFiles/igl_core.dir/depend
-	$(MAKE) -f CMakeFiles/igl_core.dir/build.make CMakeFiles/igl_core.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles --progress-num=5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90 "Built target igl_core"
-.PHONY : CMakeFiles/igl_core.dir/all
-
-# Include target in all.
-all: CMakeFiles/igl_core.dir/all
-
-.PHONY : all
-
-# Build rule for subdir invocation for target.
-CMakeFiles/igl_core.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles 86
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/igl_core.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles 0
-.PHONY : CMakeFiles/igl_core.dir/rule
-
-# Convenience name for target.
-igl_core: CMakeFiles/igl_core.dir/rule
-
-.PHONY : igl_core
-
-# clean rule for target.
-CMakeFiles/igl_core.dir/clean:
-	$(MAKE) -f CMakeFiles/igl_core.dir/build.make CMakeFiles/igl_core.dir/clean
-.PHONY : CMakeFiles/igl_core.dir/clean
-
-# clean rule for target.
-clean: CMakeFiles/igl_core.dir/clean
-
-.PHONY : clean
-
-#=============================================================================
 # Target rules for target CMakeFiles/glew.dir
 
 # All Build rule for target.
 CMakeFiles/glew.dir/all:
 	$(MAKE) -f CMakeFiles/glew.dir/build.make CMakeFiles/glew.dir/depend
 	$(MAKE) -f CMakeFiles/glew.dir/build.make CMakeFiles/glew.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles --progress-num=1 "Built target glew"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles --progress-num=11,12 "Built target glew"
 .PHONY : CMakeFiles/glew.dir/all
 
 # Include target in all.
@@ -232,9 +116,9 @@ all: CMakeFiles/glew.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/glew.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles 1
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles 2
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/glew.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles 0
 .PHONY : CMakeFiles/glew.dir/rule
 
 # Convenience name for target.
@@ -253,190 +137,493 @@ clean: CMakeFiles/glew.dir/clean
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/igl_opengl2.dir
-
-# All Build rule for target.
-CMakeFiles/igl_opengl2.dir/all: CMakeFiles/igl_core.dir/all
-CMakeFiles/igl_opengl2.dir/all: CMakeFiles/glew.dir/all
-	$(MAKE) -f CMakeFiles/igl_opengl2.dir/build.make CMakeFiles/igl_opengl2.dir/depend
-	$(MAKE) -f CMakeFiles/igl_opengl2.dir/build.make CMakeFiles/igl_opengl2.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles --progress-num=94,95,96,97 "Built target igl_opengl2"
-.PHONY : CMakeFiles/igl_opengl2.dir/all
-
-# Include target in all.
-all: CMakeFiles/igl_opengl2.dir/all
-
-.PHONY : all
-
-# Build rule for subdir invocation for target.
-CMakeFiles/igl_opengl2.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles 91
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/igl_opengl2.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles 0
-.PHONY : CMakeFiles/igl_opengl2.dir/rule
-
-# Convenience name for target.
-igl_opengl2: CMakeFiles/igl_opengl2.dir/rule
-
-.PHONY : igl_opengl2
-
-# clean rule for target.
-CMakeFiles/igl_opengl2.dir/clean:
-	$(MAKE) -f CMakeFiles/igl_opengl2.dir/build.make CMakeFiles/igl_opengl2.dir/clean
-.PHONY : CMakeFiles/igl_opengl2.dir/clean
-
-# clean rule for target.
-clean: CMakeFiles/igl_opengl2.dir/clean
-
-.PHONY : clean
-
-#=============================================================================
-# Target rules for target CMakeFiles/igl_opengl.dir
-
-# All Build rule for target.
-CMakeFiles/igl_opengl.dir/all: CMakeFiles/igl_core.dir/all
-CMakeFiles/igl_opengl.dir/all: CMakeFiles/glew.dir/all
-	$(MAKE) -f CMakeFiles/igl_opengl.dir/build.make CMakeFiles/igl_opengl.dir/depend
-	$(MAKE) -f CMakeFiles/igl_opengl.dir/build.make CMakeFiles/igl_opengl.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles --progress-num=91,92,93 "Built target igl_opengl"
-.PHONY : CMakeFiles/igl_opengl.dir/all
-
-# Include target in all.
-all: CMakeFiles/igl_opengl.dir/all
-
-.PHONY : all
-
-# Build rule for subdir invocation for target.
-CMakeFiles/igl_opengl.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles 90
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/igl_opengl.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles 0
-.PHONY : CMakeFiles/igl_opengl.dir/rule
-
-# Convenience name for target.
-igl_opengl: CMakeFiles/igl_opengl.dir/rule
-
-.PHONY : igl_opengl
-
-# clean rule for target.
-CMakeFiles/igl_opengl.dir/clean:
-	$(MAKE) -f CMakeFiles/igl_opengl.dir/build.make CMakeFiles/igl_opengl.dir/clean
-.PHONY : CMakeFiles/igl_opengl.dir/clean
-
-# clean rule for target.
-clean: CMakeFiles/igl_opengl.dir/clean
-
-.PHONY : clean
-
-#=============================================================================
-# Directory level rules for directory glfw
+# Directory level rules for directory 3rdparty/ShapeOp
 
 # Convenience name for "all" pass in the directory.
-glfw/all: glfw/src/all
+3rdparty/ShapeOp/all: 3rdparty/ShapeOp/libShapeOp/all
+3rdparty/ShapeOp/all: 3rdparty/ShapeOp/applications/all
 
-.PHONY : glfw/all
+.PHONY : 3rdparty/ShapeOp/all
 
 # Convenience name for "clean" pass in the directory.
-glfw/clean: glfw/src/clean
+3rdparty/ShapeOp/clean: 3rdparty/ShapeOp/libShapeOp/clean
+3rdparty/ShapeOp/clean: 3rdparty/ShapeOp/applications/clean
 
-.PHONY : glfw/clean
+.PHONY : 3rdparty/ShapeOp/clean
 
 # Convenience name for "preinstall" pass in the directory.
-glfw/preinstall: glfw/src/preinstall
+3rdparty/ShapeOp/preinstall: 3rdparty/ShapeOp/libShapeOp/preinstall
+3rdparty/ShapeOp/preinstall: 3rdparty/ShapeOp/applications/preinstall
 
-.PHONY : glfw/preinstall
+.PHONY : 3rdparty/ShapeOp/preinstall
 
 #=============================================================================
-# Directory level rules for directory glfw/src
+# Directory level rules for directory 3rdparty/ShapeOp/libShapeOp
 
 # Convenience name for "all" pass in the directory.
-glfw/src/all: glfw/src/CMakeFiles/glfw.dir/all
-glfw/src/all: glfw/src/CMakeFiles/glfw_objects.dir/all
+3rdparty/ShapeOp/libShapeOp/all: 3rdparty/ShapeOp/libShapeOp/CMakeFiles/ShapeOp.dir/all
+3rdparty/ShapeOp/libShapeOp/all: 3rdparty/ShapeOp/libShapeOp/bindings/all
 
-.PHONY : glfw/src/all
+.PHONY : 3rdparty/ShapeOp/libShapeOp/all
 
 # Convenience name for "clean" pass in the directory.
-glfw/src/clean: glfw/src/CMakeFiles/glfw.dir/clean
-glfw/src/clean: glfw/src/CMakeFiles/glfw_objects.dir/clean
+3rdparty/ShapeOp/libShapeOp/clean: 3rdparty/ShapeOp/libShapeOp/CMakeFiles/ShapeOp.dir/clean
+3rdparty/ShapeOp/libShapeOp/clean: 3rdparty/ShapeOp/libShapeOp/bindings/clean
 
-.PHONY : glfw/src/clean
+.PHONY : 3rdparty/ShapeOp/libShapeOp/clean
 
 # Convenience name for "preinstall" pass in the directory.
-glfw/src/preinstall:
+3rdparty/ShapeOp/libShapeOp/preinstall: 3rdparty/ShapeOp/libShapeOp/bindings/preinstall
 
-.PHONY : glfw/src/preinstall
+.PHONY : 3rdparty/ShapeOp/libShapeOp/preinstall
 
 #=============================================================================
-# Target rules for target glfw/src/CMakeFiles/glfw.dir
+# Target rules for target 3rdparty/ShapeOp/libShapeOp/CMakeFiles/ShapeOp.dir
 
 # All Build rule for target.
-glfw/src/CMakeFiles/glfw.dir/all: glfw/src/CMakeFiles/glfw_objects.dir/all
-	$(MAKE) -f glfw/src/CMakeFiles/glfw.dir/build.make glfw/src/CMakeFiles/glfw.dir/depend
-	$(MAKE) -f glfw/src/CMakeFiles/glfw.dir/build.make glfw/src/CMakeFiles/glfw.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles --progress-num= "Built target glfw"
-.PHONY : glfw/src/CMakeFiles/glfw.dir/all
+3rdparty/ShapeOp/libShapeOp/CMakeFiles/ShapeOp.dir/all:
+	$(MAKE) -f 3rdparty/ShapeOp/libShapeOp/CMakeFiles/ShapeOp.dir/build.make 3rdparty/ShapeOp/libShapeOp/CMakeFiles/ShapeOp.dir/depend
+	$(MAKE) -f 3rdparty/ShapeOp/libShapeOp/CMakeFiles/ShapeOp.dir/build.make 3rdparty/ShapeOp/libShapeOp/CMakeFiles/ShapeOp.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles --progress-num=1,2,3,4,5,6 "Built target ShapeOp"
+.PHONY : 3rdparty/ShapeOp/libShapeOp/CMakeFiles/ShapeOp.dir/all
 
 # Include target in all.
-all: glfw/src/CMakeFiles/glfw.dir/all
+all: 3rdparty/ShapeOp/libShapeOp/CMakeFiles/ShapeOp.dir/all
 
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-glfw/src/CMakeFiles/glfw.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles 3
-	$(MAKE) -f CMakeFiles/Makefile2 glfw/src/CMakeFiles/glfw.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles 0
-.PHONY : glfw/src/CMakeFiles/glfw.dir/rule
+3rdparty/ShapeOp/libShapeOp/CMakeFiles/ShapeOp.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles 6
+	$(MAKE) -f CMakeFiles/Makefile2 3rdparty/ShapeOp/libShapeOp/CMakeFiles/ShapeOp.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles 0
+.PHONY : 3rdparty/ShapeOp/libShapeOp/CMakeFiles/ShapeOp.dir/rule
 
 # Convenience name for target.
-glfw: glfw/src/CMakeFiles/glfw.dir/rule
+ShapeOp: 3rdparty/ShapeOp/libShapeOp/CMakeFiles/ShapeOp.dir/rule
 
-.PHONY : glfw
-
-# clean rule for target.
-glfw/src/CMakeFiles/glfw.dir/clean:
-	$(MAKE) -f glfw/src/CMakeFiles/glfw.dir/build.make glfw/src/CMakeFiles/glfw.dir/clean
-.PHONY : glfw/src/CMakeFiles/glfw.dir/clean
+.PHONY : ShapeOp
 
 # clean rule for target.
-clean: glfw/src/CMakeFiles/glfw.dir/clean
+3rdparty/ShapeOp/libShapeOp/CMakeFiles/ShapeOp.dir/clean:
+	$(MAKE) -f 3rdparty/ShapeOp/libShapeOp/CMakeFiles/ShapeOp.dir/build.make 3rdparty/ShapeOp/libShapeOp/CMakeFiles/ShapeOp.dir/clean
+.PHONY : 3rdparty/ShapeOp/libShapeOp/CMakeFiles/ShapeOp.dir/clean
+
+# clean rule for target.
+clean: 3rdparty/ShapeOp/libShapeOp/CMakeFiles/ShapeOp.dir/clean
 
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target glfw/src/CMakeFiles/glfw_objects.dir
+# Directory level rules for directory 3rdparty/ShapeOp/libShapeOp/bindings
+
+# Convenience name for "all" pass in the directory.
+3rdparty/ShapeOp/libShapeOp/bindings/all: 3rdparty/ShapeOp/libShapeOp/bindings/c/all
+3rdparty/ShapeOp/libShapeOp/bindings/all: 3rdparty/ShapeOp/libShapeOp/bindings/c++/all
+
+.PHONY : 3rdparty/ShapeOp/libShapeOp/bindings/all
+
+# Convenience name for "clean" pass in the directory.
+3rdparty/ShapeOp/libShapeOp/bindings/clean: 3rdparty/ShapeOp/libShapeOp/bindings/c/clean
+3rdparty/ShapeOp/libShapeOp/bindings/clean: 3rdparty/ShapeOp/libShapeOp/bindings/c++/clean
+
+.PHONY : 3rdparty/ShapeOp/libShapeOp/bindings/clean
+
+# Convenience name for "preinstall" pass in the directory.
+3rdparty/ShapeOp/libShapeOp/bindings/preinstall: 3rdparty/ShapeOp/libShapeOp/bindings/c/preinstall
+3rdparty/ShapeOp/libShapeOp/bindings/preinstall: 3rdparty/ShapeOp/libShapeOp/bindings/c++/preinstall
+
+.PHONY : 3rdparty/ShapeOp/libShapeOp/bindings/preinstall
+
+#=============================================================================
+# Directory level rules for directory 3rdparty/ShapeOp/libShapeOp/bindings/c
+
+# Convenience name for "all" pass in the directory.
+3rdparty/ShapeOp/libShapeOp/bindings/c/all: 3rdparty/ShapeOp/libShapeOp/bindings/c/CMakeFiles/runmeC.dir/all
+
+.PHONY : 3rdparty/ShapeOp/libShapeOp/bindings/c/all
+
+# Convenience name for "clean" pass in the directory.
+3rdparty/ShapeOp/libShapeOp/bindings/c/clean: 3rdparty/ShapeOp/libShapeOp/bindings/c/CMakeFiles/runmeC.dir/clean
+
+.PHONY : 3rdparty/ShapeOp/libShapeOp/bindings/c/clean
+
+# Convenience name for "preinstall" pass in the directory.
+3rdparty/ShapeOp/libShapeOp/bindings/c/preinstall:
+
+.PHONY : 3rdparty/ShapeOp/libShapeOp/bindings/c/preinstall
+
+#=============================================================================
+# Target rules for target 3rdparty/ShapeOp/libShapeOp/bindings/c/CMakeFiles/runmeC.dir
 
 # All Build rule for target.
-glfw/src/CMakeFiles/glfw_objects.dir/all:
-	$(MAKE) -f glfw/src/CMakeFiles/glfw_objects.dir/build.make glfw/src/CMakeFiles/glfw_objects.dir/depend
-	$(MAKE) -f glfw/src/CMakeFiles/glfw_objects.dir/build.make glfw/src/CMakeFiles/glfw_objects.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles --progress-num=2,3,4 "Built target glfw_objects"
-.PHONY : glfw/src/CMakeFiles/glfw_objects.dir/all
+3rdparty/ShapeOp/libShapeOp/bindings/c/CMakeFiles/runmeC.dir/all: 3rdparty/ShapeOp/libShapeOp/CMakeFiles/ShapeOp.dir/all
+	$(MAKE) -f 3rdparty/ShapeOp/libShapeOp/bindings/c/CMakeFiles/runmeC.dir/build.make 3rdparty/ShapeOp/libShapeOp/bindings/c/CMakeFiles/runmeC.dir/depend
+	$(MAKE) -f 3rdparty/ShapeOp/libShapeOp/bindings/c/CMakeFiles/runmeC.dir/build.make 3rdparty/ShapeOp/libShapeOp/bindings/c/CMakeFiles/runmeC.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles --progress-num=60,61 "Built target runmeC"
+.PHONY : 3rdparty/ShapeOp/libShapeOp/bindings/c/CMakeFiles/runmeC.dir/all
 
 # Include target in all.
-all: glfw/src/CMakeFiles/glfw_objects.dir/all
+all: 3rdparty/ShapeOp/libShapeOp/bindings/c/CMakeFiles/runmeC.dir/all
 
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-glfw/src/CMakeFiles/glfw_objects.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles 3
-	$(MAKE) -f CMakeFiles/Makefile2 glfw/src/CMakeFiles/glfw_objects.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI/cmake-build-debug/CMakeFiles 0
-.PHONY : glfw/src/CMakeFiles/glfw_objects.dir/rule
+3rdparty/ShapeOp/libShapeOp/bindings/c/CMakeFiles/runmeC.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles 8
+	$(MAKE) -f CMakeFiles/Makefile2 3rdparty/ShapeOp/libShapeOp/bindings/c/CMakeFiles/runmeC.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles 0
+.PHONY : 3rdparty/ShapeOp/libShapeOp/bindings/c/CMakeFiles/runmeC.dir/rule
 
 # Convenience name for target.
-glfw_objects: glfw/src/CMakeFiles/glfw_objects.dir/rule
+runmeC: 3rdparty/ShapeOp/libShapeOp/bindings/c/CMakeFiles/runmeC.dir/rule
+
+.PHONY : runmeC
+
+# clean rule for target.
+3rdparty/ShapeOp/libShapeOp/bindings/c/CMakeFiles/runmeC.dir/clean:
+	$(MAKE) -f 3rdparty/ShapeOp/libShapeOp/bindings/c/CMakeFiles/runmeC.dir/build.make 3rdparty/ShapeOp/libShapeOp/bindings/c/CMakeFiles/runmeC.dir/clean
+.PHONY : 3rdparty/ShapeOp/libShapeOp/bindings/c/CMakeFiles/runmeC.dir/clean
+
+# clean rule for target.
+clean: 3rdparty/ShapeOp/libShapeOp/bindings/c/CMakeFiles/runmeC.dir/clean
+
+.PHONY : clean
+
+#=============================================================================
+# Directory level rules for directory 3rdparty/ShapeOp/libShapeOp/bindings/c++
+
+# Convenience name for "all" pass in the directory.
+3rdparty/ShapeOp/libShapeOp/bindings/c++/all: 3rdparty/ShapeOp/libShapeOp/bindings/c++/CMakeFiles/runmeCPP.dir/all
+
+.PHONY : 3rdparty/ShapeOp/libShapeOp/bindings/c++/all
+
+# Convenience name for "clean" pass in the directory.
+3rdparty/ShapeOp/libShapeOp/bindings/c++/clean: 3rdparty/ShapeOp/libShapeOp/bindings/c++/CMakeFiles/runmeCPP.dir/clean
+
+.PHONY : 3rdparty/ShapeOp/libShapeOp/bindings/c++/clean
+
+# Convenience name for "preinstall" pass in the directory.
+3rdparty/ShapeOp/libShapeOp/bindings/c++/preinstall:
+
+.PHONY : 3rdparty/ShapeOp/libShapeOp/bindings/c++/preinstall
+
+#=============================================================================
+# Target rules for target 3rdparty/ShapeOp/libShapeOp/bindings/c++/CMakeFiles/runmeCPP.dir
+
+# All Build rule for target.
+3rdparty/ShapeOp/libShapeOp/bindings/c++/CMakeFiles/runmeCPP.dir/all: 3rdparty/ShapeOp/libShapeOp/CMakeFiles/ShapeOp.dir/all
+	$(MAKE) -f 3rdparty/ShapeOp/libShapeOp/bindings/c++/CMakeFiles/runmeCPP.dir/build.make 3rdparty/ShapeOp/libShapeOp/bindings/c++/CMakeFiles/runmeCPP.dir/depend
+	$(MAKE) -f 3rdparty/ShapeOp/libShapeOp/bindings/c++/CMakeFiles/runmeCPP.dir/build.make 3rdparty/ShapeOp/libShapeOp/bindings/c++/CMakeFiles/runmeCPP.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles --progress-num=62,63 "Built target runmeCPP"
+.PHONY : 3rdparty/ShapeOp/libShapeOp/bindings/c++/CMakeFiles/runmeCPP.dir/all
+
+# Include target in all.
+all: 3rdparty/ShapeOp/libShapeOp/bindings/c++/CMakeFiles/runmeCPP.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+3rdparty/ShapeOp/libShapeOp/bindings/c++/CMakeFiles/runmeCPP.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles 8
+	$(MAKE) -f CMakeFiles/Makefile2 3rdparty/ShapeOp/libShapeOp/bindings/c++/CMakeFiles/runmeCPP.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles 0
+.PHONY : 3rdparty/ShapeOp/libShapeOp/bindings/c++/CMakeFiles/runmeCPP.dir/rule
+
+# Convenience name for target.
+runmeCPP: 3rdparty/ShapeOp/libShapeOp/bindings/c++/CMakeFiles/runmeCPP.dir/rule
+
+.PHONY : runmeCPP
+
+# clean rule for target.
+3rdparty/ShapeOp/libShapeOp/bindings/c++/CMakeFiles/runmeCPP.dir/clean:
+	$(MAKE) -f 3rdparty/ShapeOp/libShapeOp/bindings/c++/CMakeFiles/runmeCPP.dir/build.make 3rdparty/ShapeOp/libShapeOp/bindings/c++/CMakeFiles/runmeCPP.dir/clean
+.PHONY : 3rdparty/ShapeOp/libShapeOp/bindings/c++/CMakeFiles/runmeCPP.dir/clean
+
+# clean rule for target.
+clean: 3rdparty/ShapeOp/libShapeOp/bindings/c++/CMakeFiles/runmeCPP.dir/clean
+
+.PHONY : clean
+
+#=============================================================================
+# Directory level rules for directory 3rdparty/ShapeOp/applications
+
+# Convenience name for "all" pass in the directory.
+3rdparty/ShapeOp/applications/all:
+
+.PHONY : 3rdparty/ShapeOp/applications/all
+
+# Convenience name for "clean" pass in the directory.
+3rdparty/ShapeOp/applications/clean:
+
+.PHONY : 3rdparty/ShapeOp/applications/clean
+
+# Convenience name for "preinstall" pass in the directory.
+3rdparty/ShapeOp/applications/preinstall:
+
+.PHONY : 3rdparty/ShapeOp/applications/preinstall
+
+#=============================================================================
+# Directory level rules for directory nanogui
+
+# Convenience name for "all" pass in the directory.
+nanogui/all: nanogui/CMakeFiles/nanogui.dir/all
+nanogui/all: nanogui/CMakeFiles/nanogui-obj.dir/all
+nanogui/all: nanogui/ext_build/glfw/all
+
+.PHONY : nanogui/all
+
+# Convenience name for "clean" pass in the directory.
+nanogui/clean: nanogui/CMakeFiles/nanogui.dir/clean
+nanogui/clean: nanogui/CMakeFiles/nanogui-obj.dir/clean
+nanogui/clean: nanogui/ext_build/glfw/clean
+
+.PHONY : nanogui/clean
+
+# Convenience name for "preinstall" pass in the directory.
+nanogui/preinstall: nanogui/ext_build/glfw/preinstall
+
+.PHONY : nanogui/preinstall
+
+#=============================================================================
+# Target rules for target nanogui/CMakeFiles/nanogui.dir
+
+# All Build rule for target.
+nanogui/CMakeFiles/nanogui.dir/all: nanogui/CMakeFiles/nanogui-obj.dir/all
+nanogui/CMakeFiles/nanogui.dir/all: nanogui/ext_build/glfw/src/CMakeFiles/glfw_objects.dir/all
+	$(MAKE) -f nanogui/CMakeFiles/nanogui.dir/build.make nanogui/CMakeFiles/nanogui.dir/depend
+	$(MAKE) -f nanogui/CMakeFiles/nanogui.dir/build.make nanogui/CMakeFiles/nanogui.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles --progress-num=27 "Built target nanogui"
+.PHONY : nanogui/CMakeFiles/nanogui.dir/all
+
+# Include target in all.
+all: nanogui/CMakeFiles/nanogui.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+nanogui/CMakeFiles/nanogui.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles 46
+	$(MAKE) -f CMakeFiles/Makefile2 nanogui/CMakeFiles/nanogui.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles 0
+.PHONY : nanogui/CMakeFiles/nanogui.dir/rule
+
+# Convenience name for target.
+nanogui: nanogui/CMakeFiles/nanogui.dir/rule
+
+.PHONY : nanogui
+
+# clean rule for target.
+nanogui/CMakeFiles/nanogui.dir/clean:
+	$(MAKE) -f nanogui/CMakeFiles/nanogui.dir/build.make nanogui/CMakeFiles/nanogui.dir/clean
+.PHONY : nanogui/CMakeFiles/nanogui.dir/clean
+
+# clean rule for target.
+clean: nanogui/CMakeFiles/nanogui.dir/clean
+
+.PHONY : clean
+
+#=============================================================================
+# Target rules for target nanogui/CMakeFiles/nanogui-obj.dir
+
+# All Build rule for target.
+nanogui/CMakeFiles/nanogui-obj.dir/all:
+	$(MAKE) -f nanogui/CMakeFiles/nanogui-obj.dir/build.make nanogui/CMakeFiles/nanogui-obj.dir/depend
+	$(MAKE) -f nanogui/CMakeFiles/nanogui-obj.dir/build.make nanogui/CMakeFiles/nanogui-obj.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles --progress-num=28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59 "Built target nanogui-obj"
+.PHONY : nanogui/CMakeFiles/nanogui-obj.dir/all
+
+# Include target in all.
+all: nanogui/CMakeFiles/nanogui-obj.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+nanogui/CMakeFiles/nanogui-obj.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles 32
+	$(MAKE) -f CMakeFiles/Makefile2 nanogui/CMakeFiles/nanogui-obj.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles 0
+.PHONY : nanogui/CMakeFiles/nanogui-obj.dir/rule
+
+# Convenience name for target.
+nanogui-obj: nanogui/CMakeFiles/nanogui-obj.dir/rule
+
+.PHONY : nanogui-obj
+
+# clean rule for target.
+nanogui/CMakeFiles/nanogui-obj.dir/clean:
+	$(MAKE) -f nanogui/CMakeFiles/nanogui-obj.dir/build.make nanogui/CMakeFiles/nanogui-obj.dir/clean
+.PHONY : nanogui/CMakeFiles/nanogui-obj.dir/clean
+
+# clean rule for target.
+clean: nanogui/CMakeFiles/nanogui-obj.dir/clean
+
+.PHONY : clean
+
+#=============================================================================
+# Directory level rules for directory nanogui/ext_build/glfw
+
+# Convenience name for "all" pass in the directory.
+nanogui/ext_build/glfw/all: nanogui/ext_build/glfw/src/all
+
+.PHONY : nanogui/ext_build/glfw/all
+
+# Convenience name for "clean" pass in the directory.
+nanogui/ext_build/glfw/clean: nanogui/ext_build/glfw/src/clean
+
+.PHONY : nanogui/ext_build/glfw/clean
+
+# Convenience name for "preinstall" pass in the directory.
+nanogui/ext_build/glfw/preinstall: nanogui/ext_build/glfw/src/preinstall
+
+.PHONY : nanogui/ext_build/glfw/preinstall
+
+#=============================================================================
+# Directory level rules for directory nanogui/ext_build/glfw/src
+
+# Convenience name for "all" pass in the directory.
+nanogui/ext_build/glfw/src/all: nanogui/ext_build/glfw/src/CMakeFiles/glfw_objects.dir/all
+nanogui/ext_build/glfw/src/all: nanogui/ext_build/glfw/src/CMakeFiles/glfw.dir/all
+
+.PHONY : nanogui/ext_build/glfw/src/all
+
+# Convenience name for "clean" pass in the directory.
+nanogui/ext_build/glfw/src/clean: nanogui/ext_build/glfw/src/CMakeFiles/glfw_objects.dir/clean
+nanogui/ext_build/glfw/src/clean: nanogui/ext_build/glfw/src/CMakeFiles/glfw.dir/clean
+
+.PHONY : nanogui/ext_build/glfw/src/clean
+
+# Convenience name for "preinstall" pass in the directory.
+nanogui/ext_build/glfw/src/preinstall:
+
+.PHONY : nanogui/ext_build/glfw/src/preinstall
+
+#=============================================================================
+# Target rules for target nanogui/ext_build/glfw/src/CMakeFiles/glfw_objects.dir
+
+# All Build rule for target.
+nanogui/ext_build/glfw/src/CMakeFiles/glfw_objects.dir/all:
+	$(MAKE) -f nanogui/ext_build/glfw/src/CMakeFiles/glfw_objects.dir/build.make nanogui/ext_build/glfw/src/CMakeFiles/glfw_objects.dir/depend
+	$(MAKE) -f nanogui/ext_build/glfw/src/CMakeFiles/glfw_objects.dir/build.make nanogui/ext_build/glfw/src/CMakeFiles/glfw_objects.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles --progress-num=14,15,16,17,18,19,20,21,22,23,24,25,26 "Built target glfw_objects"
+.PHONY : nanogui/ext_build/glfw/src/CMakeFiles/glfw_objects.dir/all
+
+# Include target in all.
+all: nanogui/ext_build/glfw/src/CMakeFiles/glfw_objects.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+nanogui/ext_build/glfw/src/CMakeFiles/glfw_objects.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles 13
+	$(MAKE) -f CMakeFiles/Makefile2 nanogui/ext_build/glfw/src/CMakeFiles/glfw_objects.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles 0
+.PHONY : nanogui/ext_build/glfw/src/CMakeFiles/glfw_objects.dir/rule
+
+# Convenience name for target.
+glfw_objects: nanogui/ext_build/glfw/src/CMakeFiles/glfw_objects.dir/rule
 
 .PHONY : glfw_objects
 
 # clean rule for target.
-glfw/src/CMakeFiles/glfw_objects.dir/clean:
-	$(MAKE) -f glfw/src/CMakeFiles/glfw_objects.dir/build.make glfw/src/CMakeFiles/glfw_objects.dir/clean
-.PHONY : glfw/src/CMakeFiles/glfw_objects.dir/clean
+nanogui/ext_build/glfw/src/CMakeFiles/glfw_objects.dir/clean:
+	$(MAKE) -f nanogui/ext_build/glfw/src/CMakeFiles/glfw_objects.dir/build.make nanogui/ext_build/glfw/src/CMakeFiles/glfw_objects.dir/clean
+.PHONY : nanogui/ext_build/glfw/src/CMakeFiles/glfw_objects.dir/clean
 
 # clean rule for target.
-clean: glfw/src/CMakeFiles/glfw_objects.dir/clean
+clean: nanogui/ext_build/glfw/src/CMakeFiles/glfw_objects.dir/clean
+
+.PHONY : clean
+
+#=============================================================================
+# Target rules for target nanogui/ext_build/glfw/src/CMakeFiles/glfw.dir
+
+# All Build rule for target.
+nanogui/ext_build/glfw/src/CMakeFiles/glfw.dir/all: nanogui/ext_build/glfw/src/CMakeFiles/glfw_objects.dir/all
+	$(MAKE) -f nanogui/ext_build/glfw/src/CMakeFiles/glfw.dir/build.make nanogui/ext_build/glfw/src/CMakeFiles/glfw.dir/depend
+	$(MAKE) -f nanogui/ext_build/glfw/src/CMakeFiles/glfw.dir/build.make nanogui/ext_build/glfw/src/CMakeFiles/glfw.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles --progress-num=13 "Built target glfw"
+.PHONY : nanogui/ext_build/glfw/src/CMakeFiles/glfw.dir/all
+
+# Include target in all.
+all: nanogui/ext_build/glfw/src/CMakeFiles/glfw.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+nanogui/ext_build/glfw/src/CMakeFiles/glfw.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles 14
+	$(MAKE) -f CMakeFiles/Makefile2 nanogui/ext_build/glfw/src/CMakeFiles/glfw.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles 0
+.PHONY : nanogui/ext_build/glfw/src/CMakeFiles/glfw.dir/rule
+
+# Convenience name for target.
+glfw: nanogui/ext_build/glfw/src/CMakeFiles/glfw.dir/rule
+
+.PHONY : glfw
+
+# clean rule for target.
+nanogui/ext_build/glfw/src/CMakeFiles/glfw.dir/clean:
+	$(MAKE) -f nanogui/ext_build/glfw/src/CMakeFiles/glfw.dir/build.make nanogui/ext_build/glfw/src/CMakeFiles/glfw.dir/clean
+.PHONY : nanogui/ext_build/glfw/src/CMakeFiles/glfw.dir/clean
+
+# clean rule for target.
+clean: nanogui/ext_build/glfw/src/CMakeFiles/glfw.dir/clean
+
+.PHONY : clean
+
+#=============================================================================
+# Directory level rules for directory triangle
+
+# Convenience name for "all" pass in the directory.
+triangle/all: triangle/CMakeFiles/triangle.dir/all
+
+.PHONY : triangle/all
+
+# Convenience name for "clean" pass in the directory.
+triangle/clean: triangle/CMakeFiles/triangle.dir/clean
+
+.PHONY : triangle/clean
+
+# Convenience name for "preinstall" pass in the directory.
+triangle/preinstall:
+
+.PHONY : triangle/preinstall
+
+#=============================================================================
+# Target rules for target triangle/CMakeFiles/triangle.dir
+
+# All Build rule for target.
+triangle/CMakeFiles/triangle.dir/all:
+	$(MAKE) -f triangle/CMakeFiles/triangle.dir/build.make triangle/CMakeFiles/triangle.dir/depend
+	$(MAKE) -f triangle/CMakeFiles/triangle.dir/build.make triangle/CMakeFiles/triangle.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles --progress-num=64,65 "Built target triangle"
+.PHONY : triangle/CMakeFiles/triangle.dir/all
+
+# Include target in all.
+all: triangle/CMakeFiles/triangle.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+triangle/CMakeFiles/triangle.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 triangle/CMakeFiles/triangle.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles 0
+.PHONY : triangle/CMakeFiles/triangle.dir/rule
+
+# Convenience name for target.
+triangle: triangle/CMakeFiles/triangle.dir/rule
+
+.PHONY : triangle
+
+# clean rule for target.
+triangle/CMakeFiles/triangle.dir/clean:
+	$(MAKE) -f triangle/CMakeFiles/triangle.dir/build.make triangle/CMakeFiles/triangle.dir/clean
+.PHONY : triangle/CMakeFiles/triangle.dir/clean
+
+# clean rule for target.
+clean: triangle/CMakeFiles/triangle.dir/clean
 
 .PHONY : clean
 

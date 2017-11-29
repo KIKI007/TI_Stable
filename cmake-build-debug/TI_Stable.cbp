@@ -1091,6 +1091,12 @@
 		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/src/Cube2D_Falling.h">
 			<Option target="TI_Stable_bin"/>
 		</Unit>
+		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/src/OneSideCollisionConstrain.cpp">
+			<Option target="TI_Stable_bin"/>
+		</Unit>
+		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/src/OneSideCollisionConstrain.h">
+			<Option target="TI_Stable_bin"/>
+		</Unit>
 		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/src/TI_Cube.cpp">
 			<Option target="TI_Stable_bin"/>
 		</Unit>

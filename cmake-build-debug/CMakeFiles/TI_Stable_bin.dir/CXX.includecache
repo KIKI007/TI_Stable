@@ -1369,8 +1369,18 @@ Constraint.h
 -
 Force.h
 -
-VertexCollisionConstrain.h
-/Users/ziqwang/Documents/Xcode/TI_Stable/src/VertexCollisionConstrain.h
+OneSideCollisionConstrain.h
+/Users/ziqwang/Documents/Xcode/TI_Stable/src/OneSideCollisionConstrain.h
+
+/Users/ziqwang/Documents/Xcode/TI_Stable/src/OneSideCollisionConstrain.cpp
+OneSideCollisionConstrain.h
+/Users/ziqwang/Documents/Xcode/TI_Stable/src/OneSideCollisionConstrain.h
+iostream
+-
+
+/Users/ziqwang/Documents/Xcode/TI_Stable/src/OneSideCollisionConstrain.h
+Constraint.h
+/Users/ziqwang/Documents/Xcode/TI_Stable/src/Constraint.h
 
 /Users/ziqwang/Documents/Xcode/TI_Stable/src/TI_Cube.cpp
 TI_Cube.h

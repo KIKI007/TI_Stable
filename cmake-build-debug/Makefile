@@ -313,6 +313,33 @@ Users/ziqwang/Documents/GitHub/libigl/external/nanogui/ext/glew/src/glew.c.s:
 	$(MAKE) -f CMakeFiles/glew.dir/build.make CMakeFiles/glew.dir/Users/ziqwang/Documents/GitHub/libigl/external/nanogui/ext/glew/src/glew.c.s
 .PHONY : Users/ziqwang/Documents/GitHub/libigl/external/nanogui/ext/glew/src/glew.c.s
 
+src/OneSideCollisionConstrain.o: src/OneSideCollisionConstrain.cpp.o
+
+.PHONY : src/OneSideCollisionConstrain.o
+
+# target to build an object file
+src/OneSideCollisionConstrain.cpp.o:
+	$(MAKE) -f CMakeFiles/TI_Stable_bin.dir/build.make CMakeFiles/TI_Stable_bin.dir/src/OneSideCollisionConstrain.cpp.o
+.PHONY : src/OneSideCollisionConstrain.cpp.o
+
+src/OneSideCollisionConstrain.i: src/OneSideCollisionConstrain.cpp.i
+
+.PHONY : src/OneSideCollisionConstrain.i
+
+# target to preprocess a source file
+src/OneSideCollisionConstrain.cpp.i:
+	$(MAKE) -f CMakeFiles/TI_Stable_bin.dir/build.make CMakeFiles/TI_Stable_bin.dir/src/OneSideCollisionConstrain.cpp.i
+.PHONY : src/OneSideCollisionConstrain.cpp.i
+
+src/OneSideCollisionConstrain.s: src/OneSideCollisionConstrain.cpp.s
+
+.PHONY : src/OneSideCollisionConstrain.s
+
+# target to generate assembly for a file
+src/OneSideCollisionConstrain.cpp.s:
+	$(MAKE) -f CMakeFiles/TI_Stable_bin.dir/build.make CMakeFiles/TI_Stable_bin.dir/src/OneSideCollisionConstrain.cpp.s
+.PHONY : src/OneSideCollisionConstrain.cpp.s
+
 src/TI_Cube.o: src/TI_Cube.cpp.o
 
 .PHONY : src/TI_Cube.o
@@ -419,6 +446,9 @@ help:
 	@echo "... Users/ziqwang/Documents/GitHub/libigl/external/nanogui/ext/glew/src/glew.o"
 	@echo "... Users/ziqwang/Documents/GitHub/libigl/external/nanogui/ext/glew/src/glew.i"
 	@echo "... Users/ziqwang/Documents/GitHub/libigl/external/nanogui/ext/glew/src/glew.s"
+	@echo "... src/OneSideCollisionConstrain.o"
+	@echo "... src/OneSideCollisionConstrain.i"
+	@echo "... src/OneSideCollisionConstrain.s"
 	@echo "... src/TI_Cube.o"
 	@echo "... src/TI_Cube.i"
 	@echo "... src/TI_Cube.s"

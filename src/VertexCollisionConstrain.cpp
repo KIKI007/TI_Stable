@@ -16,11 +16,12 @@ namespace ShapeOp {
     }
 
     SHAPEOP_INLINE void VertexCollisionConstrain::project(const Matrix3X &positions, Matrix3X &projections) const {
-        dynamic_pt_ = positions.col(idI_[0]);
+
+        ShapeOp::Vector3 dynamic_pt_ = positions.col(idI_[0]);
 
         ShapeOp::Vector3 center(0, 0, 0), a, b;
         for (int id = 0; id < obj_idI_.size(); id++) {
-            center += positions[obj_idI_[id]];
+            center += positions.col(obj_idI_[id]);
         }
         center /= obj_idI_.size();
 
@@ -34,8 +35,8 @@ namespace ShapeOp {
             Obj_area += (center - a).cross(center - b).norm();
         }
         double eps_ = 1e-3;
-        if (std::abs(std::abs(area) - std::abs(Obj_area)) < eps_) {
-            projections = weight_ * dynamic_pt_;
+        if (std::abs(std::abs(area) - std::abs(Obj_area)) > eps_) {
+            projections.col(idO_) = weight_ * dynamic_pt_;
         } else {
             double length;
             Vector3 mvec(0, 0, 0), min_mvec(0, 0, 0);
@@ -47,18 +48,19 @@ namespace ShapeOp {
                 b = positions.col(obj_idI_[n_id]);
 
                 length = (dynamic_pt_ - a).dot(b - a) / (b - a).norm();
-                mvec = (b - a) / (b - a).norm * length - (dynamic_pt_ - a);
+                mvec = (b - a) / (b - a).norm() * length - (dynamic_pt_ - a);
                 if (mvec.norm() < min_move) {
                     min_mvec = mvec;
                     min_move = mvec.norm();
                 }
             }
-            projections = weight_ * (dynamic_pt_ + mvec);
+            projections.col(idO_) = weight_ * (dynamic_pt_ + min_mvec);
         }
     }
 
     SHAPEOP_INLINE void VertexCollisionConstrain::addConstraint(std::vector<Triplet> &triplets, int &idO) const {
-        idO_ = id0;
-        triplets.push_back(Triplet(id0, idI_[0], weight_));
+        idO_ = idO;
+        triplets.push_back(Triplet(idO, idI_[0], weight_));
+        idO++;
     }
 }

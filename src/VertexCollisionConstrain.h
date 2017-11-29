@@ -25,8 +25,6 @@ namespace ShapeOp {
 
     private:
         std::vector<int> obj_idI_;
-
-        Matrix3X dynamic_pt_;
     };
 
 }

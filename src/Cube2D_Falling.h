@@ -12,7 +12,7 @@
 #include <Constraint.h>
 #include <Force.h>
 
-#include "VertexCollisionConstrain.h"
+#include "OneSideCollisionConstrain.h"
 
 using Eigen::MatrixXd;
 
@@ -22,7 +22,7 @@ public:
     Cube2D_Falling();
 
 public:
-    void simulate(ShapeOp::Solver &solver);
+    void simulate(ShapeOp::Solver &solver, MatrixXd &V);
 
 
 private:
@@ -38,30 +38,32 @@ private:
 
 Cube2D_Falling::Cube2D_Falling()
 {
-    left_fixed_ = right_fixed_ = middle_dynamic_ = MatrixXd(4, 3);
+    left_fixed_ = right_fixed_ = MatrixXd(4, 3);
+    middle_dynamic_ = MatrixXd(5, 3);
 
     left_fixed_ <<      0, 0, 0,
-                        1, 0, 0,
-                        1, 1, 0,
-                        0, 1, 0;
-
-    right_fixed_ <<     2, 0, 0,
                         3, 0, 0,
-                        3, 1, 0,
-                        2, 1, 0;
+                        3, 3, 0,
+                        0, 3, 0;
 
-    middle_dynamic_ <<  1.5, 2, 0,
-                        2.5, 3, 0,
-                        1.5, 4, 0,
-                        0.5, 3, 0;
+    right_fixed_ <<     4, 0, 0,
+                        7, 0, 0,
+                        7, 3, 0,
+                        4, 3, 0;
 
-    t_total_ = 10;
+    middle_dynamic_ <<  3, 2.5, 0,
+                        4, 2.5, 0,
+                        5, 3, 0,
+                        3.5, 6, 0,
+                        2, 3, 0;
+
+    t_total_ = 5;
     dt_interval_ = 0.1;
 }
 
-void Cube2D_Falling::simulate(ShapeOp::Solver &solver)
+void Cube2D_Falling::simulate(ShapeOp::Solver &solver, MatrixXd &V)
 {
-    MatrixXd V(12, 3);
+    V = MatrixXd::Zero(13, 3);
     V <<    left_fixed_,
             right_fixed_,
             middle_dynamic_;
@@ -70,8 +72,8 @@ void Cube2D_Falling::simulate(ShapeOp::Solver &solver)
     solver.setPoints(p);
 
     //set fixed point (left and right)
-    ShapeOp::Scalar weight(1);
-    for(int id = 0; id < 8; id++)
+    ShapeOp::Scalar weight(0.1);
+    for(int id = 0; id < 13; id++)
     {
         std::vector<int> id_vector;
         id_vector.push_back(id);
@@ -79,11 +81,12 @@ void Cube2D_Falling::simulate(ShapeOp::Solver &solver)
         solver.addConstraint(c);
     }
 
+    weight = 100;
     //set rigid body
     {
         std::vector<int> id_vector;
         id_vector.clear();
-        for(int id = 8; id < 12; id++)
+        for(int id = 8; id < 13; id++)
         {
             id_vector.push_back(id);
         }
@@ -92,49 +95,60 @@ void Cube2D_Falling::simulate(ShapeOp::Solver &solver)
         solver.addConstraint(c);
         // edit the shapes one of which the rigid constraint brings the involved vertices close to.
         std::vector<ShapeOp::Matrix3X> shapes;
+
+        //outer
         ShapeOp::Matrix3X shape = middle_dynamic_.transpose(); //column major
         shapes.push_back(shape);
+
+//        //inner
+//        ShapeOp::Vector3 center(0, 0, 0);
+//        for(int id = 0; id < shape.cols(); id++)
+//            center += shape.col(id);
+//        center/= shape.cols();
+//        for(int id = 0; id < shape.cols(); id++)
+//            shape.col(id) = (shape.col(id) - center) * 0.5 + center;
+//        shapes.push_back(shape);
+
         c->setShapes(shapes);
+
     }
 
-    //set Vertex Collision
+    weight = 100;
+    //set  Collision
     {
         std::vector<int> id_vector,obj_vector;
-        for(int id = 8; id < 12; id++)
-        {
-            id_vector.clear();
-            id_vector.push_back(id);
-            for(int jd = 0; jd < 4; jd++)
-            {
-                obj_vector.push_back(jd);
-            }
-            auto c = std::make_shared<VertexCollisionConstrain>(id_vector, weight, solver.getPoints(), obj_vector);
-            solver.addConstraint(c);
 
-            obj_vector.clear();
-            for(int jd = 4; jd < 8; jd++)
-            {
-                obj_vector.push_back(jd);
-            }
-            c = std::make_shared<VertexCollisionConstrain>(id_vector, weight, solver.getPoints(), obj_vector);
-            solver.addConstraint(c);
-        }
+        //cube
+        for(int id = 8; id < 13; id++) id_vector.push_back(id);
+
+        //cube1
+        for(int id = 0; id < 4; id++) obj_vector.push_back(id);
+
+        auto c = std::make_shared<ShapeOp::OneSideCollisionConstrain>(id_vector, weight, solver.getPoints(), obj_vector);
+        solver.addConstraint(c);
+
+        //cube2
+        obj_vector.clear();
+        for(int id = 4; id < 8; id++) obj_vector.push_back(id);
+
+        c = std::make_shared<ShapeOp::OneSideCollisionConstrain>(id_vector, weight, solver.getPoints(), obj_vector);
+        solver.addConstraint(c);
     }
 
-    for(int id = 8; id < 12; id++)
-    {
-        auto f = std::make_shared<ShapeOp::VertexForce>(ShapeOp::Vector3(0, -1, 0), id);
-        solver.addForces(f);
-    }
+//    for(int id = 8; id < 12; id++)
+//    {
+//        auto f = std::make_shared<ShapeOp::VertexForce>(ShapeOp::Vector3(0, -10, 0), id);
+//        solver.addForces(f);
+//    }
 
-    solver.initialize(true);
-    solver.setTimeStep(dt_interval_);
-    solver.setDamping(0);
-
-    for(int iter = 0; iter < (int)(t_total_/dt_interval_); iter ++)
-    {
-        solver.solve(100);
-    }
+//    solver.initialize(true);
+//    solver.setTimeStep(dt_interval_);
+//    solver.setDamping(0);
+    solver.initialize(false);
+//    for(int iter = 0; iter < (int)(t_total_/dt_interval_); iter ++)
+//    {
+//        solver.solve(100);
+//    }
     return;
 }
 

@@ -4,6 +4,7 @@
 
 #include "OneSideCollisionConstrain.h"
 #include <iostream>
+#include <map>
 namespace ShapeOp {
 
     SHAPEOP_INLINE OneSideCollisionConstrain::OneSideCollisionConstrain(const std::vector<int> &idI,
@@ -52,45 +53,47 @@ namespace ShapeOp {
         //objA
         for (long id = 0; id < objA.cols(); id++) {
             long n_id = (id + 1) % objA.cols();
-            axislist.push_back(objA.col(n_id) - objA.col(id));
-            axislist.back().normalize();
+            Vector3 edgeVec = objA.col(n_id) - objA.col(id), projVec(0, 0, 0);
+            projVec = edgeVec.cross(Vector3(0, 0, 1)); projVec.normalize();
+            axislist.push_back(projVec);
+            axislist.push_back(projVec * (-1));
         }
 
         //objB
         for (long id = 0; id < objB.cols(); id++) {
             long n_id = (id + 1) % objB.cols();
-            axislist.push_back(objB.col(n_id) - objB.col(id));
-            axislist.back().normalize();
+            Vector3 edgeVec = objB.col(n_id) - objB.col(id), projVec(0, 0, 0);
+            projVec = edgeVec.cross(Vector3(0, 0, 1)); projVec.normalize();
+            axislist.push_back(projVec);
+            axislist.push_back(projVec * (-1));
         }
 
         //compute the min_intersect_length
         for (size_t id = 0; id < axislist.size(); id++) {
-            std::vector<Scalar> t_projA, t_projB;
-            project_in_axis(objA, t_projA, axislist[id]);
-            project_in_axis(objB, t_projB, axislist[id]);
+                std::vector<Scalar> t_projA, t_projB;
+                project_in_axis(objA, t_projA, axislist[id]);
+                project_in_axis(objB, t_projB, axislist[id]);
 
-            Scalar maxB, minB;
-            sequences_min_max(t_projA, minB, maxB);
+                Scalar maxB, minB;
+                sequences_min_max(t_projB, minB, maxB);
 
-            Scalar maxA, minA;
-            sequences_min_max(t_projB, minA, maxA);
+                Scalar maxA, minA;
+                sequences_min_max(t_projA, minA, maxA);
 
-            Scalar positive_move_dist = maxB - minA;
-            Scalar negative_move_dist = maxA - minB;
+                Scalar positive_move_dist = maxB - minA;
+                Scalar negative_move_dist = maxA - minB;
 
-            if (positive_move_dist < 0 || negative_move_dist < 0)
-                return false;
-            else {
-                Scalar intersect_length =
-                        positive_move_dist > negative_move_dist ? negative_move_dist : positive_move_dist;
-                if (intersect_length < min_intersect_length) {
-                    min_intersect_length = intersect_length;
-                    axisVec = axislist[id];
-                    projA = t_projA;
-                    projB = t_projB;
+                if (positive_move_dist < 0 || negative_move_dist < 0)
+                    return false;
+                else {
+                    if (positive_move_dist < min_intersect_length) {
+                            min_intersect_length = positive_move_dist;
+                            axisVec = axislist[id];
+                            projA = t_projA;
+                            projB = t_projB;
+                    }
                 }
             }
-        }
         return true;
     }
 
@@ -117,54 +120,23 @@ namespace ShapeOp {
             Scalar maxB, minB;
             sequences_min_max(projB, minB, maxB);
 
-            Scalar minA, maxA;
+            Scalar maxA, minA;
             sequences_min_max(projA, minA, maxA);
 
-            Scalar positive_move_dist = maxB - minA;
-            Scalar negative_move_dist = maxA - minB;
-
-            int move_dist = 0;
-            if(positive_move_dist < negative_move_dist)
+            std::map <int, bool> move_point;
+            Scalar  eps = 1e-5;
+            for(int id = 0; id < idI_.size(); id++)
             {
-                move_dist = positive_move_dist > 0 ? 1 : 0;
+                if(projA[id] - minA < eps)
+                    move_point.insert(std::pair<int,bool>(id, true));
             }
-            else
-            {
-                move_dist = negative_move_dist > 0 ? -1 : 0;
-            }
-
-            Scalar eps = 1e-5;
-            Scalar min_move;
-            if(move_dist > 0)
-            {
-                min_move = maxB - minA;
-                for(size_t id = 0; id < idI_.size(); id++)
-                {
-                    if(min_move > projA[id] - minA && projA[id] - minA > eps)
-                    {
-                        min_move = projA[id] - minA;
-                    }
-                }
-            }
-            else
-            {
-                min_move = maxA - minB;
-                for(size_t id = 0; id < idI_.size(); id++)
-                {
-                    if(min_move > -projA[id] + maxA && -projA[id] + maxA > eps)
-                    {
-                        min_move = -projA[id] + maxA;
-                    }
-                }
-            }
-
 
             for(size_t id = 0; id < idI_.size(); id++)
             {
                 axisVec.normalize();
                 int ID = idI_[id];
-                if(move_dist > 0) projections.col(id + idO_) = positions.col(ID) + axisVec * (maxB - projA[id] > 0 ? maxB - projA[id] : 0);
-                if(move_dist < 0) projections.col(id + idO_) = positions.col(ID) + axisVec * (minB - projA[id] < 0 ? minB - projA[id] : 0);
+                if(move_point[id] == true) projections.col(id + idO_) = positions.col(ID) + axisVec * (maxB - projA[id] > 0 ? maxB - projA[id] : 0);
+                else projections.col(id + idO_) = positions.col(ID);
                 projections.col(id + idO_) *= weight_;
             }
         }

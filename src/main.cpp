@@ -21,7 +21,7 @@ MatrixXi F(7, 3);
 ShapeOp::Solver s;
 void SolveOpt()
 {
-    s.solve(1000);
+    s.solve(100);
     V = s.getPoints().transpose();
     viewer.data.set_mesh(V, F);
 }

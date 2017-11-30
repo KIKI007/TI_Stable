@@ -6,7 +6,7 @@
 #define TI_STABLE_CUBE2D_FALLING_H
 
 #include <Eigen/Dense>
-
+#include <random>
 /* ShapeOp */
 #include <Solver.h>
 #include <Constraint.h>
@@ -51,11 +51,11 @@ Cube2D_Falling::Cube2D_Falling()
                         7, 3, 0,
                         4, 3, 0;
 
-    middle_dynamic_ <<  3, 2.5, 0,
-                        4, 2.5, 0,
-                        5, 3, 0,
-                        3.5, 6, 0,
-                        2, 3, 0;
+    middle_dynamic_ <<  3, 0.5, 0,
+                        4, 0.5, 0,
+                        5, 1, 0,
+                        3.5, 4, 0,
+                        2, 1, 0;
 
     t_total_ = 5;
     dt_interval_ = 0.1;
@@ -73,7 +73,7 @@ void Cube2D_Falling::simulate(ShapeOp::Solver &solver, MatrixXd &V)
 
     //set fixed point (left and right)
     ShapeOp::Scalar weight(0.1);
-    for(int id = 0; id < 13; id++)
+    for(int id = 0; id < 8; id++)
     {
         std::vector<int> id_vector;
         id_vector.push_back(id);
@@ -81,7 +81,7 @@ void Cube2D_Falling::simulate(ShapeOp::Solver &solver, MatrixXd &V)
         solver.addConstraint(c);
     }
 
-    weight = 100;
+    weight = 1;
     //set rigid body
     {
         std::vector<int> id_vector;
@@ -113,7 +113,38 @@ void Cube2D_Falling::simulate(ShapeOp::Solver &solver, MatrixXd &V)
 
     }
 
-    weight = 100;
+    //set rigid body
+    {
+        std::vector<int> id_vector;
+        id_vector.clear();
+        for(int id = 4; id < 8; id++)
+        {
+            id_vector.push_back(id);
+        }
+
+        auto c = std::make_shared<ShapeOp::SimilarityConstraint>(id_vector, weight, solver.getPoints(), false, true, false);
+        solver.addConstraint(c);
+        // edit the shapes one of which the rigid constraint brings the involved vertices close to.
+        std::vector<ShapeOp::Matrix3X> shapes;
+
+        //outer
+        ShapeOp::Matrix3X shape = right_fixed_.transpose(); //column major
+        shapes.push_back(shape);
+
+//        //inner
+//        ShapeOp::Vector3 center(0, 0, 0);
+//        for(int id = 0; id < shape.cols(); id++)
+//            center += shape.col(id);
+//        center/= shape.cols();
+//        for(int id = 0; id < shape.cols(); id++)
+//            shape.col(id) = (shape.col(id) - center) * 0.5 + center;
+//        shapes.push_back(shape);
+
+        c->setShapes(shapes);
+
+    }
+
+    weight = 10;
     //set  Collision
     {
         std::vector<int> id_vector,obj_vector;
@@ -124,15 +155,20 @@ void Cube2D_Falling::simulate(ShapeOp::Solver &solver, MatrixXd &V)
         //cube1
         for(int id = 0; id < 4; id++) obj_vector.push_back(id);
 
+
         auto c = std::make_shared<ShapeOp::OneSideCollisionConstrain>(id_vector, weight, solver.getPoints(), obj_vector);
         solver.addConstraint(c);
 
+        weight = 10;
         //cube2
         obj_vector.clear();
         for(int id = 4; id < 8; id++) obj_vector.push_back(id);
 
         c = std::make_shared<ShapeOp::OneSideCollisionConstrain>(id_vector, weight, solver.getPoints(), obj_vector);
         solver.addConstraint(c);
+
+//        c = std::make_shared<ShapeOp::OneSideCollisionConstrain>(obj_vector, weight, solver.getPoints(), id_vector);
+//        solver.addConstraint(c);
     }
 
 //    for(int id = 8; id < 12; id++)

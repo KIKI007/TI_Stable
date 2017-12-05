@@ -73,7 +73,7 @@ void Cube2D_Falling::simulate(ShapeOp::Solver &solver, MatrixXd &V)
 
     //set fixed point (left and right)
     ShapeOp::Scalar weight(0.1);
-    for(int id = 0; id < 8; id++)
+    for(int id = 0; id < 4; id++)
     {
         std::vector<int> id_vector;
         id_vector.push_back(id);
@@ -145,31 +145,31 @@ void Cube2D_Falling::simulate(ShapeOp::Solver &solver, MatrixXd &V)
     }
 
     weight = 10;
-    //set  Collision
-    {
-        std::vector<int> id_vector,obj_vector;
-
-        //cube
-        for(int id = 8; id < 13; id++) id_vector.push_back(id);
-
-        //cube1
-        for(int id = 0; id < 4; id++) obj_vector.push_back(id);
-
-
-        auto c = std::make_shared<ShapeOp::OneSideCollisionConstrain>(id_vector, weight, solver.getPoints(), obj_vector);
-        solver.addConstraint(c);
-
-        weight = 10;
-        //cube2
-        obj_vector.clear();
-        for(int id = 4; id < 8; id++) obj_vector.push_back(id);
-
-        c = std::make_shared<ShapeOp::OneSideCollisionConstrain>(id_vector, weight, solver.getPoints(), obj_vector);
-        solver.addConstraint(c);
-
+//    //set  Collision
+//    {
+//        std::vector<int> id_vector,obj_vector;
+//
+//        //cube
+//        for(int id = 8; id < 13; id++) id_vector.push_back(id);
+//
+//        //cube1
+//        for(int id = 0; id < 4; id++) obj_vector.push_back(id);
+//
+//
+//        auto c = std::make_shared<ShapeOp::OneSideCollisionConstrain>(id_vector, weight, solver.getPoints(), obj_vector);
+//        solver.addConstraint(c);
+//
+//        weight = 10;
+//        //cube2
+//        obj_vector.clear();
+//        for(int id = 4; id < 8; id++) obj_vector.push_back(id);
+//
+//        c = std::make_shared<ShapeOp::OneSideCollisionConstrain>(id_vector, weight, solver.getPoints(), obj_vector);
+//        solver.addConstraint(c);
+//
 //        c = std::make_shared<ShapeOp::OneSideCollisionConstrain>(obj_vector, weight, solver.getPoints(), id_vector);
 //        solver.addConstraint(c);
-    }
+//    }
 
 //    for(int id = 8; id < 12; id++)
 //    {

@@ -1375,14 +1375,26 @@ OneSideCollisionConstrain.h
 /Users/ziqwang/Documents/Xcode/TI_Stable/src/OneSideCollisionConstrain.h
 
 /Users/ziqwang/Documents/Xcode/TI_Stable/src/OneSideCollisionConstrain.cpp
-OneSideCollisionConstrain.h
-/Users/ziqwang/Documents/Xcode/TI_Stable/src/OneSideCollisionConstrain.h
-iostream
--
-map
--
 
 /Users/ziqwang/Documents/Xcode/TI_Stable/src/OneSideCollisionConstrain.h
+
+/Users/ziqwang/Documents/Xcode/TI_Stable/src/Polygon.h
+vector
+-
+Eigen/Dense
+-
+
+/Users/ziqwang/Documents/Xcode/TI_Stable/src/Polyhedra.h
+Polygon.h
+/Users/ziqwang/Documents/Xcode/TI_Stable/src/Polygon.h
+
+/Users/ziqwang/Documents/Xcode/TI_Stable/src/RigidBodyConstrain.cpp
+iostream
+-
+RigidBodyConstrain.h
+/Users/ziqwang/Documents/Xcode/TI_Stable/src/RigidBodyConstrain.h
+
+/Users/ziqwang/Documents/Xcode/TI_Stable/src/RigidBodyConstrain.h
 Constraint.h
 /Users/ziqwang/Documents/Xcode/TI_Stable/src/Constraint.h
 
@@ -1397,6 +1409,8 @@ Eigen/Dense
 -
 Eigen/StdVector
 -
+Polyhedra.h
+/Users/ziqwang/Documents/Xcode/TI_Stable/src/Polyhedra.h
 
 /Users/ziqwang/Documents/Xcode/TI_Stable/src/VertexCollisionConstrain.cpp
 VertexCollisionConstrain.h
@@ -1425,6 +1439,10 @@ Cube2D_Falling.h
 /Users/ziqwang/Documents/Xcode/TI_Stable/src/Cube2D_Falling.h
 VertexCollisionConstrain.h
 /Users/ziqwang/Documents/Xcode/TI_Stable/src/VertexCollisionConstrain.h
+TI_Cube.h
+/Users/ziqwang/Documents/Xcode/TI_Stable/src/TI_Cube.h
+RigidBodyConstrain.h
+/Users/ziqwang/Documents/Xcode/TI_Stable/src/RigidBodyConstrain.h
 
 /usr/local/include/eigen3/Eigen/Cholesky
 Core

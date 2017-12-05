@@ -340,6 +340,33 @@ src/OneSideCollisionConstrain.cpp.s:
 	$(MAKE) -f CMakeFiles/TI_Stable_bin.dir/build.make CMakeFiles/TI_Stable_bin.dir/src/OneSideCollisionConstrain.cpp.s
 .PHONY : src/OneSideCollisionConstrain.cpp.s
 
+src/RigidBodyConstrain.o: src/RigidBodyConstrain.cpp.o
+
+.PHONY : src/RigidBodyConstrain.o
+
+# target to build an object file
+src/RigidBodyConstrain.cpp.o:
+	$(MAKE) -f CMakeFiles/TI_Stable_bin.dir/build.make CMakeFiles/TI_Stable_bin.dir/src/RigidBodyConstrain.cpp.o
+.PHONY : src/RigidBodyConstrain.cpp.o
+
+src/RigidBodyConstrain.i: src/RigidBodyConstrain.cpp.i
+
+.PHONY : src/RigidBodyConstrain.i
+
+# target to preprocess a source file
+src/RigidBodyConstrain.cpp.i:
+	$(MAKE) -f CMakeFiles/TI_Stable_bin.dir/build.make CMakeFiles/TI_Stable_bin.dir/src/RigidBodyConstrain.cpp.i
+.PHONY : src/RigidBodyConstrain.cpp.i
+
+src/RigidBodyConstrain.s: src/RigidBodyConstrain.cpp.s
+
+.PHONY : src/RigidBodyConstrain.s
+
+# target to generate assembly for a file
+src/RigidBodyConstrain.cpp.s:
+	$(MAKE) -f CMakeFiles/TI_Stable_bin.dir/build.make CMakeFiles/TI_Stable_bin.dir/src/RigidBodyConstrain.cpp.s
+.PHONY : src/RigidBodyConstrain.cpp.s
+
 src/TI_Cube.o: src/TI_Cube.cpp.o
 
 .PHONY : src/TI_Cube.o
@@ -449,6 +476,9 @@ help:
 	@echo "... src/OneSideCollisionConstrain.o"
 	@echo "... src/OneSideCollisionConstrain.i"
 	@echo "... src/OneSideCollisionConstrain.s"
+	@echo "... src/RigidBodyConstrain.o"
+	@echo "... src/RigidBodyConstrain.i"
+	@echo "... src/RigidBodyConstrain.s"
 	@echo "... src/TI_Cube.o"
 	@echo "... src/TI_Cube.i"
 	@echo "... src/TI_Cube.s"

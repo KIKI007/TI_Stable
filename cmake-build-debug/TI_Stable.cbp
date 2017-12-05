@@ -1097,6 +1097,18 @@
 		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/src/OneSideCollisionConstrain.h">
 			<Option target="TI_Stable_bin"/>
 		</Unit>
+		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/src/Polygon.h">
+			<Option target="TI_Stable_bin"/>
+		</Unit>
+		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/src/Polyhedra.h">
+			<Option target="TI_Stable_bin"/>
+		</Unit>
+		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/src/RigidBodyConstrain.cpp">
+			<Option target="TI_Stable_bin"/>
+		</Unit>
+		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/src/RigidBodyConstrain.h">
+			<Option target="TI_Stable_bin"/>
+		</Unit>
 		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/src/TI_Cube.cpp">
 			<Option target="TI_Stable_bin"/>
 		</Unit>

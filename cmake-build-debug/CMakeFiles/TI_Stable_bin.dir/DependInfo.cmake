@@ -5,6 +5,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
   "/Users/ziqwang/Documents/Xcode/TI_Stable/src/OneSideCollisionConstrain.cpp" "/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles/TI_Stable_bin.dir/src/OneSideCollisionConstrain.cpp.o"
+  "/Users/ziqwang/Documents/Xcode/TI_Stable/src/RigidBodyConstrain.cpp" "/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles/TI_Stable_bin.dir/src/RigidBodyConstrain.cpp.o"
   "/Users/ziqwang/Documents/Xcode/TI_Stable/src/TI_Cube.cpp" "/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles/TI_Stable_bin.dir/src/TI_Cube.cpp.o"
   "/Users/ziqwang/Documents/Xcode/TI_Stable/src/VertexCollisionConstrain.cpp" "/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles/TI_Stable_bin.dir/src/VertexCollisionConstrain.cpp.o"
   "/Users/ziqwang/Documents/Xcode/TI_Stable/src/main.cpp" "/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles/TI_Stable_bin.dir/src/main.cpp.o"

@@ -643,6 +643,7 @@ SHAPEOP_INLINE void SimilarityConstraint::addConstraint(std::vector<Triplet> &tr
       triplets.push_back(Triplet(idO, idI_[j], (i == j ? coef1 : coef2)));
     idO++;
   }
+
 }
 ///////////////////////////////////////////////////////////////////////////////
 SHAPEOP_INLINE void SimilarityConstraint::setShapes(const std::vector<Matrix3X> &shapes) {

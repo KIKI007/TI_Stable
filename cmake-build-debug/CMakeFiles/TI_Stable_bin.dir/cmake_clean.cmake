@@ -1,5 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/TI_Stable_bin.dir/src/OneSideCollisionConstrain.cpp.o"
+  "CMakeFiles/TI_Stable_bin.dir/src/RigidBodyConstrain.cpp.o"
   "CMakeFiles/TI_Stable_bin.dir/src/TI_Cube.cpp.o"
   "CMakeFiles/TI_Stable_bin.dir/src/VertexCollisionConstrain.cpp.o"
   "CMakeFiles/TI_Stable_bin.dir/src/main.cpp.o"

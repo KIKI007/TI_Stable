@@ -13,7 +13,7 @@ option(LIBIGL_WITH_CORK             "Use Cork"           OFF)
 option(LIBIGL_WITH_EMBREE           "Use Embree"         OFF)
 option(LIBIGL_WITH_LIM              "Use LIM"            OFF)
 option(LIBIGL_WITH_MATLAB           "Use Matlab"         OFF)
-option(LIBIGL_WITH_MOSEK            "Use MOSEK"          OFF)
+option(LIBIGL_WITH_MOSEK            "Use MOSEK"          ON)
 option(LIBIGL_WITH_NANOGUI          "Use Nanogui menu"   ON)
 option(LIBIGL_WITH_OPENGL           "Use OpenGL"         ON)
 option(LIBIGL_WITH_OPENGL_GLFW      "Use GLFW"           ON)
@@ -23,7 +23,7 @@ option(LIBIGL_WITH_TETGEN           "Use Tetgen"         OFF)
 option(LIBIGL_WITH_TRIANGLE         "Use Triangle"       ON)
 option(LIBIGL_WITH_VIEWER           "Use OpenGL viewer"  ON)
 option(LIBIGL_WITH_XML              "Use XML"            OFF)
-option(LIBIGL_WITH_SHAPEOP          "Use ShapeOp"        ON)
+option(LIBIGL_WITH_SHAPEOP          "Use ShapeOp"        OFF)
 
 ################################################################################
 ### Compile the ShapeOp part ###
@@ -39,4 +39,4 @@ find_package(LIBIGL REQUIRED)
 # Add your project file
 file(GLOB SRCFILES src/*.cpp src/*.h)
 add_executable(${PROJECT_NAME}_bin ${SRCFILES})
-target_link_libraries(${PROJECT_NAME}_bin igl::core igl::viewer ShapeOp)
+target_link_libraries(${PROJECT_NAME}_bin igl::core igl::viewer igl::mosek)

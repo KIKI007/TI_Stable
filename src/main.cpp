@@ -6,15 +6,20 @@
 #include <sstream>
 #include <iostream>
 
-/* ShapeOp */
-#include <Solver.h>
-#include <Constraint.h>
-#include <Force.h>
+///* ShapeOp */
+//#include <Solver.h>
+//#include <Constraint.h>
+//#include <Force.h>
 
 #include "Cube2D_Falling.h"
 #include "VertexCollisionConstrain.h"
 #include "TI_Cube.h"
 #include "RigidBodyConstrain.h"
+#include "igl/mosek/mosek_linprog.h"
+#include "PolygonPoints.h"
+#include "PolyhedraPoints.h"
+#include "OptSolver.h"
+#include "PolygonsCollisionSolver.h"
 
 using Eigen::MatrixXd;
 using Eigen::MatrixXi;
@@ -23,57 +28,107 @@ igl::viewer::Viewer viewer;
 //MatrixXi F(7, 3);
 MatrixXd V;
 MatrixXi F;
-//ShapeOp::Solver s;
-//void SolveOpt()
-//{
-////    s.solve(100);
-////    V = s.getPoints().transpose();
-////    viewer.data.set_mesh(V, F);
-//    TI_Cube cubes(5, 5);
-//    stdVecMatrixXd vec_V;
-//    stdVecMatrixXi vec_F;
-//    cubes.generate(vec_V, vec_F);
-//    V = MatrixXd(vec_V.size() * 8, 3);
-//    F = MatrixXi::Zero(vec_F.size() * 12, 3);
-//    for(int id = 0; id < vec_V.size(); id++)
-//    {
-//        for(int jd = 0; jd < vec_V[id].rows(); jd++)
-//        {
-//            V.row(jd + 8 * id) = vec_V[id].row(jd);
-//        }
-//    }
-//    int ID = 0;
-//    for(int id = 0; id < vec_F.size(); id++)
-//    {
-//        if(id % 5 == 0 || id % 5 == 4 || id < 5 || id > 4 * 5) {
-//            for (int jd = 0; jd < vec_F[id].rows(); jd++) {
-//                F.row(ID++) = vec_F[id].row(jd) + Eigen::RowVector3i(8 * id, 8 * id, 8 * id);
-//            }
-//        }
-//    }
-//
-//    viewer.data.set_mesh(V, F);
-//}
-ShapeOp::Matrix3X shape;
+typedef Eigen::Triplet<double> T;
+
+
+
+void mosek()
+{
+    Eigen::VectorXd c(2);
+    c << -2,
+            5;
+    Eigen::SparseMatrix<double> A(1, 2);
+    std::vector<T> triplist;
+    triplist.push_back(T(0, 0, 1));
+    triplist.push_back(T(0, 1, 1));
+    A.setFromTriplets(triplist.begin(), triplist.end());
+    Eigen::VectorXd lc(1);
+    lc << 200;
+    Eigen::VectorXd uc(1);
+    uc << 10000000;
+    Eigen::VectorXd lx(2);
+    lx << 100,
+            80;
+    Eigen::VectorXd ux(2);
+    ux << 200,
+            170;
+
+    Eigen::VectorXd x(2);
+    bool sucess = igl::mosek::mosek_linprog(c, A, lc, uc, lx, ux, x);
+    if(sucess)
+        std::cout << x;
+    else
+        std::cout << "fail";
+}
+
+void generate_polygons(vector<PolygonPoints> &P)
+{
+    PolygonPoints P0 ,P1, P2, P3;
+    std::vector<int> ids;
+    ids.push_back(0);ids.push_back(1);ids.push_back(2);
+    P0.set_ids(ids);
+    MatrixXd points(3, 3);
+    points.col(0) = Vector3d(0, 0, 0);
+    points.col(1) = Vector3d(4, 0, 0);
+    points.col(2) = Vector3d(2, 3, 0);
+    P0.set_points(points);
+
+    ids.clear();
+    ids.push_back(0);ids.push_back(1);ids.push_back(2);
+    P1.set_ids(ids);
+    points.col(0) = Vector3d(3, 0, 0);
+    points.col(1) = Vector3d(7, 0, 0);
+    points.col(2) = Vector3d(5, 3, 0);
+    P1.set_points(points);
+
+    ids.clear();
+    ids.push_back(0);ids.push_back(1);ids.push_back(2);ids.push_back(3);
+    P2.set_ids(ids);
+    points = MatrixXd(3, 4);
+    points.col(0) = Vector3d(2, 2, 0);
+    points.col(1) = Vector3d(5, 2, 0);
+    points.col(2) = Vector3d(5, 5, 0);
+    points.col(3) = Vector3d(2, 5, 0);
+    P2.set_points(points);
+
+    ids.clear();
+    ids.push_back(0);ids.push_back(1);ids.push_back(2);ids.push_back(3);
+    P3.set_ids(ids);
+    points = MatrixXd(3, 4);
+    points.col(0) = Vector3d(2, -2, 0);
+    points.col(1) = Vector3d(5, -2, 0);
+    points.col(2) = Vector3d(5, 1, 0);
+    points.col(3) = Vector3d(2, 1, 0);
+    P3.set_points(points);
+
+    P.push_back(P0);
+    P.push_back(P1);
+    P.push_back(P2);
+    P.push_back(P3);
+}
+
+
+void polygon()
+{
+    vector<PolygonPoints> plist;
+    generate_polygons(plist);
+    set_mesh(plist, viewer);
+}
+
 void generate_cube()
 {
     TI_Cube cubes(1, 1);
     stdVecMatrixXd vec_V;
     stdVecMatrixXi vec_F;
-    cubes.generate_1v6(vec_V, vec_F);
-//    V = vec_V[0];
-//    F = vec_F[0];
-//
-//    //outer
-////    ShapeOp::Matrix3X shape;
-////    ShapeOp::Matrix33 R(3, 3);
-////    R <<        1, 0, 0,
-////            0, std::cos(M_PI / 4), -std::sin(M_PI / 4),
-////            0, std::sin(M_PI / 4),  std::cos(M_PI / 4);
-//    shape = V.transpose();
-//    viewer.data.clear();
-//    viewer.data.set_mesh(V, F);
-
+    std::vector<PolyhedraPoints> Ps;
+    cubes.generate_1v6(Ps);
+    for(int id = 0; id < Ps.size(); id++)
+    {
+        MatrixXd tV;
+        MatrixXi tF;
+        Ps[id].triangulate(tF); vec_F.push_back(tF);
+        Ps[id].get_points(tV); vec_V.push_back(tV.transpose());
+    }
 
     V = MatrixXd(vec_V.size() * 8, 3);
     F = MatrixXi::Zero(vec_F.size() * 12, 3);
@@ -94,62 +149,36 @@ void generate_cube()
     viewer.data.set_mesh(V, F);
 }
 
-void Rigid_Body_Opt()
-{
-    ShapeOp::Solver solver;
-
-    ShapeOp::Matrix3X points = V.transpose();
-    solver.setPoints(points);
-
-    ShapeOp::Scalar weight(1);
-    //fixed point
-    {
-        for (int id = 0; id < 8; id++) {
-            std::vector<int> id_vector;
-            id_vector.push_back(id);
-            auto c = std::make_shared<ShapeOp::ClosenessConstraint>(id_vector, weight, solver.getPoints());
-            solver.addConstraint(c);
-        }
-    }
-
-    //set rigid body
-    {
-        std::vector<int> id_vector;
-        id_vector.clear();
-        for(int id = 0; id < 8; id++)
-        {
-            id_vector.push_back(id);
-        }
-
-        auto c = std::make_shared<ShapeOp::RigidBodyConstrain>(id_vector, weight, solver.getPoints());
-        solver.addConstraint(c);
-        // edit the shapes one of which the rigid constraint brings the involved vertices close to.
-        std::vector<ShapeOp::Matrix3X> shapes;
-
-//        //inner
-//        ShapeOp::Vector3 center(0, 0, 0);
-//        for(int id = 0; id < shape.cols(); id++)
-//            center += shape.col(id);
-//        center/= shape.cols();
-//        for(int id = 0; id < shape.cols(); id++)
-//            shape.col(id) = (shape.col(id) - center) * 0.5 + center;
-//        shapes.push_back(shape);
-        c->setShape(shape);
-    }
-    solver.initialize(false);
-    solver.solve(1);
-    V = solver.getPoints().transpose();
-
-    viewer.data.clear();
-    viewer.data.set_mesh(V, F);
-}
-
 void move_point()
 {
     for(int id = 0; id < 8; id++)
         V.row(id) -= Eigen::RowVector3d(0, 0, 0.1);
     viewer.data.clear();
     viewer.data.set_mesh(V, F);
+}
+
+VectorXd x_0;
+void opt_solve()
+{
+    vector<PolygonPoints> plist;
+    generate_polygons(plist);
+    x_0 = VectorXd::Zero(9);
+
+    PolygonsCollisionSolver solver;
+    solver.setPolygons(plist);
+    solver.setConnection(0, 1);
+    solver.setConnection(0, 2);
+    solver.setConnection(1, 2);
+    solver.setConnection(3, 1);
+    solver.setConnection(3, 0);
+    solver.collision_resolve(x_0);
+
+    //two_collision_solver(plist, x_0);
+
+    for(int id = 0; id < plist.size(); id++)
+        plist[id].Rotate_translate(x_0.segment(3 * id, 3));
+    set_mesh(plist, viewer);
+
 }
 
 int main() {
@@ -165,12 +194,13 @@ int main() {
 //    cubefall.simulate(s, V);
 //    viewer.data.set_mesh(V, F);
 
-    generate_cube();
 
     viewer.callback_init = [&](igl::viewer::Viewer& viewer)
     {
-        viewer.ngui->addButton("Move", move_point);
-        viewer.ngui->addButton("Run", Rigid_Body_Opt);
+        viewer.ngui->addButton("Mosek", mosek);
+        viewer.ngui->addButton("3D Cubes", generate_cube);
+        viewer.ngui->addButton("2D", polygon);
+        viewer.ngui->addButton("Solve", opt_solve);
         viewer.screen->performLayout();
         return false;
     };

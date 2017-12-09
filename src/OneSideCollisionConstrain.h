@@ -5,6 +5,7 @@
 //#ifndef TI_STABLE_COLLISIONCONSTRAIN_H
 //#define TI_STABLE_COLLISIONCONSTRAIN_H
 //
+//#include "PolyhedraBase.h"
 //#include "Constraint.h"
 //namespace ShapeOp {
 //    class SHAPEOP_API OneSideCollisionConstrain : public Constraint {
@@ -12,8 +13,10 @@
 //    public:
 //        OneSideCollisionConstrain(
 //                             const std::vector<int> &idI,
+//                             PolyhedraBase &p,
 //                             Scalar weight,
 //                             const Matrix3X &positions
+//
 //                             );
 //        virtual ~OneSideCollisionConstrain
 //                () {}
@@ -27,7 +30,7 @@
 //
 //    public:
 //
-//        void set_collision_object(const std::vector<int> &obj_idI, MatrixX3 &F, int collision_face)
+//        void set_collision_object(const std::vector<int> &obj_idI)
 //
 //        bool separate_axis_theorem( Matrix3X &objA,
 //                                    Matrix3X &objB,
@@ -46,7 +49,9 @@
 //                              Vector3 &Origin) const;
 //
 //    private:
-//    std::vector<int> obj_idI_;
+//        std::vector<int> obj_idI_;
+//        PolyhedraBase p_;
+//        int cf_;
 //};
 //
 //}

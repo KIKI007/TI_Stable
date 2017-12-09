@@ -35,7 +35,7 @@ void TI_Cube::shrink(MatrixXd &mat, double ratio)
     }
 }
 
-void TI_Cube::generate_1v6(stdVecMatrixXd &cVs, stdVecMatrixXi &cFs)
+void TI_Cube::generate_1v6(std::vector<PolyhedraPoints> &plist)
 {
     MatrixXd mat(3, 3);
 
@@ -71,21 +71,18 @@ void TI_Cube::generate_1v6(stdVecMatrixXd &cVs, stdVecMatrixXi &cFs)
         Vector3d O(j * sqrt(3) * r + i * sqrt(3)/ 2.0 * r,
                 i * 1.5 * r,
                 0);
-        MatrixXd cV; MatrixXi cF;Polyhedra P;
+        PolyhedraPoints P;
         cube_OXYZ(O,
-                  X * cube_length_ * tolerance_,
-                  Y * cube_length_ * tolerance_,
-                  Z * cube_length_ * tolerance_,
-                  cV,
+                  X * cube_length_,
+                  Y * cube_length_,
+                  Z * cube_length_,
                   P);
-        P.triangulate(cF);
-        if(k == 0) shrink(cV, tolerance_);
-        cVs.push_back(cV);
-        cFs.push_back(cF);
+        if(k == 0) P.shrink(tolerance_);
+        plist.push_back(P);
     }
 }
 
-void TI_Cube::generate(stdVecMatrixXd &cVs, stdVecMatrixXi &cFs) {
+void TI_Cube::generate(std::vector<PolyhedraPoints> &plist) {
 
     MatrixXd mat(3, 3);
 
@@ -119,16 +116,13 @@ void TI_Cube::generate(stdVecMatrixXd &cVs, stdVecMatrixXi &cFs) {
             Vector3d O(j * sqrt(3) * r + (-1) * (i&1) * sqrt(3)/ 2.0 * r,
                        i * 1.5 * r,
                        0);
-            MatrixXd cV; Polyhedra P;MatrixXi cF;
+            MatrixXd cV; PolyhedraPoints P;MatrixXi cF;
             cube_OXYZ(O,
                       X * cube_length_ * tolerance_,
                       Y * cube_length_ * tolerance_,
                       Z * cube_length_ * tolerance_,
-                      cV,
                       P);
-            P.triangulate(cF);
-            cVs.push_back(cV);
-            cFs.push_back(cF);
+            plist.push_back(P);
         }
     }
 }
@@ -139,7 +133,7 @@ TI_Cube::TI_Cube(int m, int n) {
     init(m, n);
 }
 
-void TI_Cube::cube_OXYZ(Vector3d O, Vector3d X, Vector3d Y, Vector3d Z, MatrixXd &cV, Polyhedra &P) {
+void TI_Cube::cube_OXYZ(Vector3d O, Vector3d X, Vector3d Y, Vector3d Z, PolyhedraPoints &P) {
 
     //non-zero vectors
     assert(X.norm() > TI_zero_eps_ && Y.norm() > TI_zero_eps_ && Z.norm() > TI_zero_eps_);
@@ -149,58 +143,50 @@ void TI_Cube::cube_OXYZ(Vector3d O, Vector3d X, Vector3d Y, Vector3d Z, MatrixXd
            && std::abs(Y.dot(Z)) < TI_zero_eps_
            && std::abs(Z.dot(X)) < TI_zero_eps_ );
 
-    cV = MatrixXd::Zero(8, 3);
-    cV.row(0) = O;
+    MatrixXd cV = MatrixXd::Zero(3, 8);
+    cV.col(0) = O;
+    cV.col(1) = (O + X);
+    cV.col(2) = (O + Y);
+    cV.col(3) = (O + Z);
+    cV.col(4) = (O + X + Y);
+    cV.col(5) = (O + X + Z);
+    cV.col(6) = (O + Y + Z);
+    cV.col(7) = (O + X + Y + Z);
 
-    cV.row(1) = (O + X);
-    cV.row(2) = (O + Y);
-    cV.row(3) = (O + Z);
-    cV.row(4) = (O + X + Y);
-    cV.row(5) = (O + X + Z);
-    cV.row(6) = (O + Y + Z);
-    cV.row(7) = (O + X + Y + Z);
+    P.set_points(cV);
 
-    Polygon polygon;
-    polygon.add_point(0);
-    polygon.add_point(2);
-    polygon.add_point(4);
-    polygon.add_point(1);
-    P.add_face(polygon);
+    PolygonBase polygon;
+    std::vector<int> ids;
 
-    polygon.clear();
-    polygon.add_point(1);
-    polygon.add_point(4);
-    polygon.add_point(7);
-    polygon.add_point(5);
-    P.add_face(polygon);
+    ids.push_back(0);ids.push_back(2);
+    ids.push_back(4);ids.push_back(1);
+    polygon.set_ids(ids);P.add_face(polygon);
 
-    polygon.clear();
-    polygon.add_point(1);
-    polygon.add_point(5);
-    polygon.add_point(3);
-    polygon.add_point(0);
-    P.add_face(polygon);
+    ids.clear();
+    ids.push_back(1);ids.push_back(4);
+    ids.push_back(7);ids.push_back(5);
+    polygon.set_ids(ids);P.add_face(polygon);
 
-    polygon.clear();
-    polygon.add_point(0);
-    polygon.add_point(3);
-    polygon.add_point(6);
-    polygon.add_point(2);
-    P.add_face(polygon);
+    ids.clear();
+    ids.push_back(1);ids.push_back(5);
+    ids.push_back(3);ids.push_back(0);
+    polygon.set_ids(ids);P.add_face(polygon);
 
-    polygon.clear();
-    polygon.add_point(3);
-    polygon.add_point(5);
-    polygon.add_point(7);
-    polygon.add_point(6);
-    P.add_face(polygon);
+    ids.clear();
+    ids.push_back(0);ids.push_back(3);
+    ids.push_back(6);ids.push_back(2);
+    polygon.set_ids(ids);P.add_face(polygon);
 
-    polygon.clear();
-    polygon.add_point(2);
-    polygon.add_point(6);
-    polygon.add_point(7);
-    polygon.add_point(4);
-    P.add_face(polygon);
+    ids.clear();
+    ids.push_back(3);ids.push_back(5);
+    ids.push_back(7);ids.push_back(6);
+    polygon.set_ids(ids);P.add_face(polygon);
+
+    ids.clear();
+    ids.push_back(2);ids.push_back(6);
+    ids.push_back(7);ids.push_back(4);
+    polygon.set_ids(ids);P.add_face(polygon);
+
 //    cF <<   0, 2, 4,
 //            4, 1, 0,
 //            1, 4, 7,

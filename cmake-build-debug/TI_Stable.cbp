@@ -5,7 +5,7 @@
 		<Option title="TI_Stable"/>
 		<Option makefile_is_custom="1"/>
 		<Option compiler="gcc"/>
-		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\GitHub\;CMake Files\..\..\GitHub\libigl\;CMake Files\..\..\GitHub\libigl\external\;CMake Files\..\..\GitHub\libigl\external\nanogui\;CMake Files\..\..\GitHub\libigl\external\nanogui\ext\;CMake Files\..\..\GitHub\libigl\external\nanogui\ext\glfw\;CMake Files\..\..\GitHub\libigl\external\nanogui\ext\glfw\CMake\;CMake Files\..\..\GitHub\libigl\external\nanogui\ext\glfw\CMake\modules\;CMake Files\..\..\GitHub\libigl\external\nanogui\ext\glfw\src\;CMake Files\..\..\GitHub\libigl\external\triangle\;CMake Files\..\..\GitHub\libigl\shared\;CMake Files\..\..\GitHub\libigl\shared\cmake\;CMake Files\3rdparty\;CMake Files\3rdparty\ShapeOp\;CMake Files\3rdparty\ShapeOp\doc\;CMake Files\3rdparty\ShapeOp\libShapeOp\;CMake Files\3rdparty\ShapeOp\libShapeOp\bindings\;CMake Files\3rdparty\ShapeOp\libShapeOp\bindings\c\;CMake Files\3rdparty\ShapeOp\libShapeOp\bindings\c++\;CMake Files\3rdparty\ShapeOp\applications\;CMake Files\cmake\;"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\GitHub\;CMake Files\..\..\GitHub\libigl\;CMake Files\..\..\GitHub\libigl\external\;CMake Files\..\..\GitHub\libigl\external\nanogui\;CMake Files\..\..\GitHub\libigl\external\nanogui\ext\;CMake Files\..\..\GitHub\libigl\external\nanogui\ext\glfw\;CMake Files\..\..\GitHub\libigl\external\nanogui\ext\glfw\CMake\;CMake Files\..\..\GitHub\libigl\external\nanogui\ext\glfw\CMake\modules\;CMake Files\..\..\GitHub\libigl\external\nanogui\ext\glfw\src\;CMake Files\..\..\GitHub\libigl\external\triangle\;CMake Files\..\..\GitHub\libigl\shared\;CMake Files\..\..\GitHub\libigl\shared\cmake\;CMake Files\cmake\;"/>
 		<Build>
 			<Target title="all">
 				<Option working_dir="/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug"/>
@@ -57,14 +57,15 @@
 					<Add option="-DIGL_VIEWER_WITH_NANOGUI"/>
 					<Add option="-DGLEW_BUILD"/>
 					<Add option="-DGLEW_NO_GLU"/>
+					<Add option="-DLIBIGL_WITH_MOSEK"/>
 					<Add directory="/Users/ziqwang/Documents/GitHub/libigl/shared/cmake/../../include"/>
-					<Add directory="/usr/local/include/eigen3"/>
+					<Add directory="/Users/ziqwang/Documents/GitHub/libigl/shared/cmake/../../external/nanogui/ext/eigen"/>
 					<Add directory="/System/Library/Frameworks/OpenGL.framework"/>
 					<Add directory="/Users/ziqwang/Documents/GitHub/libigl/shared/cmake/../../external/nanogui/ext/glfw/include"/>
 					<Add directory="/Users/ziqwang/Documents/GitHub/libigl/shared/cmake/../../external/nanogui/ext/glew/include"/>
 					<Add directory="/Users/ziqwang/Documents/GitHub/libigl/shared/cmake/../../external/nanogui/include"/>
 					<Add directory="/Users/ziqwang/Documents/GitHub/libigl/shared/cmake/../../external/nanogui/ext/nanovg/src"/>
-					<Add directory="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/src"/>
+					<Add directory="/usr/local/mosek/8/tools/platform/osx64x86/h"/>
 					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"/>
 					<Add directory="/usr/local/include"/>
 					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.0.0/include"/>
@@ -90,14 +91,15 @@
 					<Add option="-DIGL_VIEWER_WITH_NANOGUI"/>
 					<Add option="-DGLEW_BUILD"/>
 					<Add option="-DGLEW_NO_GLU"/>
+					<Add option="-DLIBIGL_WITH_MOSEK"/>
 					<Add directory="/Users/ziqwang/Documents/GitHub/libigl/shared/cmake/../../include"/>
-					<Add directory="/usr/local/include/eigen3"/>
+					<Add directory="/Users/ziqwang/Documents/GitHub/libigl/shared/cmake/../../external/nanogui/ext/eigen"/>
 					<Add directory="/System/Library/Frameworks/OpenGL.framework"/>
 					<Add directory="/Users/ziqwang/Documents/GitHub/libigl/shared/cmake/../../external/nanogui/ext/glfw/include"/>
 					<Add directory="/Users/ziqwang/Documents/GitHub/libigl/shared/cmake/../../external/nanogui/ext/glew/include"/>
 					<Add directory="/Users/ziqwang/Documents/GitHub/libigl/shared/cmake/../../external/nanogui/include"/>
 					<Add directory="/Users/ziqwang/Documents/GitHub/libigl/shared/cmake/../../external/nanogui/ext/nanovg/src"/>
-					<Add directory="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/src"/>
+					<Add directory="/usr/local/mosek/8/tools/platform/osx64x86/h"/>
 					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"/>
 					<Add directory="/usr/local/include"/>
 					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.0.0/include"/>
@@ -191,168 +193,6 @@
 					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="/usr/bin/make -j8 -f &quot;/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="ShapeOp">
-				<Option output="/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/libShapeOp.dylib" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp"/>
-				<Option object_output="./"/>
-				<Option type="3"/>
-				<Option compiler="gcc"/>
-				<Compiler>
-					<Add option="-DSHAPEOP_CLANG"/>
-					<Add option="-DSHAPEOP_EXPORT"/>
-					<Add directory="/usr/local/include/eigen3"/>
-					<Add directory="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/src"/>
-					<Add directory="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/api"/>
-					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.0.0/include"/>
-					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
-					<Add directory="/usr/include"/>
-					<Add directory="/System/Library/Frameworks"/>
-					<Add directory="/Library/Frameworks"/>
-				</Compiler>
-				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/Makefile&quot;  VERBOSE=1 ShapeOp"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="ShapeOp/fast">
-				<Option output="/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/libShapeOp.dylib" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp"/>
-				<Option object_output="./"/>
-				<Option type="3"/>
-				<Option compiler="gcc"/>
-				<Compiler>
-					<Add option="-DSHAPEOP_CLANG"/>
-					<Add option="-DSHAPEOP_EXPORT"/>
-					<Add directory="/usr/local/include/eigen3"/>
-					<Add directory="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/src"/>
-					<Add directory="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/api"/>
-					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.0.0/include"/>
-					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
-					<Add directory="/usr/include"/>
-					<Add directory="/System/Library/Frameworks"/>
-					<Add directory="/Library/Frameworks"/>
-				</Compiler>
-				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/Makefile&quot;  VERBOSE=1 ShapeOp/fast"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="runmeC">
-				<Option output="/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/bindings/c/runmeC" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/bindings/c"/>
-				<Option object_output="./"/>
-				<Option type="1"/>
-				<Option compiler="gcc"/>
-				<Compiler>
-					<Add option="-DSHAPEOP_CLANG"/>
-					<Add option="-DSHAPEOP_EXPORT"/>
-					<Add directory="/usr/local/include/eigen3"/>
-					<Add directory="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/src"/>
-					<Add directory="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/api"/>
-					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.0.0/include"/>
-					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
-					<Add directory="/usr/include"/>
-					<Add directory="/System/Library/Frameworks"/>
-					<Add directory="/Library/Frameworks"/>
-				</Compiler>
-				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/bindings/c/Makefile&quot;  VERBOSE=1 runmeC"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/bindings/c/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/bindings/c/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/bindings/c/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="runmeC/fast">
-				<Option output="/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/bindings/c/runmeC" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/bindings/c"/>
-				<Option object_output="./"/>
-				<Option type="1"/>
-				<Option compiler="gcc"/>
-				<Compiler>
-					<Add option="-DSHAPEOP_CLANG"/>
-					<Add option="-DSHAPEOP_EXPORT"/>
-					<Add directory="/usr/local/include/eigen3"/>
-					<Add directory="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/src"/>
-					<Add directory="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/api"/>
-					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.0.0/include"/>
-					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
-					<Add directory="/usr/include"/>
-					<Add directory="/System/Library/Frameworks"/>
-					<Add directory="/Library/Frameworks"/>
-				</Compiler>
-				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/bindings/c/Makefile&quot;  VERBOSE=1 runmeC/fast"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/bindings/c/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/bindings/c/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/bindings/c/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="runmeCPP">
-				<Option output="/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/bindings/c++/runmeCPP" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/bindings/c++"/>
-				<Option object_output="./"/>
-				<Option type="1"/>
-				<Option compiler="gcc"/>
-				<Compiler>
-					<Add option="-DSHAPEOP_CLANG"/>
-					<Add option="-DSHAPEOP_EXPORT"/>
-					<Add directory="/usr/local/include/eigen3"/>
-					<Add directory="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/src"/>
-					<Add directory="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/api"/>
-					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.0.0/include"/>
-					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
-					<Add directory="/usr/include"/>
-					<Add directory="/System/Library/Frameworks"/>
-					<Add directory="/Library/Frameworks"/>
-				</Compiler>
-				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/bindings/c++/Makefile&quot;  VERBOSE=1 runmeCPP"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/bindings/c++/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/bindings/c++/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/bindings/c++/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="runmeCPP/fast">
-				<Option output="/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/bindings/c++/runmeCPP" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/bindings/c++"/>
-				<Option object_output="./"/>
-				<Option type="1"/>
-				<Option compiler="gcc"/>
-				<Compiler>
-					<Add option="-DSHAPEOP_CLANG"/>
-					<Add option="-DSHAPEOP_EXPORT"/>
-					<Add directory="/usr/local/include/eigen3"/>
-					<Add directory="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/src"/>
-					<Add directory="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/api"/>
-					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.0.0/include"/>
-					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
-					<Add directory="/usr/include"/>
-					<Add directory="/System/Library/Frameworks"/>
-					<Add directory="/Library/Frameworks"/>
-				</Compiler>
-				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/bindings/c++/Makefile&quot;  VERBOSE=1 runmeCPP/fast"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/bindings/c++/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/bindings/c++/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp/bindings/c++/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="nanogui">
@@ -886,48 +726,6 @@
 		<Unit filename="/Users/ziqwang/Documents/GitHub/libigl/external/triangle/triangle.h">
 			<Option target="triangle"/>
 		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/api/API.cpp">
-			<Option target="ShapeOp"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/api/API.h">
-			<Option target="ShapeOp"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/bindings/c++/runme.cpp">
-			<Option target="runmeCPP"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/bindings/c/runme.c">
-			<Option target="runmeC"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/src/Common.h">
-			<Option target="ShapeOp"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/src/Constraint.cpp">
-			<Option target="ShapeOp"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/src/Constraint.h">
-			<Option target="ShapeOp"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/src/Force.cpp">
-			<Option target="ShapeOp"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/src/Force.h">
-			<Option target="ShapeOp"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/src/LSSolver.cpp">
-			<Option target="ShapeOp"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/src/LSSolver.h">
-			<Option target="ShapeOp"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/src/Solver.cpp">
-			<Option target="ShapeOp"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/src/Solver.h">
-			<Option target="ShapeOp"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/src/Types.h">
-			<Option target="ShapeOp"/>
-		</Unit>
 		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/nanogui/CMakeFiles/nanogui-obj.dir/ext/nanovg/src/nanovg.c.o">
 			<Option target="nanogui"/>
 		</Unit>
@@ -1097,10 +895,25 @@
 		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/src/OneSideCollisionConstrain.h">
 			<Option target="TI_Stable_bin"/>
 		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/src/Polygon.h">
+		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/src/OptSolver.h">
 			<Option target="TI_Stable_bin"/>
 		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/src/Polyhedra.h">
+		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/src/PolygonBase.h">
+			<Option target="TI_Stable_bin"/>
+		</Unit>
+		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/src/PolygonPoints.h">
+			<Option target="TI_Stable_bin"/>
+		</Unit>
+		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/src/PolygonsCollisionSolver.cpp">
+			<Option target="TI_Stable_bin"/>
+		</Unit>
+		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/src/PolygonsCollisionSolver.h">
+			<Option target="TI_Stable_bin"/>
+		</Unit>
+		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/src/PolyhedraBase.h">
+			<Option target="TI_Stable_bin"/>
+		</Unit>
+		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/src/PolyhedraPoints.h">
 			<Option target="TI_Stable_bin"/>
 		</Unit>
 		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/src/RigidBodyConstrain.cpp">
@@ -1199,59 +1012,8 @@
 		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/../../GitHub/libigl/shared/cmake/CXXFeatures.cmake">
 			<Option virtualFolder="CMake Files\..\..\GitHub\libigl\shared\cmake\"/>
 		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/CMakeLists.txt">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/CMakeLists.txt">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/doc/DoxyShapeOp.in">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\doc\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/doc/DoxyShapeOp.bib">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\doc\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/doc/DoxyShapeOp.in">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\doc\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/doc/DoxyShapeOp.bib">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\doc\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/CMakeLists.txt">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\libShapeOp\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/FindEigen3.cmake">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\libShapeOp\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/CMakeLists.txt">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\libShapeOp\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/FindEigen3.cmake">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\libShapeOp\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/bindings/CMakeLists.txt">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\libShapeOp\bindings\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/bindings/CMakeLists.txt">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\libShapeOp\bindings\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/bindings/c/CMakeLists.txt">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\libShapeOp\bindings\c\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/bindings/c/CMakeLists.txt">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\libShapeOp\bindings\c\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/bindings/c++/CMakeLists.txt">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\libShapeOp\bindings\c++\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/bindings/c++/CMakeLists.txt">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\libShapeOp\bindings\c++\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/applications/CMakeLists.txt">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\applications\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/applications/CMakeLists.txt">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\applications\"/>
+		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/../../GitHub/libigl/shared/cmake/FindMOSEK.cmake">
+			<Option virtualFolder="CMake Files\..\..\GitHub\libigl\shared\cmake\"/>
 		</Unit>
 		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/cmake/FindLIBIGL.cmake">
 			<Option virtualFolder="CMake Files\cmake\"/>

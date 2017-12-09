@@ -29,7 +29,6 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/cmake_install.cmake")
   include("/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/nanogui/cmake_install.cmake")
   include("/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/triangle/cmake_install.cmake")
 

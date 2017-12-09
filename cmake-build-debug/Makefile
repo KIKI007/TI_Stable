@@ -183,45 +183,6 @@ glew/fast:
 .PHONY : glew/fast
 
 #=============================================================================
-# Target rules for targets named ShapeOp
-
-# Build rule for target.
-ShapeOp: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 ShapeOp
-.PHONY : ShapeOp
-
-# fast build rule for target.
-ShapeOp/fast:
-	$(MAKE) -f 3rdparty/ShapeOp/libShapeOp/CMakeFiles/ShapeOp.dir/build.make 3rdparty/ShapeOp/libShapeOp/CMakeFiles/ShapeOp.dir/build
-.PHONY : ShapeOp/fast
-
-#=============================================================================
-# Target rules for targets named runmeC
-
-# Build rule for target.
-runmeC: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 runmeC
-.PHONY : runmeC
-
-# fast build rule for target.
-runmeC/fast:
-	$(MAKE) -f 3rdparty/ShapeOp/libShapeOp/bindings/c/CMakeFiles/runmeC.dir/build.make 3rdparty/ShapeOp/libShapeOp/bindings/c/CMakeFiles/runmeC.dir/build
-.PHONY : runmeC/fast
-
-#=============================================================================
-# Target rules for targets named runmeCPP
-
-# Build rule for target.
-runmeCPP: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 runmeCPP
-.PHONY : runmeCPP
-
-# fast build rule for target.
-runmeCPP/fast:
-	$(MAKE) -f 3rdparty/ShapeOp/libShapeOp/bindings/c++/CMakeFiles/runmeCPP.dir/build.make 3rdparty/ShapeOp/libShapeOp/bindings/c++/CMakeFiles/runmeCPP.dir/build
-.PHONY : runmeCPP/fast
-
-#=============================================================================
 # Target rules for targets named nanogui
 
 # Build rule for target.
@@ -339,6 +300,33 @@ src/OneSideCollisionConstrain.s: src/OneSideCollisionConstrain.cpp.s
 src/OneSideCollisionConstrain.cpp.s:
 	$(MAKE) -f CMakeFiles/TI_Stable_bin.dir/build.make CMakeFiles/TI_Stable_bin.dir/src/OneSideCollisionConstrain.cpp.s
 .PHONY : src/OneSideCollisionConstrain.cpp.s
+
+src/PolygonsCollisionSolver.o: src/PolygonsCollisionSolver.cpp.o
+
+.PHONY : src/PolygonsCollisionSolver.o
+
+# target to build an object file
+src/PolygonsCollisionSolver.cpp.o:
+	$(MAKE) -f CMakeFiles/TI_Stable_bin.dir/build.make CMakeFiles/TI_Stable_bin.dir/src/PolygonsCollisionSolver.cpp.o
+.PHONY : src/PolygonsCollisionSolver.cpp.o
+
+src/PolygonsCollisionSolver.i: src/PolygonsCollisionSolver.cpp.i
+
+.PHONY : src/PolygonsCollisionSolver.i
+
+# target to preprocess a source file
+src/PolygonsCollisionSolver.cpp.i:
+	$(MAKE) -f CMakeFiles/TI_Stable_bin.dir/build.make CMakeFiles/TI_Stable_bin.dir/src/PolygonsCollisionSolver.cpp.i
+.PHONY : src/PolygonsCollisionSolver.cpp.i
+
+src/PolygonsCollisionSolver.s: src/PolygonsCollisionSolver.cpp.s
+
+.PHONY : src/PolygonsCollisionSolver.s
+
+# target to generate assembly for a file
+src/PolygonsCollisionSolver.cpp.s:
+	$(MAKE) -f CMakeFiles/TI_Stable_bin.dir/build.make CMakeFiles/TI_Stable_bin.dir/src/PolygonsCollisionSolver.cpp.s
+.PHONY : src/PolygonsCollisionSolver.cpp.s
 
 src/RigidBodyConstrain.o: src/RigidBodyConstrain.cpp.o
 
@@ -462,9 +450,6 @@ help:
 	@echo "... install/strip"
 	@echo "... glew"
 	@echo "... edit_cache"
-	@echo "... ShapeOp"
-	@echo "... runmeC"
-	@echo "... runmeCPP"
 	@echo "... nanogui"
 	@echo "... nanogui-obj"
 	@echo "... glfw_objects"
@@ -476,6 +461,9 @@ help:
 	@echo "... src/OneSideCollisionConstrain.o"
 	@echo "... src/OneSideCollisionConstrain.i"
 	@echo "... src/OneSideCollisionConstrain.s"
+	@echo "... src/PolygonsCollisionSolver.o"
+	@echo "... src/PolygonsCollisionSolver.i"
+	@echo "... src/PolygonsCollisionSolver.s"
 	@echo "... src/RigidBodyConstrain.o"
 	@echo "... src/RigidBodyConstrain.i"
 	@echo "... src/RigidBodyConstrain.s"

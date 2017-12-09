@@ -34,9 +34,6 @@ CMAKE_CODEBLOCKS_MAKE_ARGUMENTS:STRING=-j8
 //Enable/Disable color output during build.
 CMAKE_COLOR_MAKEFILE:BOOL=ON
 
-//INTERNAL
-CMAKE_CONFIGURATION_TYPES:STRING=Release;Debug
-
 //CXX compiler
 CMAKE_CXX_COMPILER:FILEPATH=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++
 
@@ -201,9 +198,6 @@ CORE_FOUNDATION_FRAMEWORK:FILEPATH=/System/Library/Frameworks/CoreFoundation.fra
 //Path to a library.
 CORE_VIDEO_FRAMEWORK:FILEPATH=/System/Library/Frameworks/CoreVideo.framework
 
-//Path to a file.
-EIGEN3_INCLUDE_DIR:PATH=/usr/local/include/eigen3
-
 //Value Computed by CMake
 GLFW_BINARY_DIR:STATIC=/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/nanogui/ext_build/glfw
 
@@ -268,7 +262,7 @@ LIBIGL_WITH_LIM:BOOL=OFF
 LIBIGL_WITH_MATLAB:BOOL=OFF
 
 //Use MOSEK
-LIBIGL_WITH_MOSEK:BOOL=OFF
+LIBIGL_WITH_MOSEK:BOOL=ON
 
 //Use Nanogui menu
 LIBIGL_WITH_NANOGUI:BOOL=ON
@@ -286,7 +280,7 @@ LIBIGL_WITH_PNG:BOOL=OFF
 LIBIGL_WITH_PYTHON:BOOL=OFF
 
 //Use ShapeOp
-LIBIGL_WITH_SHAPEOP:BOOL=ON
+LIBIGL_WITH_SHAPEOP:BOOL=OFF
 
 //Use Tetgen
 LIBIGL_WITH_TETGEN:BOOL=OFF
@@ -303,6 +297,12 @@ LIBIGL_WITH_XML:BOOL=OFF
 //Takes an empty string or 64. Directory where lib will be installed:
 // lib or lib64
 LIB_SUFFIX:STRING=
+
+//Path to a file.
+MOSEK_INCLUDE_DIR:PATH=/usr/local/mosek/8/tools/platform/osx64x86/h
+
+//Path to a library.
+MOSEK_LIBRARIES:FILEPATH=/usr/local/mosek/8/tools/platform/osx64x86/bin/libmosek64.dylib
 
 //Build NanoGUI example application?
 NANOGUI_BUILD_EXAMPLE:BOOL=OFF
@@ -331,38 +331,14 @@ NanoGUI_SOURCE_DIR:STATIC=/Users/ziqwang/Documents/GitHub/libigl/external/nanogu
 //Include for OpenGL on OS X
 OPENGL_INCLUDE_DIR:PATH=/System/Library/Frameworks/OpenGL.framework
 
-//OpenGL Viewer
-OPENGL_VIEWER:BOOL=OFF
-
 //OpenGL library for OS X
 OPENGL_gl_LIBRARY:FILEPATH=/System/Library/Frameworks/OpenGL.framework
 
 //GLU library for OS X (usually same as OpenGL library)
 OPENGL_glu_LIBRARY:FILEPATH=/System/Library/Frameworks/OpenGL.framework
 
-//OpenMP
-OPENMP:BOOL=OFF
-
 //Path to a program.
 ProcessorCount_cmd_sysctl:FILEPATH=/usr/sbin/sysctl
-
-//SWIG CSharp
-SWIG_CSHARP:BOOL=OFF
-
-//SWIG Java
-SWIG_JAVA:BOOL=OFF
-
-//SWIG Python
-SWIG_PYTHON:BOOL=OFF
-
-//Value Computed by CMake
-ShapeOp_BINARY_DIR:STATIC=/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/3rdparty/ShapeOp/libShapeOp
-
-//Dependencies for target
-ShapeOp_LIB_DEPENDS:STATIC=
-
-//Value Computed by CMake
-ShapeOp_SOURCE_DIR:STATIC=/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp
 
 //Value Computed by CMake
 TI_Stable_BINARY_DIR:STATIC=/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug
@@ -509,7 +485,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=11
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=5
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP
@@ -556,12 +532,10 @@ COCOA_FRAMEWORK-ADVANCED:INTERNAL=1
 CORE_FOUNDATION_FRAMEWORK-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CORE_VIDEO_FRAMEWORK
 CORE_VIDEO_FRAMEWORK-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: EIGEN3_INCLUDE_DIR
-EIGEN3_INCLUDE_DIR-ADVANCED:INTERNAL=1
-//Details about finding Eigen3
-FIND_PACKAGE_MESSAGE_DETAILS_Eigen3:INTERNAL=[/usr/local/include/eigen3][TRUE][v(2.91.0)]
 //Details about finding LIBIGL
 FIND_PACKAGE_MESSAGE_DETAILS_LIBIGL:INTERNAL=[/Users/ziqwang/Documents/GitHub/libigl/include][v()]
+//Details about finding MOSEK
+FIND_PACKAGE_MESSAGE_DETAILS_MOSEK:INTERNAL=[/usr/local/mosek/8/tools/platform/osx64x86/bin/libmosek64.dylib][/usr/local/mosek/8/tools/platform/osx64x86/h][v()]
 //Details about finding OpenGL
 FIND_PACKAGE_MESSAGE_DETAILS_OpenGL:INTERNAL=[/System/Library/Frameworks/OpenGL.framework][/System/Library/Frameworks/OpenGL.framework][v()]
 //Details about finding Threads
@@ -586,6 +560,10 @@ HAS_LIBCPP_EXITCODE:INTERNAL=0
 IOKIT_FRAMEWORK-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: LIBIGL_INCLUDE_DIR
 LIBIGL_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: MOSEK_INCLUDE_DIR
+MOSEK_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: MOSEK_LIBRARIES
+MOSEK_LIBRARIES-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: OPENGL_INCLUDE_DIR
 OPENGL_INCLUDE_DIR-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: OPENGL_gl_LIBRARY

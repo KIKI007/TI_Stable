@@ -5,7 +5,7 @@
 		<Option title="NanoGUI"/>
 		<Option makefile_is_custom="1"/>
 		<Option compiler="clang"/>
-		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\GitHub\;CMake Files\..\..\GitHub\libigl\;CMake Files\..\..\GitHub\libigl\external\;CMake Files\..\..\GitHub\libigl\external\nanogui\;CMake Files\..\..\GitHub\libigl\external\nanogui\ext\;CMake Files\..\..\GitHub\libigl\external\nanogui\ext\glfw\;CMake Files\..\..\GitHub\libigl\external\nanogui\ext\glfw\CMake\;CMake Files\..\..\GitHub\libigl\external\nanogui\ext\glfw\CMake\modules\;CMake Files\..\..\GitHub\libigl\external\nanogui\ext\glfw\src\;CMake Files\..\..\GitHub\libigl\external\triangle\;CMake Files\..\..\GitHub\libigl\shared\;CMake Files\..\..\GitHub\libigl\shared\cmake\;CMake Files\3rdparty\;CMake Files\3rdparty\ShapeOp\;CMake Files\3rdparty\ShapeOp\doc\;CMake Files\3rdparty\ShapeOp\libShapeOp\;CMake Files\3rdparty\ShapeOp\libShapeOp\bindings\;CMake Files\3rdparty\ShapeOp\libShapeOp\bindings\c\;CMake Files\3rdparty\ShapeOp\libShapeOp\bindings\c++\;CMake Files\3rdparty\ShapeOp\applications\;CMake Files\cmake\;"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\GitHub\;CMake Files\..\..\GitHub\libigl\;CMake Files\..\..\GitHub\libigl\external\;CMake Files\..\..\GitHub\libigl\external\nanogui\;CMake Files\..\..\GitHub\libigl\external\nanogui\ext\;CMake Files\..\..\GitHub\libigl\external\nanogui\ext\glfw\;CMake Files\..\..\GitHub\libigl\external\nanogui\ext\glfw\CMake\;CMake Files\..\..\GitHub\libigl\external\nanogui\ext\glfw\CMake\modules\;CMake Files\..\..\GitHub\libigl\external\nanogui\ext\glfw\src\;CMake Files\..\..\GitHub\libigl\external\triangle\;CMake Files\..\..\GitHub\libigl\shared\;CMake Files\..\..\GitHub\libigl\shared\cmake\;CMake Files\cmake\;"/>
 		<Build>
 			<Target title="all">
 				<Option working_dir="/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/nanogui"/>
@@ -723,59 +723,8 @@
 		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/../../GitHub/libigl/shared/cmake/CXXFeatures.cmake">
 			<Option virtualFolder="CMake Files\..\..\GitHub\libigl\shared\cmake\"/>
 		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/CMakeLists.txt">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/CMakeLists.txt">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/doc/DoxyShapeOp.in">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\doc\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/doc/DoxyShapeOp.bib">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\doc\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/doc/DoxyShapeOp.in">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\doc\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/doc/DoxyShapeOp.bib">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\doc\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/CMakeLists.txt">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\libShapeOp\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/FindEigen3.cmake">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\libShapeOp\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/CMakeLists.txt">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\libShapeOp\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/FindEigen3.cmake">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\libShapeOp\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/bindings/CMakeLists.txt">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\libShapeOp\bindings\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/bindings/CMakeLists.txt">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\libShapeOp\bindings\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/bindings/c/CMakeLists.txt">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\libShapeOp\bindings\c\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/bindings/c/CMakeLists.txt">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\libShapeOp\bindings\c\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/bindings/c++/CMakeLists.txt">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\libShapeOp\bindings\c++\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/libShapeOp/bindings/c++/CMakeLists.txt">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\libShapeOp\bindings\c++\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/applications/CMakeLists.txt">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\applications\"/>
-		</Unit>
-		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/3rdparty/ShapeOp/applications/CMakeLists.txt">
-			<Option virtualFolder="CMake Files\3rdparty\ShapeOp\applications\"/>
+		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/../../GitHub/libigl/shared/cmake/FindMOSEK.cmake">
+			<Option virtualFolder="CMake Files\..\..\GitHub\libigl\shared\cmake\"/>
 		</Unit>
 		<Unit filename="/Users/ziqwang/Documents/Xcode/TI_Stable/cmake/FindLIBIGL.cmake">
 			<Option virtualFolder="CMake Files\cmake\"/>

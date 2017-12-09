@@ -7,7 +7,7 @@
 
 #include <Eigen/Dense>
 #include<Eigen/StdVector>
-#include "Polyhedra.h"
+#include "PolyhedraPoints.h"
 
 using Eigen::MatrixXd;
 using Eigen::MatrixXi;
@@ -29,11 +29,11 @@ private:
 
 public:
 
-    void generate_1v6(stdVecMatrixXd &cVs, stdVecMatrixXi &cFs);
+    void generate_1v6(std::vector<PolyhedraPoints> &plist);
 
-    void generate(stdVecMatrixXd &cVs, stdVecMatrixXi &cFs);
+    void generate(std::vector<PolyhedraPoints> &plist);
 
-    void cube_OXYZ(Vector3d O, Vector3d X, Vector3d Y, Vector3d Z, MatrixXd &cV, Polyhedra &P);
+    void cube_OXYZ(Vector3d O, Vector3d X, Vector3d Y, Vector3d Z, PolyhedraPoints &P);
 
     void shrink(MatrixXd &mat, double ratio);
 

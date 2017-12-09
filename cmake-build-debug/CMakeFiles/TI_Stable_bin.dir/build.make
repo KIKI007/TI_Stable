@@ -81,9 +81,33 @@ CMakeFiles/TI_Stable_bin.dir/src/OneSideCollisionConstrain.cpp.o.provides: CMake
 CMakeFiles/TI_Stable_bin.dir/src/OneSideCollisionConstrain.cpp.o.provides.build: CMakeFiles/TI_Stable_bin.dir/src/OneSideCollisionConstrain.cpp.o
 
 
+CMakeFiles/TI_Stable_bin.dir/src/PolygonsCollisionSolver.cpp.o: CMakeFiles/TI_Stable_bin.dir/flags.make
+CMakeFiles/TI_Stable_bin.dir/src/PolygonsCollisionSolver.cpp.o: ../src/PolygonsCollisionSolver.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/TI_Stable_bin.dir/src/PolygonsCollisionSolver.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/TI_Stable_bin.dir/src/PolygonsCollisionSolver.cpp.o -c /Users/ziqwang/Documents/Xcode/TI_Stable/src/PolygonsCollisionSolver.cpp
+
+CMakeFiles/TI_Stable_bin.dir/src/PolygonsCollisionSolver.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/TI_Stable_bin.dir/src/PolygonsCollisionSolver.cpp.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/ziqwang/Documents/Xcode/TI_Stable/src/PolygonsCollisionSolver.cpp > CMakeFiles/TI_Stable_bin.dir/src/PolygonsCollisionSolver.cpp.i
+
+CMakeFiles/TI_Stable_bin.dir/src/PolygonsCollisionSolver.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/TI_Stable_bin.dir/src/PolygonsCollisionSolver.cpp.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/ziqwang/Documents/Xcode/TI_Stable/src/PolygonsCollisionSolver.cpp -o CMakeFiles/TI_Stable_bin.dir/src/PolygonsCollisionSolver.cpp.s
+
+CMakeFiles/TI_Stable_bin.dir/src/PolygonsCollisionSolver.cpp.o.requires:
+
+.PHONY : CMakeFiles/TI_Stable_bin.dir/src/PolygonsCollisionSolver.cpp.o.requires
+
+CMakeFiles/TI_Stable_bin.dir/src/PolygonsCollisionSolver.cpp.o.provides: CMakeFiles/TI_Stable_bin.dir/src/PolygonsCollisionSolver.cpp.o.requires
+	$(MAKE) -f CMakeFiles/TI_Stable_bin.dir/build.make CMakeFiles/TI_Stable_bin.dir/src/PolygonsCollisionSolver.cpp.o.provides.build
+.PHONY : CMakeFiles/TI_Stable_bin.dir/src/PolygonsCollisionSolver.cpp.o.provides
+
+CMakeFiles/TI_Stable_bin.dir/src/PolygonsCollisionSolver.cpp.o.provides.build: CMakeFiles/TI_Stable_bin.dir/src/PolygonsCollisionSolver.cpp.o
+
+
 CMakeFiles/TI_Stable_bin.dir/src/RigidBodyConstrain.cpp.o: CMakeFiles/TI_Stable_bin.dir/flags.make
 CMakeFiles/TI_Stable_bin.dir/src/RigidBodyConstrain.cpp.o: ../src/RigidBodyConstrain.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/TI_Stable_bin.dir/src/RigidBodyConstrain.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/TI_Stable_bin.dir/src/RigidBodyConstrain.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/TI_Stable_bin.dir/src/RigidBodyConstrain.cpp.o -c /Users/ziqwang/Documents/Xcode/TI_Stable/src/RigidBodyConstrain.cpp
 
 CMakeFiles/TI_Stable_bin.dir/src/RigidBodyConstrain.cpp.i: cmake_force
@@ -107,7 +131,7 @@ CMakeFiles/TI_Stable_bin.dir/src/RigidBodyConstrain.cpp.o.provides.build: CMakeF
 
 CMakeFiles/TI_Stable_bin.dir/src/TI_Cube.cpp.o: CMakeFiles/TI_Stable_bin.dir/flags.make
 CMakeFiles/TI_Stable_bin.dir/src/TI_Cube.cpp.o: ../src/TI_Cube.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/TI_Stable_bin.dir/src/TI_Cube.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/TI_Stable_bin.dir/src/TI_Cube.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/TI_Stable_bin.dir/src/TI_Cube.cpp.o -c /Users/ziqwang/Documents/Xcode/TI_Stable/src/TI_Cube.cpp
 
 CMakeFiles/TI_Stable_bin.dir/src/TI_Cube.cpp.i: cmake_force
@@ -131,7 +155,7 @@ CMakeFiles/TI_Stable_bin.dir/src/TI_Cube.cpp.o.provides.build: CMakeFiles/TI_Sta
 
 CMakeFiles/TI_Stable_bin.dir/src/VertexCollisionConstrain.cpp.o: CMakeFiles/TI_Stable_bin.dir/flags.make
 CMakeFiles/TI_Stable_bin.dir/src/VertexCollisionConstrain.cpp.o: ../src/VertexCollisionConstrain.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/TI_Stable_bin.dir/src/VertexCollisionConstrain.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/TI_Stable_bin.dir/src/VertexCollisionConstrain.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/TI_Stable_bin.dir/src/VertexCollisionConstrain.cpp.o -c /Users/ziqwang/Documents/Xcode/TI_Stable/src/VertexCollisionConstrain.cpp
 
 CMakeFiles/TI_Stable_bin.dir/src/VertexCollisionConstrain.cpp.i: cmake_force
@@ -155,7 +179,7 @@ CMakeFiles/TI_Stable_bin.dir/src/VertexCollisionConstrain.cpp.o.provides.build: 
 
 CMakeFiles/TI_Stable_bin.dir/src/main.cpp.o: CMakeFiles/TI_Stable_bin.dir/flags.make
 CMakeFiles/TI_Stable_bin.dir/src/main.cpp.o: ../src/main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/TI_Stable_bin.dir/src/main.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/TI_Stable_bin.dir/src/main.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/TI_Stable_bin.dir/src/main.cpp.o -c /Users/ziqwang/Documents/Xcode/TI_Stable/src/main.cpp
 
 CMakeFiles/TI_Stable_bin.dir/src/main.cpp.i: cmake_force
@@ -180,6 +204,7 @@ CMakeFiles/TI_Stable_bin.dir/src/main.cpp.o.provides.build: CMakeFiles/TI_Stable
 # Object files for target TI_Stable_bin
 TI_Stable_bin_OBJECTS = \
 "CMakeFiles/TI_Stable_bin.dir/src/OneSideCollisionConstrain.cpp.o" \
+"CMakeFiles/TI_Stable_bin.dir/src/PolygonsCollisionSolver.cpp.o" \
 "CMakeFiles/TI_Stable_bin.dir/src/RigidBodyConstrain.cpp.o" \
 "CMakeFiles/TI_Stable_bin.dir/src/TI_Cube.cpp.o" \
 "CMakeFiles/TI_Stable_bin.dir/src/VertexCollisionConstrain.cpp.o" \
@@ -189,17 +214,18 @@ TI_Stable_bin_OBJECTS = \
 TI_Stable_bin_EXTERNAL_OBJECTS =
 
 TI_Stable_bin: CMakeFiles/TI_Stable_bin.dir/src/OneSideCollisionConstrain.cpp.o
+TI_Stable_bin: CMakeFiles/TI_Stable_bin.dir/src/PolygonsCollisionSolver.cpp.o
 TI_Stable_bin: CMakeFiles/TI_Stable_bin.dir/src/RigidBodyConstrain.cpp.o
 TI_Stable_bin: CMakeFiles/TI_Stable_bin.dir/src/TI_Cube.cpp.o
 TI_Stable_bin: CMakeFiles/TI_Stable_bin.dir/src/VertexCollisionConstrain.cpp.o
 TI_Stable_bin: CMakeFiles/TI_Stable_bin.dir/src/main.cpp.o
 TI_Stable_bin: CMakeFiles/TI_Stable_bin.dir/build.make
-TI_Stable_bin: 3rdparty/ShapeOp/libShapeOp/libShapeOp.0.1.0.dylib
 TI_Stable_bin: nanogui/ext_build/glfw/src/libglfw3.a
 TI_Stable_bin: libglew.a
 TI_Stable_bin: nanogui/libnanogui.a
+TI_Stable_bin: /usr/local/mosek/8/tools/platform/osx64x86/bin/libmosek64.dylib
 TI_Stable_bin: CMakeFiles/TI_Stable_bin.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable TI_Stable_bin"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/ziqwang/Documents/Xcode/TI_Stable/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking CXX executable TI_Stable_bin"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/TI_Stable_bin.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -208,6 +234,7 @@ CMakeFiles/TI_Stable_bin.dir/build: TI_Stable_bin
 .PHONY : CMakeFiles/TI_Stable_bin.dir/build
 
 CMakeFiles/TI_Stable_bin.dir/requires: CMakeFiles/TI_Stable_bin.dir/src/OneSideCollisionConstrain.cpp.o.requires
+CMakeFiles/TI_Stable_bin.dir/requires: CMakeFiles/TI_Stable_bin.dir/src/PolygonsCollisionSolver.cpp.o.requires
 CMakeFiles/TI_Stable_bin.dir/requires: CMakeFiles/TI_Stable_bin.dir/src/RigidBodyConstrain.cpp.o.requires
 CMakeFiles/TI_Stable_bin.dir/requires: CMakeFiles/TI_Stable_bin.dir/src/TI_Cube.cpp.o.requires
 CMakeFiles/TI_Stable_bin.dir/requires: CMakeFiles/TI_Stable_bin.dir/src/VertexCollisionConstrain.cpp.o.requires

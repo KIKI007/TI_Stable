@@ -27,7 +27,7 @@ public:
 
 public:
 
-    void collision_resolve(VectorXd &x);
+    void collision_resolve(VectorXd &x, double &dx);
 
 private:
 

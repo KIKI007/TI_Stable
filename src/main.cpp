@@ -102,8 +102,8 @@ void generate_polygons(vector<PolygonPoints> &P)
     P3.set_points(points);
 
     P.push_back(P0);
-    P.push_back(P1);
-    P.push_back(P2);
+    //P.push_back(P1);
+    //P.push_back(P2);
     P.push_back(P3);
 }
 
@@ -157,21 +157,22 @@ void move_point()
     viewer.data.set_mesh(V, F);
 }
 
-VectorXd x_0;
+VectorXd x_0(1);
+double dx;
 void opt_solve()
 {
     vector<PolygonPoints> plist;
     generate_polygons(plist);
-    x_0 = VectorXd::Zero(9);
+    //x_0 = VectorXd::Zero(9);
 
     PolygonsCollisionSolver solver;
     solver.setPolygons(plist);
     solver.setConnection(0, 1);
-    solver.setConnection(0, 2);
-    solver.setConnection(1, 2);
-    solver.setConnection(3, 1);
-    solver.setConnection(3, 0);
-    solver.collision_resolve(x_0);
+//    solver.setConnection(0, 2);
+//    solver.setConnection(1, 2);
+//    solver.setConnection(3, 1);
+//    solver.setConnection(3, 0);
+    solver.collision_resolve(x_0, dx);
 
     //two_collision_solver(plist, x_0);
 

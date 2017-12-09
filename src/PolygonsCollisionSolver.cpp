@@ -42,24 +42,33 @@ bool PolygonsCollisionSolver::get_a_coeff(VectorXd &a, vector<PolygonPoints> &P_
     /************ collision info **************/
 
     int Ia, Ib;
+    double muA, muB;
     bool na;
     Vector3d n, p[2], p_ori[2];
-    if(!P[0].collision(P[1], n, na, Ia, Ib))
+    if(!P[0].collision(P[1], n, na, Ia, Ib, muA, muB))
         return false;
 
-    p[0]        = P[0].point(Ia);
-    p[1]        = P[1].point(Ib);
-    p_ori[0]    = P_ORI[0].point(Ia);
-    p_ori[1]    = P_ORI[1].point(Ib);
+//    p[0]        = P[0].point(Ia);
+//    p[1]        = P[1].point(Ib);
+//    p_ori[0]    = P_ORI[0].point(Ia);
+//    p_ori[1]    = P_ORI[1].point(Ib);
+    p[0]        =  P[0].point(Ia)      * muA + (1 - muA) * P[0].pointNext(Ia);
+    p[1]        =  P[1].point(Ib)      * muB + (1 - muB) * P[1].pointNext(Ib);
+    p_ori[0]    =  P_ORI[0].point(Ia)  * muA + (1 - muA) * P_ORI[0].pointNext(Ia);
+    p_ori[1]    =  P_ORI[1].point(Ib)  * muB + (1 - muB) * P_ORI[1].pointNext(Ib);
 
     f_xk = std::abs(n.dot(p[0] - p[1]));
-
+    std::cout << "Before n:\t " << n.transpose() << std::endl;
+    std::cout << "f_xk:\t" << f_xk << std::endl;
+    std::cout << "mu:\t " << muA << '\t' << muB << std::endl;
+    std::cout << "na:\t " << na << std::endl;
+    std::cout << "Ia, Ib:\t " << Ia << "\t" << Ib << std::endl;
     /****** penetration distance info *********/
     a = VectorXd::Zero(7);
 
     //add n1
     double theta_na = (na ? x(0) : x(3));
-    double extra = 0;
+    double dn_theta = 0;
     Vector3d n1(-n(1), n(0), 0);
     for(int id = 0; id < 2; id++)
     {
@@ -84,14 +93,17 @@ bool PolygonsCollisionSolver::get_a_coeff(VectorXd &a, vector<PolygonPoints> &P_
         a(0) +=  (sign) * (n. dot(dR_theta * (p_ori[id] - ct_ori[id])) * (-theta_0) - n (0) * x_0 -  n(1) * y_0);
     }
     a(0)  += (n - theta_na * n1).dot(p[0] - p[1]) ;
-    extra += n1.dot(p[0] - p[1]);
+    dn_theta += n1.dot(p[0] - p[1]);
 
-    if(na) a(1) += extra;
-    else   a(4) += extra;
+    if(na) a(1) += dn_theta;
+    else   a(4) += dn_theta;
+
+    std::cout << "a:\n " << a << std::endl;
     return true;
 }
 
 double PolygonsCollisionSolver::penetration_distance(vecPolys p, VectorXd &x)
+
 {
     Vector3d x0 = x.segment(0, 3);
     Vector3d x1 = x.segment(3, 3);
@@ -101,8 +113,13 @@ double PolygonsCollisionSolver::penetration_distance(vecPolys p, VectorXd &x)
     Vector3d n;
     int Ia, Ib;
     bool na;
-    if(p[0].collision(p[1], n, na, Ia, Ib))
+    double mu;
+    if(p[0].collision(p[1], n, na, Ia, Ib)) {
+        std::cout << "After n:\t " << n.transpose() << std::endl;
+        std::cout << "na:\t " << na << std::endl;
+        std::cout << "Ia, Ib:\t " << Ia << "\t" << Ib << std::endl;
         return std::abs(n.dot(p[0].point(Ia) - p[1].point(Ib)));
+    }
     else
         return 0;
 }
@@ -164,26 +181,31 @@ bool PolygonsCollisionSolver::solve_linear(std::vector<T> &triplist,
     {
         mk_pk += ans(id);
     }
+    std::cout << "mk_pk:\t " << mk_pk << std::endl;
 
     return sucess;
 }
 
 
-void PolygonsCollisionSolver::collision_resolve(VectorXd &x0) {
+void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
 
     //parameter for trust region algorithm
-    const int MAX_ITER_TIMES = 10000;
-    const double MAX_TRUST_REGION_SIZE  = 0.002;
+    const int MAX_ITER_TIMES = 1000;
+    const double MAX_TRUST_REGION_SIZE  = 0.01;
     const double MIN_TRUST_REGION_SIZE  = 1e-8;
     const double ACCEPT_RATIO           = 0;
-    const double INIT_TRUST_REGION_SIZE = 0.002;
+    const double INIT_TRUST_REGION_SIZE = 0.01;
 
     int         iter_times  = 0;
-    double      dx          = INIT_TRUST_REGION_SIZE;   //trust region size
+    //double      dx          = INIT_TRUST_REGION_SIZE;   //trust region size
     double      mk_0, mk_pk, f_xk, f_xkpk;              //function and model's improvement
 
-    x0 = VectorXd::Zero(P_.size() * 3);
 
+    if(x0.rows() == 1)
+    {
+        x0 = VectorXd::Zero(P_.size() * 3);
+        dx = INIT_TRUST_REGION_SIZE;
+    }
     //for optimization
     int id_term = 0;
     int id_extra = 3 * P_.size();
@@ -200,6 +222,8 @@ void PolygonsCollisionSolver::collision_resolve(VectorXd &x0) {
     while(iter_times < MAX_ITER_TIMES && dx > MIN_TRUST_REGION_SIZE)
     {
         iter_times++;
+        std::cout << "Iter:\t" << iter_times << std::endl;
+
         mk_0 =  mk_pk =  f_xk = f_xkpk = 0;
         triplist.clear();
         Ac.clear();
@@ -235,7 +259,7 @@ void PolygonsCollisionSolver::collision_resolve(VectorXd &x0) {
                 triplist.push_back(T(id_term, 3 * Ia + jd, -a(1 + jd)));
                 triplist.push_back(T(id_term, 3 * Ib + jd, -a(4 + jd)));
             }
-            triplist.push_back(T(id_term, id_extra++, 1));
+            triplist.push_back(T(id_term, id_extra++,  1));
             triplist.push_back(T(id_term, id_extra++, -1));
 
             Ac.push_back(a(0));
@@ -274,8 +298,8 @@ void PolygonsCollisionSolver::collision_resolve(VectorXd &x0) {
 
         //output information
         double pho = (f_xk - f_xkpk) / (mk_0 - mk_pk);
-        std::cout << "Iter:\t" << iter_times << std::endl
-                  << "dx:\t" << (x - x0).transpose() << std::endl
+
+        std::cout << "dx:\t" << (x - x0).transpose() << std::endl
                   << "x:\t" <<   x0.transpose() << std::endl
                   << "f_xkpk:\t" << f_xkpk << std::endl
                   << "pho:\t" << pho << std::endl

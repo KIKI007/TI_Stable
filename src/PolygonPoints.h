@@ -7,6 +7,8 @@
 
 #include "PolygonBase.h"
 #include <iostream>
+#include <igl/mosek/mosek_quadprog.h>
+typedef Eigen::Triplet<double> T;
 class PolygonPoints :public PolygonBase{
 
 public:
@@ -56,8 +58,13 @@ public:
 
     Vector3d point(int ID)
     {
-        assert(0 <= ID < points_.size());
+        assert(0 <= ID < points_.cols());
         return points_.col(ID);
+    }
+
+    Vector3d pointNext(int ID)
+    {
+        return points_.col((ID + 1) % points_.cols());
     }
 
     void Rotate_translate(Vector3d x)
@@ -113,9 +120,9 @@ public:
                    bool &nA,
                    int &pa,
                    int &pb)
+    //Compute the collision info
     {
         double min_dist = std::numeric_limits<double>::infinity();
-
 
         //A->B
         Vector3d nrm; get_normal(nrm);
@@ -141,7 +148,7 @@ public:
                 pa = id;
                 pb = min_id;
 
-                n =  axis;
+                n =  -axis;
                 nA = true;
             }
 
@@ -176,6 +183,74 @@ public:
             }
         }
         return true;
+    }
+
+    bool collision(PolygonPoints &B,
+                   Vector3d &n,
+                   bool &nA,
+                   int &Ia,
+                   int &Ib,
+                   double &muA,
+                   double &muB)
+    {
+        bool is_collision = collision(B, n, nA, Ia, Ib);
+        Vector3d c0, c1, c2;
+
+        c0 = point(Ia) - pointNext(Ia);
+        c1 = -B.point(Ib) + B.pointNext(Ib);
+        c2 = pointNext(Ia) - B.pointNext(Ib);
+
+        double eps = 1e-8;
+        if(std::abs(n.dot(c1)) < eps &&  std::abs(n.dot(c0)) < eps)
+        {
+            Eigen::SparseMatrix<double> Q(2, 2), A(0, 2);
+            std::vector<T> triplist;
+            triplist.push_back(T(0, 0, 2 * c0.dot(c0)));
+            triplist.push_back(T(1, 0, 2 * c1.dot(c0)));
+            triplist.push_back(T(1, 1, 2 * c1.dot(c1)));
+            Q.setFromTriplets(triplist.begin(), triplist.end());
+
+            Eigen::VectorXd c(2);
+            c << c0.dot(c2), c1.dot(c2);
+
+            double cf = c2.dot(c2);
+
+            Eigen::VectorXd lc(0, 1);
+            Eigen::VectorXd uc(0, 1);
+            Eigen::VectorXd lx(2);
+            Eigen::VectorXd ux(2);
+            lx << 0, 0;
+            ux << 1, 1;
+
+            Eigen::VectorXd ans(2);
+
+            igl::mosek::MosekData mosek_data;
+            igl::mosek::mosek_quadprog(Q, c , cf, A, lc, uc, lx , ux, mosek_data, ans);
+
+            muA = ans(0);
+            muB = ans(1);
+        }
+        else
+        {
+            if(nA)
+            {
+                c0 = point(Ia);
+                c1 = pointNext(Ia);
+                c2 = B.point(Ib);
+                muA = (c2 - c1).dot(c0 - c1) / (c0 - c1).dot(c0 - c1);
+                muB = 1;
+
+            }
+            else
+            {
+                c0 = B.point(Ib);
+                c1 = B.pointNext(Ib);
+                c2 = point(Ia);
+                muA = 1;
+                muB = (c2 - c1).dot(c0 - c1) / (c0 - c1).dot(c0 - c1);
+            }
+        }
+        return is_collision;
     }
 
 private:

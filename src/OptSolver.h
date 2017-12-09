@@ -156,6 +156,7 @@ bool get_a_coeff(VectorXd &a, vector<PolygonPoints> &P_ORI, VectorXd &x, double 
 
     int Ia, Ib;
     bool na;
+    double mu;
     Vector3d n, p[2], p_ori[2];
     if(!P[0].collision(P[1], n, na, Ia, Ib))
         return false;

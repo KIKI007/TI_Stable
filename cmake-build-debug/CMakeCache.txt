@@ -234,6 +234,9 @@ GLFW_USE_RETINA:BOOL=ON
 //Path to a library.
 IOKIT_FRAMEWORK:FILEPATH=/System/Library/Frameworks/IOKit.framework
 
+//The directory containing a CMake configuration file for LIBIGL.
+LIBIGL_DIR:PATH=LIBIGL_DIR-NOTFOUND
+
 //Path to a file.
 LIBIGL_INCLUDE_DIR:PATH=/Users/ziqwang/Documents/GitHub/libigl/include
 
@@ -485,7 +488,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=5
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP

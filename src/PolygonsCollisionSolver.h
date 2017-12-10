@@ -12,6 +12,7 @@
 #include <map>
 typedef  std::vector<PolygonPoints> vecPolys;
 using Eigen::VectorXd;
+typedef std::vector<VectorXd,Eigen::aligned_allocator<VectorXd> > vecVectorXd;
 typedef Eigen::Triplet<double> T;
 using std::vector;
 class PolygonsCollisionSolver {
@@ -31,11 +32,22 @@ public:
 
 private:
 
-    bool get_a_coeff(VectorXd &a, vecPolys &P_ORI, VectorXd &x, double &f_xk);
+    bool get_a_coeff(vecVectorXd &a, vecPolys &P_ORI, VectorXd &x, double &f_xk);
+
+    void get_a_coeff(VectorXd &a,
+                     vecPolys &P_ORI,
+                     PolygonPoints *P,
+                     Vector3d n,
+                     bool na,
+                     int Ia,
+                     int Ib,
+                     VectorXd &x,
+                     double &f_xk);
 
     double penetration_distance(vecPolys p, VectorXd &x);
 
     bool solve_linear(std::vector<T> &triplist,
+                      std::vector<double> &c,
                       std::vector<double> &Ac,
                       std::vector<bool> &in_opt,
                       VectorXd &x0,

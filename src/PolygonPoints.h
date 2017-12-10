@@ -56,8 +56,13 @@ public:
 
     Vector3d point(int ID)
     {
-        assert(0 <= ID < points_.size());
+        assert(0 <= ID < points_.cols());
         return points_.col(ID);
+    }
+
+    Vector3d pointNext(int ID)
+    {
+        return points_.col((ID + 1) % points_.cols());
     }
 
     void Rotate_translate(Vector3d x)
@@ -114,8 +119,8 @@ public:
                    int &pa,
                    int &pb)
     {
-        double min_dist = std::numeric_limits<double>::infinity();
-
+        double max_dist = std::numeric_limits<double>::infinity() * (-1);
+        bool is_collision = true;
 
         //A->B
         Vector3d nrm; get_normal(nrm);
@@ -130,18 +135,18 @@ public:
 
             double min; int min_id;
             min_max_proj(proj, min, min_id);
-            if(min >= 0)
+
+            if(min >=0)
+                is_collision = false;
+
+            if(max_dist < min)
             {
-                return false;
-            }
-            else if(min_dist > std::abs(min))
-            {
-                min_dist = std::abs(min);
+                max_dist = min;
 
                 pa = id;
                 pb = min_id;
 
-                n =  axis;
+                n =  -axis;
                 nA = true;
             }
 
@@ -160,13 +165,13 @@ public:
 
             double min; int min_id;
             min_max_proj(proj, min, min_id);
-            if(min >= 0)
+
+            if(min >=0)
+                is_collision = false;
+
+            if(max_dist < min)
             {
-                return false;
-            }
-            else if(min_dist > std::abs(min))
-            {
-                min_dist = std::abs(min);
+                max_dist = min;
 
                 pa = min_id;
                 pb = id;
@@ -175,12 +180,54 @@ public:
                 nA = false;
             }
         }
+        return is_collision;
+    }
+
+    bool collision(PolygonPoints &B,
+                   Vector3d &n,
+                   bool &nA,
+                   int &pa,
+                   int &pb,
+                   int &pc,
+                   double eps = 0.1)
+    {
+        bool is_collision = collision(B, n, nA, pa, pb);
+        double distance_ab = n.dot(point(pa) - B.point(pb));
+        if(nA)
+        {
+            pc = -1;
+            for(int id = 0; id < B.nV(); id++)
+            {
+                double distance_ac = n.dot(point(pa) - B.point(id));
+                if(id != pb && distance_ac < distance_ab + eps)
+                {
+                    pc = id;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            pc = -1;
+            for(int id = 0; id < nV(); id++)
+            {
+                double distance_bc = n.dot(point(id) - B.point(pb));
+                if(id != pa && distance_bc < distance_ab + eps)
+                {
+                    pc = id;
+                    break;
+                }
+            }
+        }
         return true;
     }
 
 private:
     MatrixXd points_;
 };
+
+
+
 
 
 #endif //TI_STABLE_POLYGONPOINTS_H

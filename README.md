@@ -10,6 +10,7 @@ Please send email to qiqiustc@gmail.com if you have any problem.
 2. Eigen3, please refer to http://eigen.tuxfamily.org
     actually, libigl/nanogui has eigen library
 3. Mosek, please refer to https://www.mosek.com
+
     a. please put the mosek folder in **/usr/local**
 
     b. compile the mosek library http://docs.mosek.com/8.1/install/installation.html

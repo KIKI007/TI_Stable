@@ -320,8 +320,6 @@ void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
                 Ac.push_back(0);
                 id_term++;
                 id_extra = s[5] + 1;
-
-                //hello
             }
             f_xk += f0;
             mk_0 += f0;

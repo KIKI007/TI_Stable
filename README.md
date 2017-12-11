@@ -6,9 +6,13 @@ Please send email to qiqiustc@gmail.com if you have any problem.
 
 ## Dependency
 1. libigl, please refer to https://github.com/libigl/libigl
+
     please put libigl in the **same folder** as this project.
+
 2. Eigen3, please refer to http://eigen.tuxfamily.org
+
     actually, libigl/nanogui has eigen library
+
 3. Mosek, please refer to https://www.mosek.com
 
     a. please put the mosek folder in **/usr/local**

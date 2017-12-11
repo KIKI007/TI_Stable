@@ -232,9 +232,10 @@ void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
         id_term = 0;
         id_extra = 3 * P_.size();
 
-        for(int id = 0; id < Conn_.size(); id++) {
+        for(int id = 0; id < Conn_.size(); id++)
+        {
             //clear
-            a = VectorXd::Zero(7);
+            a   = VectorXd::Zero(7);
             tx0 = VectorXd::Zero(6);
             p.clear();
             Ia = Conn_[id].first;
@@ -249,13 +250,14 @@ void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
             tx0.segment(3, 3) = x0.segment(3 * Ib, 3);
 
 
-            if (!get_a_coeff(a, p, tx0, f0))
+            if(!get_a_coeff(a, p, tx0, f0))
                 continue;
 
             in_opt[Ia] = true;
             in_opt[Ib] = true;
 
-            for (int jd = 0; jd < 3; jd++) {
+            for(int jd = 0; jd < 3; jd++)
+            {
                 triplist.push_back(T(id_term, 3 * Ia + jd, -a(1 + jd)));
                 triplist.push_back(T(id_term, 3 * Ib + jd, -a(4 + jd)));
             }
@@ -267,7 +269,7 @@ void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
             f_xk += f0;
             mk_0 += f0;
 
-            id_term++;
+            id_term ++;
         }
 
 //        in_opt[2] = 0;

@@ -152,7 +152,7 @@ void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
     const double MAX_TRUST_REGION_SIZE  = 0.01;
     const double MIN_TRUST_REGION_SIZE  = 1e-8;
     const double ACCEPT_RATIO           = 0.5;
-    const double ACCEPT_F_XK            = 1e-4;
+    const double ACCEPT_F_XK            = 1e-6;
     const double INIT_TRUST_REGION_SIZE = 0.01;
 
     int         iter_times  = 0;

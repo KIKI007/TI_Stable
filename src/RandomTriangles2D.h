@@ -22,12 +22,13 @@ public:
 
     void createTriangles(vecPolys &P)
     {
+        //firstly add boundary
+        add_boundary(P);
 
+        //add triangles
         MatrixXd rV(4, 2);
         MatrixXi E(4, 2);
         MatrixXd H(0, 2);
-
-
         rV.row(0) = RowVector2d(0, 0);
         rV.row(1) = RowVector2d(len_, 0);
         rV.row(2) = RowVector2d(len_, len_);
@@ -62,8 +63,6 @@ public:
             p.set_color();
             P.push_back(p);
         }
-
-        add_boundary(P);
         return;
     }
 

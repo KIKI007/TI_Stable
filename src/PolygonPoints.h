@@ -14,7 +14,7 @@ class PolygonPoints :public PolygonBase{
 public:
     PolygonPoints()
     {
-
+        clear();
     }
     PolygonPoints(std::vector<int> &ids, MatrixXd &points)
     :PolygonBase(ids)
@@ -35,6 +35,13 @@ public:
     }
 
 public:
+
+    void clear()
+    {
+        ids_.clear();
+        points_.setZero();
+        color_ = Vector3d(0, 0, 0);
+    }
 
     void get_normal(Vector3d &normal)
     {

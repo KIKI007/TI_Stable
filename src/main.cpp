@@ -21,22 +21,25 @@
 #include "OptSolver.h"
 #include "PolygonsCollisionSolver.h"
 #include "RandomTriangles2D.h"
+#include <igl/unproject_onto_mesh.h>
 
 using Eigen::MatrixXd;
 using Eigen::MatrixXi;
 igl::viewer::Viewer viewer;
 //MatrixXd V(13, 3);
 //MatrixXi F(7, 3);
-MatrixXd V;
+MatrixXd V, C;
 MatrixXi F;
 typedef Eigen::Triplet<double> T;
+
+int latex_select;
 
 VectorXd x_0(0, 1);
 double dx;
 const int NTRI = 19;
 const double TRI_LEN = 0.5;
 vector<PolygonPoints> plist;
-
+bool selected;
 void mosek()
 {
     Eigen::VectorXd c(2);
@@ -69,16 +72,18 @@ void mosek()
 void generate_random_triangles(vector<PolygonPoints> &P)
 {
     P.clear();
+    latex_select = -1;
+
     RandomTriangles2D generator;
-
     generator.createTriangles(P);
-
     return;
 }
 
 void generate_polygons(vector<PolygonPoints> &P)
 {
     P.clear();
+    latex_select = -1;
+
     PolygonPoints P0 ,P1, P2, P3, P4;
     std::vector<int> ids;
 
@@ -164,7 +169,7 @@ void polygon()
     //generate_polygons(plist);
     generate_random_triangles(plist);
     x_0 = VectorXd(0, 1);
-    set_mesh(plist, viewer);
+    set_mesh(plist, viewer, V, F, C);
 }
 
 void generate_cube()
@@ -201,6 +206,84 @@ void generate_cube()
     viewer.data.set_mesh(V, F);
 }
 
+int find_polygons_from_faceid(int fid, int &sta, int &end)
+{
+    sta = 0;
+    for(int id = 0; id < plist.size(); id++)
+    {
+        int nF = plist[id].nV() - 2;
+        if(fid < nF) {
+            end = sta + nF - 1;
+            return id;
+        }
+        else {
+            fid -= nF;
+            sta += nF;
+        }
+    }
+    return -1;
+}
+
+bool key_down(igl::viewer::Viewer& viewer, unsigned char key, int modifier)
+{
+    if(selected && latex_select != -1)
+    {
+        double dx = 0, dy = 0;
+        if (key == 'W')
+        {
+            dy += 0.1;
+        }
+        else if (key == 'S')
+        {
+            dy -= 0.1;
+        }
+        else if(key == 'A')
+        {
+            dx -= 0.1;
+        }
+        else if(key == 'D')
+        {
+            dx += 0.1;
+        }
+
+        int sta, end;
+        int poly_id = find_polygons_from_faceid(latex_select, sta, end);
+        plist[poly_id].Rotate_translate(Vector3d(0, dx, dy));
+        set_mesh(plist, viewer, V, F, C, false);
+        return true;
+    }
+
+    return false;
+}
+
+bool mouse_down(igl::viewer::Viewer& viewer, int button, int modifier)
+{
+    if(!selected) return false;
+    int fid;
+    Eigen::Vector3f bc;
+    // Cast a ray in the view direction starting from the mouse position
+    double x = viewer.current_mouse_x;
+    double y = viewer.core.viewport(3) - viewer.current_mouse_y;
+    if(igl::unproject_onto_mesh(Eigen::Vector2f(x,y), viewer.core.view * viewer.core.model,
+                                viewer.core.proj, viewer.core.viewport, V, F, fid, bc))
+    {
+        // paint hit red
+        if(latex_select != -1)
+        {
+            int sta, end;
+            int poly_id = find_polygons_from_faceid(latex_select, sta, end);
+            for(int id = sta; id <= end; id++) C.row(id) = plist[poly_id].get_color();
+        }
+        int sta, end;
+        int poly_id = find_polygons_from_faceid(fid, sta, end);
+        for(int id = sta; id <= end; id++) C.row(id)<<1,0,0;
+        latex_select = fid;
+        viewer.data.set_colors(C);
+        return true;
+    }
+    return false;
+}
+
 void move_point()
 {
     for(int id = 0; id < 8; id++)
@@ -211,16 +294,16 @@ void move_point()
 
 void opt_solve()
 {
-    generate_polygons(plist);
-
+    if(plist.empty()) generate_random_triangles(plist);
     PolygonsCollisionSolver solver;
-    for(int id = 4; id < NTRI + 4; id ++)
+    for(int id = 4; id < plist.size(); id ++)
     {
         for(int jd = 0; jd < id; jd++)
         {
             solver.setConnection(id, jd);
         }
     }
+    x_0.setZero();
     solver.setPolygons(plist);
     solver.collision_resolve(x_0, dx);
 
@@ -228,7 +311,7 @@ void opt_solve()
 
     for(int id = 0; id < plist.size(); id++)
         plist[id].Rotate_translate(x_0.segment(3 * id, 3));
-    set_mesh(plist, viewer);
+    set_mesh(plist, viewer, V, F, C);
 
 }
 
@@ -245,16 +328,22 @@ int main() {
 //    cubefall.simulate(s, V);
 //    viewer.data.set_mesh(V, F);
 
+    latex_select = -1;
+
     srand(100);
     viewer.callback_init = [&](igl::viewer::Viewer& viewer)
     {
-        viewer.ngui->addButton("Mosek", mosek);
-        viewer.ngui->addButton("3D Cubes", generate_cube);
-        viewer.ngui->addButton("2D", polygon);
+//        viewer.ngui->addButton("Mosek", mosek);
+//        viewer.ngui->addButton("3D Cubes", generate_cube);
+        viewer.ngui->addButton("2D Pattern", polygon);
         viewer.ngui->addButton("Solve", opt_solve);
+        viewer.ngui->addVariable("Selected", selected);
         viewer.screen->performLayout();
         return false;
     };
+
+    viewer.callback_mouse_down = &mouse_down;
+    viewer.callback_key_down = &key_down;
 
     viewer.launch();
     return 0;

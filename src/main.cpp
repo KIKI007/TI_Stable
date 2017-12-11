@@ -30,7 +30,9 @@ MatrixXd V;
 MatrixXi F;
 typedef Eigen::Triplet<double> T;
 
-
+VectorXd x_0(0, 1);
+const int NTRI = 20;
+const double TRI_LEN = 0.5;
 
 void mosek()
 {
@@ -63,48 +65,81 @@ void mosek()
 
 void generate_polygons(vector<PolygonPoints> &P)
 {
-    PolygonPoints P0 ,P1, P2, P3;
+    PolygonPoints P0 ,P1, P2, P3, P4;
     std::vector<int> ids;
-    ids.push_back(0);ids.push_back(1);ids.push_back(2);
+
+    ids.clear();
+    ids.push_back(0);ids.push_back(1);ids.push_back(2);ids.push_back(3);
     P0.set_ids(ids);
-    MatrixXd points(3, 3);
-    points.col(0) = Vector3d(0, 0, 0);
-    points.col(1) = Vector3d(4, 0, 0);
-    points.col(2) = Vector3d(2, 3, 0);
+    MatrixXd points = MatrixXd(3, 4);
+    points.col(0) = Vector3d(0, -1, 0);
+    points.col(1) = Vector3d(5, -1, 0);
+    points.col(2) = Vector3d(5, 0, 0);
+    points.col(3) = Vector3d(0, 0, 0);
     P0.set_points(points);
 
     ids.clear();
-    ids.push_back(0);ids.push_back(1);ids.push_back(2);
+    ids.push_back(0);ids.push_back(1);ids.push_back(2);ids.push_back(3);
     P1.set_ids(ids);
-    points.col(0) = Vector3d(3, 0, 0);
-    points.col(1) = Vector3d(7, 0, 0);
-    points.col(2) = Vector3d(5, 3, 0);
+    points = MatrixXd(3, 4);
+    points.col(0) = Vector3d(5, 0, 0);
+    points.col(1) = Vector3d(6, 0, 0);
+    points.col(2) = Vector3d(6, 5, 0);
+    points.col(3) = Vector3d(5, 5, 0);
     P1.set_points(points);
 
     ids.clear();
     ids.push_back(0);ids.push_back(1);ids.push_back(2);ids.push_back(3);
     P2.set_ids(ids);
     points = MatrixXd(3, 4);
-    points.col(0) = Vector3d(2, 2, 0);
-    points.col(1) = Vector3d(5, 2, 0);
-    points.col(2) = Vector3d(5, 5, 0);
-    points.col(3) = Vector3d(2, 5, 0);
+    points.col(0) = Vector3d(0, 5, 0);
+    points.col(1) = Vector3d(5, 5, 0);
+    points.col(2) = Vector3d(5, 6, 0);
+    points.col(3) = Vector3d(0, 6, 0);
     P2.set_points(points);
 
     ids.clear();
     ids.push_back(0);ids.push_back(1);ids.push_back(2);ids.push_back(3);
     P3.set_ids(ids);
     points = MatrixXd(3, 4);
-    points.col(0) = Vector3d(2, -2, 0);
-    points.col(1) = Vector3d(5, -2, 0);
-    points.col(2) = Vector3d(5, 1, 0);
-    points.col(3) = Vector3d(2, 1, 0);
+    points.col(0) = Vector3d(0, 5, 0);
+    points.col(1) = Vector3d(-1, 5, 0);
+    points.col(2) = Vector3d(-1, 0, 0);
+    points.col(3) = Vector3d(0, 0, 0);
     P3.set_points(points);
 
     P.push_back(P0);
     //P.push_back(P1);
     //P.push_back(P2);
     P.push_back(P3);
+
+    for(int id = 0; id < NTRI; id++)
+    {
+        P4.clear();
+        ids.clear();
+        ids.push_back(0);
+        ids.push_back(1);
+        ids.push_back(2);
+        ids.push_back(3);
+        ids.push_back(4);
+        ids.push_back(5);
+        P4.set_ids(ids);
+        points = MatrixXd(3, 6);
+        points.col(0) = Vector3d(0, 0, 0);
+        points.col(1) = Vector3d(TRI_LEN, -TRI_LEN , 0);
+        points.col(2) = Vector3d(TRI_LEN * 2, 0, 0);
+        points.col(3) = Vector3d(TRI_LEN * 2, TRI_LEN, 0);
+        points.col(4) = Vector3d(TRI_LEN , 2 * TRI_LEN, 0);
+        points.col(5) = Vector3d(0, TRI_LEN, 0);
+        P4.set_points(points);
+
+        double dx = (rand() % 2300) / 500.0;
+        double dy = (rand() % 2300)  / 500.0;
+        double theta = (rand() % 1000) /1000.0 * 3.1415926;
+
+        P4.Rotate_translate(Vector3d(theta, dx, dy));
+        P.push_back(P4);
+    }
 }
 
 
@@ -112,6 +147,7 @@ void polygon()
 {
     vector<PolygonPoints> plist;
     generate_polygons(plist);
+    x_0 = VectorXd(0, 1);
     set_mesh(plist, viewer);
 }
 
@@ -157,22 +193,40 @@ void move_point()
     viewer.data.set_mesh(V, F);
 }
 
+<<<<<<< HEAD
 VectorXd x_0(1);
 double dx;
+=======
+
+>>>>>>> 09c88593b0d67bbf468638ad7b52a9e2cdae9987
 void opt_solve()
 {
     vector<PolygonPoints> plist;
     generate_polygons(plist);
+<<<<<<< HEAD
     //x_0 = VectorXd::Zero(9);
+=======
+>>>>>>> 09c88593b0d67bbf468638ad7b52a9e2cdae9987
 
     PolygonsCollisionSolver solver;
+    for(int id = 4; id < NTRI + 4; id ++)
+    {
+        for(int jd = 0; jd < id; jd++)
+        {
+            solver.setConnection(id, jd);
+        }
+    }
     solver.setPolygons(plist);
+<<<<<<< HEAD
     solver.setConnection(0, 1);
 //    solver.setConnection(0, 2);
 //    solver.setConnection(1, 2);
 //    solver.setConnection(3, 1);
 //    solver.setConnection(3, 0);
     solver.collision_resolve(x_0, dx);
+=======
+    solver.collision_resolve(x_0);
+>>>>>>> 09c88593b0d67bbf468638ad7b52a9e2cdae9987
 
     //two_collision_solver(plist, x_0);
 

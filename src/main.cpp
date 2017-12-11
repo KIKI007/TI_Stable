@@ -31,7 +31,8 @@ MatrixXi F;
 typedef Eigen::Triplet<double> T;
 
 VectorXd x_0(0, 1);
-const int NTRI = 20;
+double dx;
+const int NTRI = 19;
 const double TRI_LEN = 0.5;
 
 void mosek()
@@ -109,8 +110,8 @@ void generate_polygons(vector<PolygonPoints> &P)
     P3.set_points(points);
 
     P.push_back(P0);
-    //P.push_back(P1);
-    //P.push_back(P2);
+    P.push_back(P1);
+    P.push_back(P2);
     P.push_back(P3);
 
     for(int id = 0; id < NTRI; id++)
@@ -193,20 +194,10 @@ void move_point()
     viewer.data.set_mesh(V, F);
 }
 
-<<<<<<< HEAD
-VectorXd x_0(1);
-double dx;
-=======
-
->>>>>>> 09c88593b0d67bbf468638ad7b52a9e2cdae9987
 void opt_solve()
 {
     vector<PolygonPoints> plist;
     generate_polygons(plist);
-<<<<<<< HEAD
-    //x_0 = VectorXd::Zero(9);
-=======
->>>>>>> 09c88593b0d67bbf468638ad7b52a9e2cdae9987
 
     PolygonsCollisionSolver solver;
     for(int id = 4; id < NTRI + 4; id ++)
@@ -217,16 +208,7 @@ void opt_solve()
         }
     }
     solver.setPolygons(plist);
-<<<<<<< HEAD
-    solver.setConnection(0, 1);
-//    solver.setConnection(0, 2);
-//    solver.setConnection(1, 2);
-//    solver.setConnection(3, 1);
-//    solver.setConnection(3, 0);
     solver.collision_resolve(x_0, dx);
-=======
-    solver.collision_resolve(x_0);
->>>>>>> 09c88593b0d67bbf468638ad7b52a9e2cdae9987
 
     //two_collision_solver(plist, x_0);
 

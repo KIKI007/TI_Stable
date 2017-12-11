@@ -36,44 +36,9 @@ bool PolygonsCollisionSolver::get_a_coeff(vecVectorXd &a, vector<PolygonPoints> 
     P[1] = P_ORI[1];P[1].Rotate_translate(x0[1]);
 
     /************ collision info **************/
-
-<<<<<<< HEAD
-    int Ia, Ib;
-    double muA, muB;
-    bool na;
-    Vector3d n, p[2], p_ori[2];
-    if(!P[0].collision(P[1], n, na, Ia, Ib, muA, muB))
-        return false;
-
-//    p[0]        = P[0].point(Ia);
-//    p[1]        = P[1].point(Ib);
-//    p_ori[0]    = P_ORI[0].point(Ia);
-//    p_ori[1]    = P_ORI[1].point(Ib);
-    p[0]        =  P[0].point(Ia)      * muA + (1 - muA) * P[0].pointNext(Ia);
-    p[1]        =  P[1].point(Ib)      * muB + (1 - muB) * P[1].pointNext(Ib);
-    p_ori[0]    =  P_ORI[0].point(Ia)  * muA + (1 - muA) * P_ORI[0].pointNext(Ia);
-    p_ori[1]    =  P_ORI[1].point(Ib)  * muB + (1 - muB) * P_ORI[1].pointNext(Ib);
-
-    f_xk = std::abs(n.dot(p[0] - p[1]));
-    std::cout << "Before n:\t " << n.transpose() << std::endl;
-    std::cout << "f_xk:\t" << f_xk << std::endl;
-    std::cout << "mu:\t " << muA << '\t' << muB << std::endl;
-    std::cout << "na:\t " << na << std::endl;
-    std::cout << "Ia, Ib:\t " << Ia << "\t" << Ib << std::endl;
-    /****** penetration distance info *********/
-    a = VectorXd::Zero(7);
-
-    //add n1
-    double theta_na = (na ? x(0) : x(3));
-    double dn_theta = 0;
-    Vector3d n1(-n(1), n(0), 0);
-    for(int id = 0; id < 2; id++)
-=======
     int Ia, Ib, Ic;
     bool na;
     Vector3d n;
-//    if(!P[0].collision(P[1], n, na, Ia, Ib, Ic))
-//        return false;
     P[0].collision(P[1], n, na, Ia, Ib, Ic);
 
     VectorXd ta;
@@ -88,24 +53,12 @@ bool PolygonsCollisionSolver::get_a_coeff(vecVectorXd &a, vector<PolygonPoints> 
 //              << "f_xk:\t" << f_xk << std::endl;
 
     if(Ic != -1)
->>>>>>> 09c88593b0d67bbf468638ad7b52a9e2cdae9987
     {
         double f;
         if(na) get_a_coeff(ta, P_ORI, P, n, na, Ia, Ic, x, f);
         else get_a_coeff(ta, P_ORI, P, n, na, Ic, Ib, x, f);
         a.push_back(ta);
     }
-<<<<<<< HEAD
-    a(0)  += (n - theta_na * n1).dot(p[0] - p[1]) ;
-    dn_theta += n1.dot(p[0] - p[1]);
-
-    if(na) a(1) += dn_theta;
-    else   a(4) += dn_theta;
-
-    std::cout << "a:\n " << a << std::endl;
-=======
-
->>>>>>> 09c88593b0d67bbf468638ad7b52a9e2cdae9987
     return true;
 }
 
@@ -122,9 +75,6 @@ double PolygonsCollisionSolver::penetration_distance(vecPolys p, VectorXd &x)
     bool na;
     double mu;
     if(p[0].collision(p[1], n, na, Ia, Ib)) {
-        std::cout << "After n:\t " << n.transpose() << std::endl;
-        std::cout << "na:\t " << na << std::endl;
-        std::cout << "Ia, Ib:\t " << Ia << "\t" << Ib << std::endl;
         return std::abs(n.dot(p[0].point(Ia) - p[1].point(Ib)));
     }
     else
@@ -198,30 +148,18 @@ bool PolygonsCollisionSolver::solve_linear(std::vector<T> &triplist,
 void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
 
     //parameter for trust region algorithm
-<<<<<<< HEAD
-    const int MAX_ITER_TIMES = 1000;
-    const double MAX_TRUST_REGION_SIZE  = 0.01;
-    const double MIN_TRUST_REGION_SIZE  = 1e-8;
-    const double ACCEPT_RATIO           = 0;
-=======
     const int MAX_ITER_TIMES = 10000;
     const double MAX_TRUST_REGION_SIZE  = 0.01;
     const double MIN_TRUST_REGION_SIZE  = 1e-8;
     const double ACCEPT_RATIO           = 0.5;
     const double ACCEPT_F_XK            = 1e-4;
->>>>>>> 09c88593b0d67bbf468638ad7b52a9e2cdae9987
     const double INIT_TRUST_REGION_SIZE = 0.01;
 
     int         iter_times  = 0;
     //double      dx          = INIT_TRUST_REGION_SIZE;   //trust region size
     double      mk_0, mk_pk, f_xk, f_xkpk;              //function and model's improvement
 
-<<<<<<< HEAD
-=======
-    if(x0.size() == 0) x0 = VectorXd::Zero(P_.size() * 3);
->>>>>>> 09c88593b0d67bbf468638ad7b52a9e2cdae9987
-
-    if(x0.rows() == 1)
+    if(x0.size() == 0)
     {
         x0 = VectorXd::Zero(P_.size() * 3);
         dx = INIT_TRUST_REGION_SIZE;

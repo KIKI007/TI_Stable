@@ -122,8 +122,12 @@ public:
                    int &pb)
     //Compute the collision info
     {
+<<<<<<< HEAD
+        double min_dist = std::numeric_limits<double>::infinity();
+=======
         double max_dist = std::numeric_limits<double>::infinity() * (-1);
         bool is_collision = true;
+>>>>>>> 09c88593b0d67bbf468638ad7b52a9e2cdae9987
 
         //A->B
         Vector3d nrm; get_normal(nrm);

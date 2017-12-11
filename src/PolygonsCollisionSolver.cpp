@@ -261,7 +261,6 @@ void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
             }
             f_xk += f0;
             mk_0 += f0;
-            //std::cout << "id:\t" << id << "f0:\t" << f0 << std::endl;
         }
         //construction of linear programming
         VectorXd x;

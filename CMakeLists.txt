@@ -39,4 +39,4 @@ find_package(LIBIGL REQUIRED)
 # Add your project file
 file(GLOB SRCFILES src/*.cpp src/*.h)
 add_executable(${PROJECT_NAME}_bin ${SRCFILES})
-target_link_libraries(${PROJECT_NAME}_bin igl::core igl::viewer igl::mosek)
+target_link_libraries(${PROJECT_NAME}_bin igl::core igl::viewer igl::mosek igl::triangle)

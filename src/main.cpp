@@ -20,6 +20,7 @@
 #include "PolyhedraPoints.h"
 #include "OptSolver.h"
 #include "PolygonsCollisionSolver.h"
+#include "RandomTriangles2D.h"
 
 using Eigen::MatrixXd;
 using Eigen::MatrixXi;
@@ -34,6 +35,7 @@ VectorXd x_0(0, 1);
 double dx;
 const int NTRI = 19;
 const double TRI_LEN = 0.5;
+vector<PolygonPoints> plist;
 
 void mosek()
 {
@@ -64,8 +66,19 @@ void mosek()
         std::cout << "fail";
 }
 
+void generate_random_triangles(vector<PolygonPoints> &P)
+{
+    P.clear();
+    RandomTriangles2D generator;
+
+    generator.createTriangles(P);
+
+    return;
+}
+
 void generate_polygons(vector<PolygonPoints> &P)
 {
+    P.clear();
     PolygonPoints P0 ,P1, P2, P3, P4;
     std::vector<int> ids;
 
@@ -139,6 +152,8 @@ void generate_polygons(vector<PolygonPoints> &P)
         double theta = (rand() % 1000) /1000.0 * 3.1415926;
 
         P4.Rotate_translate(Vector3d(theta, dx, dy));
+        P4.set_color_random();
+
         P.push_back(P4);
     }
 }
@@ -146,8 +161,8 @@ void generate_polygons(vector<PolygonPoints> &P)
 
 void polygon()
 {
-    vector<PolygonPoints> plist;
-    generate_polygons(plist);
+    //generate_polygons(plist);
+    generate_random_triangles(plist);
     x_0 = VectorXd(0, 1);
     set_mesh(plist, viewer);
 }
@@ -196,7 +211,6 @@ void move_point()
 
 void opt_solve()
 {
-    vector<PolygonPoints> plist;
     generate_polygons(plist);
 
     PolygonsCollisionSolver solver;
@@ -231,7 +245,7 @@ int main() {
 //    cubefall.simulate(s, V);
 //    viewer.data.set_mesh(V, F);
 
-
+    srand(100);
     viewer.callback_init = [&](igl::viewer::Viewer& viewer)
     {
         viewer.ngui->addButton("Mosek", mosek);

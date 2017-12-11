@@ -233,8 +233,8 @@ void color_list(VecRowVector3d &colors, int n)
             int jd = 0;
             for(; jd < id; jd++)
             {
-                if((color - colors[jd]).norm() < 0.2)
-                    break;
+//                if((color - colors[jd]).norm() < 0.2)
+//                    break;
             }
             if(jd == id)
                 break;
@@ -283,11 +283,12 @@ void set_mesh(vector<PolygonPoints> &P, igl::viewer::Viewer &viewer)
         P[id].triangulate(tF);
         for (int jd = 0; jd < tF.rows(); jd++) {
             F.row(ID) = tF.row(jd) + Eigen::RowVector3i(sum_nV[id], sum_nV[id], sum_nV[id]);
-            C.row(ID) = colors[id];
+            C.row(ID) = P[id].get_color();
             ID++;
         }
     }
     viewer.data.set_mesh(V, F);
     viewer.data.set_colors(C);
+    viewer.core.align_camera_center(V, F);
 }
 #endif //TI_STABLE_OPTSOLVER_H

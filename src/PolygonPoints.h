@@ -81,6 +81,16 @@ public:
         }
     }
 
+    void shrink(double ratio)
+    {
+        Vector3d center;
+        center_points(center);
+        for(int id = 0; id < points_.cols(); id++)
+        {
+            points_.col(id) = ratio * (points_.col(id) - center) + center;
+        }
+    }
+
 public:
 
     void project(std::vector<double> &proj, Vector3d &axis, Vector3d &ori)

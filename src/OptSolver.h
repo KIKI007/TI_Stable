@@ -233,8 +233,8 @@ void color_list(VecRowVector3d &colors, int n)
             int jd = 0;
             for(; jd < id; jd++)
             {
-                if((color - colors[jd]).norm() < 0.2)
-                    break;
+//                if((color - colors[jd]).norm() < 0.2)
+//                    break;
             }
             if(jd == id)
                 break;
@@ -243,14 +243,16 @@ void color_list(VecRowVector3d &colors, int n)
     }
 }
 
-void set_mesh(vector<PolygonPoints> &P, igl::viewer::Viewer &viewer)
+void set_mesh(vector<PolygonPoints> &P, igl::viewer::Viewer &viewer, MatrixXd &V, MatrixXi &F, MatrixXd &C, bool change_color = true)
 {
+    if(change_color) C.setZero();
+    V.setZero();
+    F.setZero();
 
     int nV = 0, nF = 0;
     vector<int> sum_nV;
-    MatrixXd tV, V;
-    MatrixXi tF, F;
-    MatrixXd C;
+    MatrixXd tV;
+    MatrixXi tF;
 
     for(int id = 0; id < P.size(); id++)
     {
@@ -265,7 +267,7 @@ void set_mesh(vector<PolygonPoints> &P, igl::viewer::Viewer &viewer)
 
     V = MatrixXd(nV, 3);
     F = MatrixXi::Zero(nF, 3);
-    C = MatrixXd::Zero(nF, 3);
+    if(change_color) C = MatrixXd::Zero(nF, 3);
     int ID = 0;
     for(int id = 0; id < P.size(); id++)
     {
@@ -283,11 +285,13 @@ void set_mesh(vector<PolygonPoints> &P, igl::viewer::Viewer &viewer)
         P[id].triangulate(tF);
         for (int jd = 0; jd < tF.rows(); jd++) {
             F.row(ID) = tF.row(jd) + Eigen::RowVector3i(sum_nV[id], sum_nV[id], sum_nV[id]);
-            C.row(ID) = colors[id];
+            if(change_color) C.row(ID) = P[id].get_color();
             ID++;
         }
     }
+    viewer.data.clear();
     viewer.data.set_mesh(V, F);
     viewer.data.set_colors(C);
+    viewer.core.align_camera_center(V, F);
 }
 #endif //TI_STABLE_OPTSOLVER_H

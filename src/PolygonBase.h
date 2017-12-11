@@ -16,30 +16,47 @@ using Eigen::Vector3d;
 class PolygonBase {
 
 public:
-    PolygonBase(){};
+    PolygonBase() {};
 
-    PolygonBase(std::vector<int> ids)
-    {
+    PolygonBase(std::vector<int> ids) {
         set_ids(ids);
     }
 
-    ~PolygonBase(){};
+    ~PolygonBase() {};
 
 public:
 
-    void set_ids(std::vector<int> ids)
-    {
+    void set_ids(std::vector<int> ids) {
         ids_ = ids;
     }
 
-    void clear()
-    {
+    void clear() {
         ids_.clear();
+    }
+
+    void set_color(Vector3d color) {
+        color_ = color;
+    }
+
+    void set_color()
+    {
+        color_ = Vector3d(1, 1, 1);
+    }
+
+    void set_color_random()
+    {
+        color_ = Vector3d(rand()%255 / 255.0, rand()%255 / 255.0, rand()%255 / 255.0);
     }
 
 public:
 
     int nV(){return ids_.size();}
+
+    Vector3d get_color()
+    {
+        return color_;
+    }
+
 
     void EDGE(int ID, int &sta, int &end)
     {
@@ -63,6 +80,7 @@ public:
 
 public:
     std::vector<int> ids_;
+    Vector3d color_;
 };
 
 

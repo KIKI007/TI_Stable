@@ -14,7 +14,7 @@ class PolygonPoints :public PolygonBase{
 public:
     PolygonPoints()
     {
-
+        clear();
     }
     PolygonPoints(std::vector<int> &ids, MatrixXd &points)
     :PolygonBase(ids)
@@ -35,6 +35,13 @@ public:
     }
 
 public:
+
+    void clear()
+    {
+        ids_.clear();
+        points_.setZero();
+        color_ = Vector3d(0, 0, 0);
+    }
 
     void get_normal(Vector3d &normal)
     {
@@ -78,6 +85,16 @@ public:
         for(int id = 0; id < points_.cols(); id++)
         {
             points_.col(id) = R_theta * (points_.col(id) - center) + center + Vector3d(x(1), x(2), 0);
+        }
+    }
+
+    void shrink(double ratio)
+    {
+        Vector3d center;
+        center_points(center);
+        for(int id = 0; id < points_.cols(); id++)
+        {
+            points_.col(id) = ratio * (points_.col(id) - center) + center;
         }
     }
 

@@ -1,7 +1,9 @@
 # TI_Stable
 
 Topological interlocking tolerance analysis.
+
 Only testing in **OSX 1O.13**.
+
 Please send email to qiqiustc@gmail.com if you have any problem.
 
 ## Dependency

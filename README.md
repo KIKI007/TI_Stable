@@ -1,42 +1,25 @@
-# libigl example project
+# TI_Stable
 
-A blank project example showing how to use libigl and cmake. Feel free and
-encouraged to copy or fork this project as a way of starting a new personal
-project using libigl.
+Topological interlocking tolerance analysis.
+Only testing in **OSX 1O.13**.
+Please send email to qiqiustc@gmail.com if you have any problem.
 
-## See the tutorial first
-
-Then build, run and understand the [libigl
-tutorial](http://libigl.github.io/libigl/tutorial/tutorial.html).
+## Dependency
+1. libigl, please refer to https://github.com/libigl/libigl
+    please put libigl in the **same folder** as this project.
+2. Eigen3, please refer to http://eigen.tuxfamily.org
+    actually, libigl/nanogui has eigen library
+3. Mosek, please refer to https://www.mosek.com
+    a. please put the mosek folder in **/usr/local**
+    b. compile the mosek library http://docs.mosek.com/8.1/install/installation.html
+    c. compile the mosek c++ fusion http://docs.mosek.com/8.1/cxxfusion/install-interface.html
+    d. copy all **.dylib** from **/usr/local/mosek/8/tools/platform/osx64x86/bin** into **\usr\local\lib**
+    e. put mosek license in right position, please refer to http://docs.mosek.com/7.0/toolsinstall/Obtaining_and_installing_a_license.html
+    f. please note that there is a bug in **igl::mosek::mosek_linprog**.
 
 ## Compile
 
-Compile this project using the standard cmake routine:
-
-    mkdir build
-    cd build
-    cmake ..
-    make
-
-This should find and build the dependencies and create a `example_bin` binary.
-
-## Run
-
-From within the `build` directory just issue:
-
-    ./example_bin
-
-A glfw app should launch displaying a 3D cube.
-
-## Dependencies
-
-The only dependencies are stl, eigen, [libigl](libigl.github.io/libigl/) and
-the dependencies of the `igl::viewer::Viewer` (mandatory: glfw and
-opengl, optional: nanogui and nanovg).
-
-We recommend you to install libigl using git via:
-
-    git clone --recursive https://github.com/libigl/libigl.git
-
-If you have installed libigl at `/path/to/libigl/` then a good place to clone
-this library is `/path/to/libigl-example-project/`.
+1. Download the Clion IDE from https://www.jetbrains.com/clion/
+2. Use **open project** in Clion IDE
+3. Build project
+4. Run

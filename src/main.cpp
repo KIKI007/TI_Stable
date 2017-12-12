@@ -1,217 +1,125 @@
 /* Libigl */
 #include <igl/readOFF.h>
 #include <igl/viewer/Viewer.h>
+#include <igl/unproject_onto_mesh.h>
+#include <igl/mosek/mosek_linprog.h>
 
 /* system */
 #include <sstream>
 #include <iostream>
 
-///* ShapeOp */
-//#include <Solver.h>
-//#include <Constraint.h>
-//#include <Force.h>
-
-#include "Cube2D_Falling.h"
-#include "VertexCollisionConstrain.h"
 #include "TI_Cube.h"
-#include "RigidBodyConstrain.h"
-#include "igl/mosek/mosek_linprog.h"
-#include "PolygonPoints.h"
-#include "PolyhedraPoints.h"
 #include "OptSolver.h"
 #include "PolygonsCollisionSolver.h"
 #include "RandomTriangles2D.h"
-#include <igl/unproject_onto_mesh.h>
 
-using Eigen::MatrixXd;
-using Eigen::MatrixXi;
 igl::viewer::Viewer viewer;
-//MatrixXd V(13, 3);
-//MatrixXi F(7, 3);
 MatrixXd V, C;
 MatrixXi F;
-typedef Eigen::Triplet<double> T;
-
-int latex_select;
 
 VectorXd x_0(0, 1);
 double dx;
-const int NTRI = 19;
-const double TRI_LEN = 0.5;
-vector<PolygonPoints> plist;
-bool selected;
-void mosek()
-{
-    Eigen::VectorXd c(2);
-    c << -2,
-            5;
-    Eigen::SparseMatrix<double> A(1, 2);
-    std::vector<T> triplist;
-    triplist.push_back(T(0, 0, 1));
-    triplist.push_back(T(0, 1, 1));
-    A.setFromTriplets(triplist.begin(), triplist.end());
-    Eigen::VectorXd lc(1);
-    lc << 200;
-    Eigen::VectorXd uc(1);
-    uc << 10000000;
-    Eigen::VectorXd lx(2);
-    lx << 100,
-            80;
-    Eigen::VectorXd ux(2);
-    ux << 200,
-            170;
 
-    Eigen::VectorXd x(2);
-    bool sucess = igl::mosek::mosek_linprog(c, A, lc, uc, lx, ux, x);
-    if(sucess)
-        std::cout << x;
-    else
-        std::cout << "fail";
-}
+vector<PolygonPoints> polygons_list;
+vector<pair<int, int>> polyons_collision_pair;
+vector<int> polygons_fixed_id;
+pair<int, int> polygons_gap_par;
 
-void generate_random_triangles(vector<PolygonPoints> &P)
+enum Selected_Mode {
+    NON = 0,
+    MOVE,
+    FIX,
+    GAP
+}selected_mode(NON);
+
+class select_record{
+public:
+    select_record(Selected_Mode mode = NON)
+    {
+        mode_ = mode;
+        clear();
+    }
+
+public:
+
+    void clear()
+    {
+        poly_sta_end_.clear();
+        poly_id_.clear();
+    }
+
+    void add(int pid, int sta, int end)
+    {
+        poly_id_.push_back(pid);
+        poly_sta_end_.push_back(pair<int, int> (sta, end));
+        return;
+    }
+
+    void get(pair<int, int> &gap)
+    {
+        gap.first = gap.second = -1;
+        int size = poly_id_.size();
+        if(size >= 2)
+        {
+            gap.first = poly_id_[size - 2];
+            gap.second = poly_id_[size - 1];
+        }
+    }
+
+    bool get(int &pid, int &sta, int &end)
+    {
+        if(poly_id_.empty()) return false;
+        if(mode_ == NON || mode_ == FIX) return false;
+        if(mode_ == MOVE)
+        {
+            pid = poly_id_.back();
+            sta = poly_sta_end_.back().first;
+            end = poly_sta_end_.back().second;
+            return true;
+        }
+        else if(mode_ == GAP)
+        {
+            int size = poly_id_.size();
+            if(size >= 2)
+            {
+                pid = poly_id_[size - 2];
+                sta = poly_sta_end_[size - 2].first;
+                end = poly_sta_end_[size - 2].second;
+                return true;
+            }
+        }
+        return false;
+    }
+
+public:
+    vector<int> poly_id_;
+    vector<pair<int, int>> poly_sta_end_;
+    Selected_Mode  mode_;
+}recorder;
+
+
+void generate_random_triangles(vector<PolygonPoints> &P, vector<pair<int, int>>&Conn)
 {
     P.clear();
-    latex_select = -1;
-
     RandomTriangles2D generator;
-    generator.createTriangles(P);
+    generator.createTriangles(P, Conn);
     return;
 }
 
-void generate_polygons(vector<PolygonPoints> &P)
-{
-    P.clear();
-    latex_select = -1;
-
-    PolygonPoints P0 ,P1, P2, P3, P4;
-    std::vector<int> ids;
-
-    ids.clear();
-    ids.push_back(0);ids.push_back(1);ids.push_back(2);ids.push_back(3);
-    P0.set_ids(ids);
-    MatrixXd points = MatrixXd(3, 4);
-    points.col(0) = Vector3d(0, -1, 0);
-    points.col(1) = Vector3d(5, -1, 0);
-    points.col(2) = Vector3d(5, 0, 0);
-    points.col(3) = Vector3d(0, 0, 0);
-    P0.set_points(points);
-
-    ids.clear();
-    ids.push_back(0);ids.push_back(1);ids.push_back(2);ids.push_back(3);
-    P1.set_ids(ids);
-    points = MatrixXd(3, 4);
-    points.col(0) = Vector3d(5, 0, 0);
-    points.col(1) = Vector3d(6, 0, 0);
-    points.col(2) = Vector3d(6, 5, 0);
-    points.col(3) = Vector3d(5, 5, 0);
-    P1.set_points(points);
-
-    ids.clear();
-    ids.push_back(0);ids.push_back(1);ids.push_back(2);ids.push_back(3);
-    P2.set_ids(ids);
-    points = MatrixXd(3, 4);
-    points.col(0) = Vector3d(0, 5, 0);
-    points.col(1) = Vector3d(5, 5, 0);
-    points.col(2) = Vector3d(5, 6, 0);
-    points.col(3) = Vector3d(0, 6, 0);
-    P2.set_points(points);
-
-    ids.clear();
-    ids.push_back(0);ids.push_back(1);ids.push_back(2);ids.push_back(3);
-    P3.set_ids(ids);
-    points = MatrixXd(3, 4);
-    points.col(0) = Vector3d(0, 5, 0);
-    points.col(1) = Vector3d(-1, 5, 0);
-    points.col(2) = Vector3d(-1, 0, 0);
-    points.col(3) = Vector3d(0, 0, 0);
-    P3.set_points(points);
-
-    P.push_back(P0);
-    P.push_back(P1);
-    P.push_back(P2);
-    P.push_back(P3);
-
-    for(int id = 0; id < NTRI; id++)
-    {
-        P4.clear();
-        ids.clear();
-        ids.push_back(0);
-        ids.push_back(1);
-        ids.push_back(2);
-        ids.push_back(3);
-        ids.push_back(4);
-        ids.push_back(5);
-        P4.set_ids(ids);
-        points = MatrixXd(3, 6);
-        points.col(0) = Vector3d(0, 0, 0);
-        points.col(1) = Vector3d(TRI_LEN, -TRI_LEN , 0);
-        points.col(2) = Vector3d(TRI_LEN * 2, 0, 0);
-        points.col(3) = Vector3d(TRI_LEN * 2, TRI_LEN, 0);
-        points.col(4) = Vector3d(TRI_LEN , 2 * TRI_LEN, 0);
-        points.col(5) = Vector3d(0, TRI_LEN, 0);
-        P4.set_points(points);
-
-        double dx = (rand() % 2300) / 500.0;
-        double dy = (rand() % 2300)  / 500.0;
-        double theta = (rand() % 1000) /1000.0 * 3.1415926;
-
-        P4.Rotate_translate(Vector3d(theta, dx, dy));
-        P4.set_color_random();
-
-        P.push_back(P4);
-    }
-}
-
-
-void polygon()
+void polygons_2d_rendering()
 {
     //generate_polygons(plist);
-    generate_random_triangles(plist);
+    generate_random_triangles(polygons_list, polyons_collision_pair);
     x_0 = VectorXd(0, 1);
-    set_mesh(plist, viewer, V, F, C);
-}
-
-void generate_cube()
-{
-    TI_Cube cubes(1, 1);
-    stdVecMatrixXd vec_V;
-    stdVecMatrixXi vec_F;
-    std::vector<PolyhedraPoints> Ps;
-    cubes.generate_1v6(Ps);
-    for(int id = 0; id < Ps.size(); id++)
-    {
-        MatrixXd tV;
-        MatrixXi tF;
-        Ps[id].triangulate(tF); vec_F.push_back(tF);
-        Ps[id].get_points(tV); vec_V.push_back(tV.transpose());
-    }
-
-    V = MatrixXd(vec_V.size() * 8, 3);
-    F = MatrixXi::Zero(vec_F.size() * 12, 3);
-    for(int id = 0; id < vec_V.size(); id++)
-    {
-        for(int jd = 0; jd < vec_V[id].rows(); jd++)
-        {
-            V.row(jd + 8 * id) = vec_V[id].row(jd);
-        }
-    }
-    int ID = 0;
-    for(int id = 0; id < vec_F.size(); id++)
-    {
-        for (int jd = 0; jd < vec_F[id].rows(); jd++) {
-            F.row(ID++) = vec_F[id].row(jd) + Eigen::RowVector3i(8 * id, 8 * id, 8 * id);
-        }
-    }
-    viewer.data.set_mesh(V, F);
+    set_mesh(polygons_list, viewer, V, F, C);
 }
 
 int find_polygons_from_faceid(int fid, int &sta, int &end)
 {
     sta = 0;
-    for(int id = 0; id < plist.size(); id++)
+    for(int id = 0; id < polygons_list.size(); id++)
     {
-        int nF = plist[id].nV() - 2;
+        int nF = polygons_list[id].nV() - 2;
         if(fid < nF) {
             end = sta + nF - 1;
             return id;
@@ -226,7 +134,7 @@ int find_polygons_from_faceid(int fid, int &sta, int &end)
 
 bool key_down(igl::viewer::Viewer& viewer, unsigned char key, int modifier)
 {
-    if(selected && latex_select != -1)
+    if(selected_mode == MOVE)
     {
         double dx = 0, dy = 0;
         if (key == 'W')
@@ -247,104 +155,161 @@ bool key_down(igl::viewer::Viewer& viewer, unsigned char key, int modifier)
         }
 
         int sta, end;
-        int poly_id = find_polygons_from_faceid(latex_select, sta, end);
-        plist[poly_id].Rotate_translate(Vector3d(0, dx, dy));
-        set_mesh(plist, viewer, V, F, C, false);
+        int poly_id;
+        if(recorder.get(poly_id, sta, end))
+        {
+            polygons_list[poly_id].do_transformation(Vector3d(0, dx, dy));
+            set_mesh(polygons_list, viewer, V, F, C, false);
+        }
         return true;
     }
 
     return false;
 }
 
+void clear_color()
+{
+    vector<pair<int, int>> pse = recorder.poly_sta_end_;
+    vector<int> pid = recorder.poly_id_;
+    int sta, end;
+    for(int kd = 0; kd < pse.size(); kd++)
+    {
+        sta = pse[kd].first;
+        end = pse[kd].second;
+        for(int id = sta; id <= end; id++)
+            C.row(id) = polygons_list[pid[kd]].get_color();
+    }
+    viewer.data.set_colors(C);
+}
+
 bool mouse_down(igl::viewer::Viewer& viewer, int button, int modifier)
 {
-    if(!selected) return false;
     int fid;
     Eigen::Vector3f bc;
     // Cast a ray in the view direction starting from the mouse position
     double x = viewer.current_mouse_x;
     double y = viewer.core.viewport(3) - viewer.current_mouse_y;
+
     if(igl::unproject_onto_mesh(Eigen::Vector2f(x,y), viewer.core.view * viewer.core.model,
                                 viewer.core.proj, viewer.core.viewport, V, F, fid, bc))
     {
-        // paint hit red
-        if(latex_select != -1)
+
+        //clear last color
+        int pid, sta, end;
+        if(recorder.get(pid, sta, end))
         {
-            int sta, end;
-            int poly_id = find_polygons_from_faceid(latex_select, sta, end);
-            for(int id = sta; id <= end; id++) C.row(id) = plist[poly_id].get_color();
+                for(int id = sta; id <= end; id++)
+                    C.row(id) = polygons_list[pid].get_color();
         }
-        int sta, end;
-        int poly_id = find_polygons_from_faceid(fid, sta, end);
-        for(int id = sta; id <= end; id++) C.row(id)<<1,0,0;
-        latex_select = fid;
+
+        //add to record
+        pid = find_polygons_from_faceid(fid, sta, end);
+        recorder.add(pid, sta, end);
+
+        // paint color
+        if(selected_mode == MOVE) {
+            for (int id = sta; id <= end; id++)
+                C.row(id) << 1, 0, 0;
+        }
+        else if(selected_mode == FIX)
+        {
+            for(int id = sta; id <= end; id++)
+                C.row(id)<<  0, 0, 1;
+        }
+        else if(selected_mode == GAP)
+        {
+            for(int id = sta; id <= end; id++)
+                C.row(id)<<  0, 1, 0;
+        }
+
         viewer.data.set_colors(C);
         return true;
+    }
+    else
+    {
+        clear_color();
+        recorder.clear();
+
     }
     return false;
 }
 
-void move_point()
-{
-    for(int id = 0; id < 8; id++)
-        V.row(id) -= Eigen::RowVector3d(0, 0, 0.1);
-    viewer.data.clear();
-    viewer.data.set_mesh(V, F);
-}
-
 void opt_solve()
 {
-    if(plist.empty()) generate_random_triangles(plist);
-    PolygonsCollisionSolver solver;
-    for(int id = 4; id < plist.size(); id ++)
+    if(polygons_list.empty())
     {
-        for(int jd = 0; jd < id; jd++)
+        generate_random_triangles(polygons_list, polyons_collision_pair);
+    }
+
+    PolygonsCollisionSolver solver;
+
+    //set collision pair
+    {
+        for(int id = 0; id < polyons_collision_pair.size(); id ++)
         {
-            solver.setConnection(id, jd);
+            solver.setConnection(polyons_collision_pair[id].first, polyons_collision_pair[id].second);
         }
     }
-    x_0.setZero();
-    solver.setPolygons(plist);
+
+    //set fixed
+    {
+        solver.setFixed(0);solver.setFixed(1);
+        solver.setFixed(2);solver.setFixed(3);
+        for(int id = 0; id < polygons_fixed_id.size(); id++)
+            solver.setFixed(polygons_fixed_id[id]);
+        polygons_fixed_id.clear();
+    }
+
+    //set gap
+    {
+        solver.setGap(polygons_gap_par.first, polygons_gap_par.second);
+        polygons_gap_par = pair<int, int>(-1, -1);
+    }
+
+    //set polygons
+    solver.setPolygons(polygons_list);
+
+    //solve
+    x_0.setZero();dx = 0;
     solver.collision_resolve(x_0, dx);
 
-    //two_collision_solver(plist, x_0);
-
-    for(int id = 0; id < plist.size(); id++)
-        plist[id].Rotate_translate(x_0.segment(3 * id, 3));
-    set_mesh(plist, viewer, V, F, C);
+    //rendering the result
+    for(int id = 0; id < polygons_list.size(); id++)
+        polygons_list[id].do_transformation(x_0.segment(3 * id, 3));
+    set_mesh(polygons_list, viewer, V, F, C);
 
 }
-
 int main() {
-
-//    F<<     0, 1, 2,
-//            2, 3, 0,
-//            4, 5, 6,
-//            6, 7, 4,
-//            8, 9, 10,
-//            10, 11, 12,
-//            12, 8, 10;
-//    Cube2D_Falling cubefall;
-//    cubefall.simulate(s, V);
-//    viewer.data.set_mesh(V, F);
-
-    latex_select = -1;
-
     srand(100);
+    polygons_gap_par.first = -1;
+    polygons_gap_par.second = -1;
     viewer.callback_init = [&](igl::viewer::Viewer& viewer)
     {
-//        viewer.ngui->addButton("Mosek", mosek);
-//        viewer.ngui->addButton("3D Cubes", generate_cube);
-        viewer.ngui->addButton("2D Pattern", polygon);
+        viewer.ngui->addGroup("TI_Stable");
+        viewer.ngui->addButton("2D Pattern", polygons_2d_rendering);
         viewer.ngui->addButton("Solve", opt_solve);
-        viewer.ngui->addVariable("Selected", selected);
+        viewer.ngui->addVariable<Selected_Mode>("Selected Mode", [&](Selected_Mode mode){
+            clear_color();
+            recorder = select_record(mode);
+            selected_mode = mode;}, [&](){
+            return selected_mode;
+        }) ->setItems({"None", "Move", "Fix", "Gap"});
+        viewer.ngui->addButton("Select", [&]()
+        {
+            if(selected_mode == FIX) {
+                polygons_fixed_id.clear();
+                polygons_fixed_id = recorder.poly_id_;
+            }
+            else if(selected_mode == GAP)
+            {
+                recorder.get(polygons_gap_par);
+            }
+        });
         viewer.screen->performLayout();
         return false;
     };
-
     viewer.callback_mouse_down = &mouse_down;
     viewer.callback_key_down = &key_down;
-
     viewer.launch();
     return 0;
 }

@@ -86,11 +86,8 @@ double PolygonsCollisionSolver::penetration_distance(vecPolys p, VectorXd &x)
     int Ia, Ib;
     bool na;
     double mu;
-    if(p[0].collision(p[1], n, na, Ia, Ib)) {
-        return std::abs(n.dot(p[0].point(Ia) - p[1].point(Ib)));
-    }
-    else
-        return 0;
+    p[0].collision(p[1], n, na, Ia, Ib);
+    return n.dot(p[0].point(Ia) - p[1].point(Ib));
 }
 
 bool PolygonsCollisionSolver::solve_linear(std::vector<T> &triplist,
@@ -151,8 +148,6 @@ bool PolygonsCollisionSolver::solve_linear(std::vector<T> &triplist,
     {
         mk_pk += c(id) * ans(id);
     }
-    std::cout << "mk_pk:\t " << mk_pk << std::endl;
-
     return sucess;
 }
 
@@ -160,7 +155,7 @@ bool PolygonsCollisionSolver::solve_linear(std::vector<T> &triplist,
 void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
 
     //parameter for trust region algorithm
-    const int MAX_ITER_TIMES = 10000;
+    const int MAX_ITER_TIMES = 100;
     const double MAX_TRUST_REGION_SIZE  = 0.01;
     const double MIN_TRUST_REGION_SIZE  = 1e-8;
     const double ACCEPT_RATIO           = 0.5;
@@ -181,6 +176,8 @@ void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
     int id_extra = 3 * P_.size();
     int Ia, Ib;
     double f0;
+    bool gap_pair = false;
+    double mu = 0.1;
 
     std::vector<T> triplist;
     std::vector<bool> in_opt; in_opt.resize(P_.size(), true);
@@ -208,8 +205,6 @@ void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
         id_term = 0;
         id_extra = 3 * P_.size();
         c.clear();
-
-
         for(int id = 0; id < Conn_.size(); id++)
         {
             //clear
@@ -219,6 +214,13 @@ void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
             Ia = Conn_[id].first;
             Ib = Conn_[id].second;
             f0 = 0;
+
+            if(Ia == gap_.first && Ib == gap_.second)
+                gap_pair = true;
+            else if(Ia == gap_.second && Ib == gap_.first)
+                gap_pair = true;
+            else
+                gap_pair = false;
 
             //inital
             p.push_back(P_[Ia]);
@@ -247,31 +249,75 @@ void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
 
             if(a.size() == 1)
             {
-                c.push_back(0);
-                c.push_back(1);
+                if(gap_pair)
+                {
+                    c.push_back(-mu);
+                    c.push_back(1 + mu);
+                }
+                else
+                {
+                    c.push_back(0);
+                    c.push_back(1);
+                }
             }
             else
             {
-                int s[6];
-                for(int jd = 5; jd >= 0; jd--)
+                if(gap_pair)
                 {
-                    s[jd] = id_extra + (jd - 4);
-                }
+                    int s[8];
+                    for(int jd = 7; jd >= 0; jd--)
+                    {
+                        s[jd] = id_extra + (jd - 4);
+                    }
 
-                int coef[6] = {0, 1, 0, -1, -1, 1};
-                double coef_c[6] = {0, 0.5, 0, 0.5, 0.5, 0.5};
-                for(int jd = 0; jd < 6; jd++)
+                    VectorXd coef_0(8); coef_0 << 0, 1, 0, -1, -1, 1, 0, 0;
+                    VectorXd coef_1(8); coef_1 << -1, 1, 1, -1, 0, 0, -1, 1;
+                    for(int jd = 0; jd < 8; jd++)
+                    {
+                        triplist.push_back(T(id_term, s[jd], coef_0[jd]));
+                        triplist.push_back(T(id_term + 1, s[jd], coef_1[jd]));
+                    }
+                    Ac.push_back(0);Ac.push_back(0);
+                    id_term+= 2;
+
+                    coef_0 <<  0, 0.5, 0, 0.5, 0.5, 0.5, 0, 0;
+                    coef_1 << -mu/2, mu/2, -mu/2, mu/2, 0, 0, mu/2, mu/2;
+                    for(int jd = 0; jd < 8; jd++)
+                    {
+                        c.push_back(coef_0[jd] + coef_1[jd]);
+                    }
+                    id_extra = s[7] + 1;
+                }
+                else
                 {
-                    triplist.push_back(T(id_term, s[jd], coef[jd]));
-                    c.push_back(coef_c[jd]);
-                }
+                    int s[6];
+                    for(int jd = 5; jd >= 0; jd--)
+                    {
+                        s[jd] = id_extra + (jd - 4);
+                    }
 
-                Ac.push_back(0);
-                id_term++;
-                id_extra = s[5] + 1;
+                    VectorXd coef(6); coef << 0, 1, 0, -1, -1, 1;
+                    VectorXd coef_c(6); coef_c << 0, 0.5, 0, 0.5, 0.5, 0.5;
+                    for(int jd = 0; jd < 6; jd++)
+                    {
+                        triplist.push_back(T(id_term, s[jd], coef[jd]));
+                        c.push_back(coef_c[jd]);
+                    }
+                    Ac.push_back(0);
+                    id_term++;
+                    id_extra = s[5] + 1;
+                }
             }
-            f_xk += f0;
-            mk_0 += f0;
+            if(gap_pair)
+            {
+                f_xk += (-mu) * f0;
+                mk_0 += (-mu) * f0;
+            }
+            else
+            {
+                f_xk += f0 > 0 ? 0 : -f0;
+                mk_0 += f0 > 0 ? 0 : -f0;
+            }
         }
         //construction of linear programming
         VectorXd x;
@@ -284,6 +330,13 @@ void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
             Ia = Conn_[id].first;
             Ib = Conn_[id].second;
 
+            if(Ia == gap_.first && Ib == gap_.second)
+                gap_pair = true;
+            else if(Ia == gap_.second && Ib == gap_.first)
+                gap_pair = true;
+            else
+                gap_pair = false;
+
             //inital
             p.push_back(P_[Ia]);
             p.push_back(P_[Ib]);
@@ -291,7 +344,12 @@ void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
             tx = VectorXd::Zero(6);
             tx.segment(0, 3) = x.segment(3 * Ia, 3);
             tx.segment(3, 3) = x.segment(3 * Ib, 3);
-            f_xkpk += penetration_distance(p, tx);
+
+            double f0 = penetration_distance(p, tx);
+            if(gap_pair)
+                f_xkpk += (-mu) * f0;
+            else
+                f_xkpk += f0 > 0? 0 : -f0;
         }
 
         //output information
@@ -322,7 +380,7 @@ void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
             x0 = x;
         }
 
-        if(f_xkpk < ACCEPT_F_XK) break;
+        //if(f_xkpk < ACCEPT_F_XK) break;
     }
 }
 
@@ -346,7 +404,7 @@ void PolygonsCollisionSolver::get_a_coeff(VectorXd &a,
     p_ori[1]    = P_ORI[1].point(Ib);
 
     f_xk = n.dot(p[0] - p[1]);
-    f_xk = f_xk > 0 ? 0 : -f_xk;
+    //f_xk = f_xk > 0 ? 0 : -f_xk;
 
     /****** penetration distance info *********/
     a = VectorXd::Zero(7);

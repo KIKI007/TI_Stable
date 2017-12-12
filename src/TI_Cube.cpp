@@ -2,8 +2,8 @@
 // Created by ziqwang on 22.11.17.
 //
 
+
 #include "TI_Cube.h"
-#include "Basic_Parameters.h"
 
 TI_Cube::TI_Cube() {
     init(0, 0);

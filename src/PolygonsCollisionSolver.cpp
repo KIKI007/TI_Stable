@@ -6,7 +6,7 @@
 
 PolygonsCollisionSolver::PolygonsCollisionSolver()
 {
-
+    gap_ = std::pair<int, int>(-1, -1);
 }
 
 void PolygonsCollisionSolver::setPolygons(vecPolys &P)
@@ -16,6 +16,16 @@ void PolygonsCollisionSolver::setPolygons(vecPolys &P)
 
 void PolygonsCollisionSolver::setConnection(int a, int b) {
     Conn_.push_back(std::pair<int, int>(a, b));
+}
+
+void PolygonsCollisionSolver::setFixed(int a)
+{
+    fixed_.push_back(a);
+}
+
+void PolygonsCollisionSolver::setGap(int a, int b)
+{
+    gap_ = std::pair<int, int>(a, b);
 }
 
 bool PolygonsCollisionSolver::get_a_coeff(vecVectorXd &a, vector<PolygonPoints> &P_ORI, VectorXd &x, double &f_xk)
@@ -32,8 +42,10 @@ bool PolygonsCollisionSolver::get_a_coeff(vecVectorXd &a, vector<PolygonPoints> 
     x0[1] = x.segment(3, 3);
 
     PolygonPoints P[2];
-    P[0] = P_ORI[0];P[0].Rotate_translate(x0[0]);
-    P[1] = P_ORI[1];P[1].Rotate_translate(x0[1]);
+    P[0] = P_ORI[0];
+    P[0].do_transformation(x0[0]);
+    P[1] = P_ORI[1];
+    P[1].do_transformation(x0[1]);
 
     /************ collision info **************/
     int Ia, Ib, Ic;
@@ -67,8 +79,8 @@ double PolygonsCollisionSolver::penetration_distance(vecPolys p, VectorXd &x)
 {
     Vector3d x0 = x.segment(0, 3);
     Vector3d x1 = x.segment(3, 3);
-    p[0].Rotate_translate(x0);
-    p[1].Rotate_translate(x1);
+    p[0].do_transformation(x0);
+    p[1].do_transformation(x1);
 
     Vector3d n;
     int Ia, Ib;
@@ -159,7 +171,7 @@ void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
     //double      dx          = INIT_TRUST_REGION_SIZE;   //trust region size
     double      mk_0, mk_pk, f_xk, f_xkpk;              //function and model's improvement
 
-    if(x0.size() == 0)
+    if(x0.isZero())
     {
         x0 = VectorXd::Zero(P_.size() * 3);
         dx = INIT_TRUST_REGION_SIZE;
@@ -179,12 +191,11 @@ void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
     vecPolys p;
     vecVectorXd a;
 
-    for(int id = 0; id < in_opt.size(); id++) in_opt[id] = true;
-
-    in_opt[0] = 0;
-    in_opt[1] = 0;
-    in_opt[2] = 0;
-    in_opt[3] = 0;
+    for(int id = 0; id < fixed_.size(); id++)
+    {
+        if(fixed_[id] >= 0 && fixed_[id] < P_.size())
+            in_opt[fixed_[id]] = false;
+    }
 
     while(iter_times < MAX_ITER_TIMES && dx > MIN_TRUST_REGION_SIZE)
     {
@@ -286,8 +297,8 @@ void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
         //output information
         double pho = (f_xk - f_xkpk) / (mk_0 - mk_pk);
 
-        std::cout << "dx:\t" << (x - x0).transpose() << std::endl
-                  << "x:\t" <<   x0.transpose() << std::endl
+        std::cout //<< "dx:\t" << (x - x0).transpose() << std::endl
+                  //<< "x:\t" <<   x0.transpose() << std::endl
                   << "f_xk:\t" << f_xk << std::endl
                   << "f_xkpk:\t" << f_xkpk << std::endl
                   << "mk_pk:\t" << mk_pk << std::endl
@@ -326,8 +337,8 @@ void PolygonsCollisionSolver::get_a_coeff(VectorXd &a,
                                           double &f_xk) {
 
     Vector3d ct_ori[2], p[2], p_ori[2];
-    P_ORI[0].center_points(ct_ori[0]);
-    P_ORI[1].center_points(ct_ori[1]);
+    P_ORI[0].get_center(ct_ori[0]);
+    P_ORI[1].get_center(ct_ori[1]);
 
     p[0]        = P[0].point(Ia);
     p[1]        = P[1].point(Ib);

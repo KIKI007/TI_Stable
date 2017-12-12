@@ -4,12 +4,17 @@
 
 #ifndef TI_STABLE_RANDOMTRIANGLES2D_H
 #define TI_STABLE_RANDOMTRIANGLES2D_H
+
 #include "PolygonPoints.h"
 #include <string>
 #include <igl/triangle/triangulate.h>
+#include <vector>
+#include <map>
 using Eigen::RowVector2d;
 using Eigen::Vector3d;
 typedef  std::vector<PolygonPoints> vecPolys;
+using std::vector;
+using std::pair;
 class RandomTriangles2D{
 
 public:
@@ -20,7 +25,7 @@ public:
 
 public:
 
-    void createTriangles(vecPolys &P)
+    void createTriangles(vecPolys &P, vector<pair<int, int>> &Conn)
     {
         //firstly add boundary
         add_boundary(P);
@@ -34,8 +39,8 @@ public:
         rV.row(2) = RowVector2d(len_, len_);
         rV.row(3) = RowVector2d(0, len_);
 
-        E <<    0,      1,
-                1,    2,
+        E <<    0,  1,
+                1,  2,
                 2,  3,
                 3,  0;
 
@@ -43,7 +48,6 @@ public:
         MatrixXi F;
         std::string flag = "-p -q30 -a1";
         igl::triangle::triangulate(rV, E, H, flag, V, F);
-
         PolygonPoints p;
         std::vector<int> ids;
         for(int id = 0; id < F.rows(); id++)
@@ -59,10 +63,15 @@ public:
                 points.col(jd) = point;
             }
             p.set_points(points);
-            p.shrink(0.9);
+            p.do_scale(0.90);
             p.set_color();
             P.push_back(p);
         }
+
+
+        build_connect(Conn, P, F);
+
+
         return;
     }
 
@@ -115,6 +124,44 @@ public:
         P.push_back(P1);
         P.push_back(P2);
         P.push_back(P3);
+    }
+
+    void build_connect(vector<pair<int, int>> &Conn, vecPolys &P, MatrixXi &F)
+    {
+        for(int id = 0; id < F.rows(); id++)
+        {
+            for(int jd = id + 1;jd < F.rows(); jd++)
+            {
+                int is_zero = 0;
+                for(int kd = 0; kd < 3 && !is_zero; kd++)
+                {
+                    for(int ld = 0; ld < 3; ld++)
+                    {
+                        if(F(id, kd) == F(jd, ld))
+                        {
+                            is_zero = 1;
+                            break;
+                        }
+                    }
+                }
+                if(is_zero == 1)
+                    Conn.push_back(pair<int, int>(id + 4, jd + 4));
+            }
+        }
+        for(int id = 4; id< P.size();id++)
+        {
+            Vector3d center; P[id].get_center(center);
+            if(center[1] <= 1)
+                Conn.push_back(pair<int, int>(0, id));
+            if(center[0] >= len_ - 1)
+                Conn.push_back(pair<int, int>(1, id));
+            if(center[1] >= len_ - 1)
+                Conn.push_back(pair<int, int>(2, id));
+            if(center[0] <= 1)
+                Conn.push_back(pair<int, int>(3, id));
+        }
+
+        return;
     }
 
 private:

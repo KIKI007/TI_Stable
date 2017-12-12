@@ -26,6 +26,10 @@ public:
 
     void setConnection(int a, int b);
 
+    void setFixed(int a);
+
+    void setGap(int a, int b);
+
 public:
 
     void collision_resolve(VectorXd &x, double &dx);
@@ -57,9 +61,14 @@ private:
                       double dx,
                       double &mk_pk);
 private:
+
     vecPolys P_;
 
     std::vector<std::pair<int, int>> Conn_;
+
+    std::vector<int> fixed_;
+
+    std::pair<int, int> gap_;
 };
 
 

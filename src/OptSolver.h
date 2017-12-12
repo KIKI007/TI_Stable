@@ -145,12 +145,14 @@ bool get_a_coeff(VectorXd &a, vector<PolygonPoints> &P_ORI, VectorXd &x, double 
     x0[1] = x.segment(3, 3);
 
     Vector3d ct_ori[2];
-    P_ORI[0].center_points(ct_ori[0]);
-    P_ORI[1].center_points(ct_ori[1]);
+    P_ORI[0].get_center(ct_ori[0]);
+    P_ORI[1].get_center(ct_ori[1]);
 
     PolygonPoints P[2];
-    P[0] = P_ORI[0];P[0].Rotate_translate(x0[0]);
-    P[1] = P_ORI[1];P[1].Rotate_translate(x0[1]);
+    P[0] = P_ORI[0];
+    P[0].do_transformation(x0[0]);
+    P[1] = P_ORI[1];
+    P[1].do_transformation(x0[1]);
 
     /************ collision info **************/
 
@@ -209,8 +211,8 @@ double penetration_distance(vector<PolygonPoints> p, VectorXd &x)
 {
     Vector3d x0 = x.segment(0, 3);
     Vector3d x1 = x.segment(3, 3);
-    p[0].Rotate_translate(x0);
-    p[1].Rotate_translate(x1);
+    p[0].do_transformation(x0);
+    p[1].do_transformation(x1);
 
     Vector3d n;
     int Ia, Ib;

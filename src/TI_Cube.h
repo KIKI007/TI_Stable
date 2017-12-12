@@ -4,11 +4,10 @@
 
 #ifndef TI_STABLE_TI_CUBE_H
 #define TI_STABLE_TI_CUBE_H
-
+const double TI_zero_eps_ = 1e-6;
 #include <Eigen/Dense>
 #include<Eigen/StdVector>
 #include "PolyhedraPoints.h"
-
 using Eigen::MatrixXd;
 using Eigen::MatrixXi;
 using Eigen::VectorXd;

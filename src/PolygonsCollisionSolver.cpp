@@ -180,14 +180,17 @@ void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx)
     //const parameter for trust region algorithm
     const int MAX_ITER_TIMES = 1000;
     const double MAX_TRUST_REGION_SIZE  = 0.01;
-    const double MIN_TRUST_REGION_SIZE  = 1e-8;
+    const double MIN_TRUST_REGION_SIZE  = 1e-6;
     const double ACCEPT_RATIO           = 0.5;
     //const double ACCEPT_F_XK            = 1e-6;
-    const double INIT_TRUST_REGION_SIZE = 0.01;
+    const double INIT_TRUST_REGION_SIZE = 0.001;
 
     //variable definition for trust region algorithm
-    int         iter_times  = 0;
-    double      mk_0, mk_pk, f_xk, f_xkpk;              //function and model's improvement
+    int         iter_times, id_term, id_extra;
+    int         Ia, Ib;
+    double      mk_0, mk_pk, f_xk, f_xkpk, f0;              //function and model's improvement
+    double mu;
+    bool gap_pair;
     VectorXd tx0, tx;
     std::vector<T> triplist;
     std::vector<double> Ac, c;
@@ -195,19 +198,13 @@ void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx)
     vecPolys p;                                         // p[0], p[1] are two polygons which has collision constrain
     vecVectorXd a;                                      // for constructing linear programming
 
+    //initializing
+    mu = 1;
     if(x0.isZero())
     {
         x0 = VectorXd::Zero(P_.size() * 3);
         dx = INIT_TRUST_REGION_SIZE;
     }
-    //for optimization
-    int id_term = 0;
-    int id_extra = 3 * P_.size();
-    int Ia, Ib;
-    double f0;
-    bool gap_pair = false;
-    double mu = 1;
-
     in_opt.resize(P_.size(), true);
     for(int id = 0; id < fixed_.size(); id++)
     {
@@ -215,193 +212,209 @@ void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx)
             in_opt[fixed_[id]] = false;
     }
 
-    while(iter_times < MAX_ITER_TIMES && dx > MIN_TRUST_REGION_SIZE)
+    for(mu = 1; mu >= 1e-5; mu/= 10.0)
     {
-        iter_times++;
-        std::cout << "Iter:\t" << iter_times << std::endl;
+        iter_times = 0;
+        dx = INIT_TRUST_REGION_SIZE;
 
-        mk_0 =  mk_pk =  f_xk = f_xkpk = 0;
-        triplist.clear();
-        Ac.clear();
-        id_term = 0;
-        id_extra = 3 * P_.size();
-        c.clear();
-        for(int id = 0; id < Conn_.size(); id++)
+
+        while(iter_times < MAX_ITER_TIMES && dx > MIN_TRUST_REGION_SIZE)
         {
-            //clear
-            a.clear();
-            tx0 = VectorXd::Zero(6);
-            p.clear();
-            Ia = Conn_[id].first;
-            Ib = Conn_[id].second;
-            f0 = 0;
+            iter_times++;
+            std::cout << "Iter:\t" << iter_times << std::endl;
 
-            if(Ia == gap_.first && Ib == gap_.second)
-                gap_pair = true;
-            else if(Ia == gap_.second && Ib == gap_.first)
-                gap_pair = true;
-            else
+            Timer_evaluation timer_get_a;
+            Timer_evaluation timer_solve_linear;
+            Timer_evaluation timer_tot;
+            timer_tot.begin();
+
+            //initialized
+            {
+                mk_0 =  mk_pk =  f_xk = f_xkpk = 0;
+
+                triplist.clear();
+                Ac.clear();
+                c.clear();
+
+                id_term = 0;
+                id_extra = 3 * P_.size();
+            }
+
+            for(int id = 0; id < Conn_.size(); id++)
+            {
+                //clear
+                a.clear();
+                p.clear();
+                tx0 = VectorXd::Zero(6);
+                Ia = Conn_[id].first;
+                Ib = Conn_[id].second;
+                f0 = 0;
+
+                //inital
+                p.push_back(P_[Ia]);
+                p.push_back(P_[Ib]);
+
+                tx0.segment(0, 3) = x0.segment(3 * Ia, 3);
+                tx0.segment(3, 3) = x0.segment(3 * Ib, 3);
+
                 gap_pair = false;
+                if(Ia == gap_.first && Ib == gap_.second) gap_pair = true;
+                if(Ia == gap_.second && Ib == gap_.first) gap_pair = true;
 
-            //inital
-            p.push_back(P_[Ia]);
-            p.push_back(P_[Ib]);
+                //get a
+                timer_get_a.begin();
+                if(!get_a_coeff(a, p, tx0, f0))
+                    continue;
+                timer_get_a.pause();
 
-            tx0.segment(0, 3) = x0.segment(3 * Ia, 3);
-            tx0.segment(3, 3) = x0.segment(3 * Ib, 3);
-
-
-            if(!get_a_coeff(a, p, tx0, f0))
-                continue;
-
-
-            for(int kd = 0; kd < a.size(); kd++)
-            {
-                for(int jd = 0; jd < 3; jd++)
+                //build linear programming
+                for(int kd = 0; kd < a.size(); kd++)
                 {
-                    triplist.push_back(T(id_term, 3 * Ia + jd, -a[kd](1 + jd)));
-                    triplist.push_back(T(id_term, 3 * Ib + jd, -a[kd](4 + jd)));
-                }
-                triplist.push_back(T(id_term, id_extra++,  1));
-                triplist.push_back(T(id_term, id_extra++, -1));
-                Ac.push_back(a[kd](0));
-                id_term++;
-            }
-
-            if(a.size() == 1)
-            {
-                if(gap_pair)
-                {
-                    c.push_back(-mu);
-                    c.push_back(1 + mu);
-                }
-                else
-                {
-                    c.push_back(0);
-                    c.push_back(1);
-                }
-            }
-            else
-            {
-                if(gap_pair)
-                {
-                    int s[8];
-                    for(int jd = 7; jd >= 0; jd--)
+                    for(int jd = 0; jd < 3; jd++)
                     {
-                        s[jd] = id_extra + (jd - 4);
+                        triplist.push_back(T(id_term, 3 * Ia + jd, -a[kd](1 + jd)));
+                        triplist.push_back(T(id_term, 3 * Ib + jd, -a[kd](4 + jd)));
                     }
-
-                    VectorXd coef_0(8); coef_0 << 0, 1, 0, -1, -1, 1, 0, 0;
-                    VectorXd coef_1(8); coef_1 << -1, 1, 1, -1, 0, 0, -1, 1;
-                    for(int jd = 0; jd < 8; jd++)
-                    {
-                        triplist.push_back(T(id_term, s[jd], coef_0[jd]));
-                        triplist.push_back(T(id_term + 1, s[jd], coef_1[jd]));
-                    }
-                    Ac.push_back(0);Ac.push_back(0);
-                    id_term+= 2;
-
-                    coef_0 <<  0, 0.5, 0, 0.5, 0.5, 0.5, 0, 0;
-                    coef_1 << -mu/2, mu/2, -mu/2, mu/2, 0, 0, mu/2, mu/2;
-                    for(int jd = 0; jd < 8; jd++)
-                    {
-                        c.push_back(coef_0[jd] + coef_1[jd]);
-                    }
-                    id_extra = s[7] + 1;
-                }
-                else
-                {
-                    int s[6];
-                    for(int jd = 5; jd >= 0; jd--)
-                    {
-                        s[jd] = id_extra + (jd - 4);
-                    }
-
-                    VectorXd coef(6); coef << 0, 1, 0, -1, -1, 1;
-                    VectorXd coef_c(6); coef_c << 0, 0.5, 0, 0.5, 0.5, 0.5;
-                    for(int jd = 0; jd < 6; jd++)
-                    {
-                        triplist.push_back(T(id_term, s[jd], coef[jd]));
-                        c.push_back(coef_c[jd]);
-                    }
-                    Ac.push_back(0);
+                    triplist.push_back(T(id_term, id_extra++,  1));
+                    triplist.push_back(T(id_term, id_extra++, -1));
+                    Ac.push_back(a[kd](0));
                     id_term++;
-                    id_extra = s[5] + 1;
                 }
-            }
-            if(gap_pair)
-            {
-                f_xk += (-mu) * f0;
-                mk_0 += (-mu) * f0;
-            }
-            else
-            {
+
+                if(a.size() == 1)
+                {
+                    if(gap_pair)
+                    {
+                        c.push_back(-mu);
+                        c.push_back(1 + mu);
+                    }
+                    else
+                    {
+                        c.push_back(0);
+                        c.push_back(1);
+                    }
+                }
+                else
+                {
+                    if(gap_pair)
+                    {
+                        int s[8];
+                        for(int jd = 7; jd >= 0; jd--)
+                        {
+                            s[jd] = id_extra + (jd - 4);
+                        }
+
+                        VectorXd coef_0(8); coef_0 << 0, 1, 0, -1, -1, 1, 0, 0;
+                        VectorXd coef_1(8); coef_1 << -1, 1, 1, -1, 0, 0, -1, 1;
+                        for(int jd = 0; jd < 8; jd++)
+                        {
+                            triplist.push_back(T(id_term, s[jd], coef_0[jd]));
+                            triplist.push_back(T(id_term + 1, s[jd], coef_1[jd]));
+                        }
+                        Ac.push_back(0);Ac.push_back(0);
+                        id_term+= 2;
+
+                        coef_0 <<  0, 0.5, 0, 0.5, 0.5, 0.5, 0, 0;
+                        coef_1 << -mu/2, mu/2, -mu/2, mu/2, 0, 0, mu/2, mu/2;
+                        for(int jd = 0; jd < 8; jd++)
+                        {
+                            c.push_back(coef_0[jd] + coef_1[jd]);
+                        }
+                        id_extra = s[7] + 1;
+                    }
+                    else
+                    {
+                        int s[6];
+                        for(int jd = 5; jd >= 0; jd--)
+                        {
+                            s[jd] = id_extra + (jd - 4);
+                        }
+
+                        VectorXd coef(6); coef << 0, 1, 0, -1, -1, 1;
+                        VectorXd coef_c(6); coef_c << 0, 0.5, 0, 0.5, 0.5, 0.5;
+                        for(int jd = 0; jd < 6; jd++)
+                        {
+                            triplist.push_back(T(id_term, s[jd], coef[jd]));
+                            c.push_back(coef_c[jd]);
+                        }
+                        Ac.push_back(0);
+                        id_term++;
+                        id_extra = s[5] + 1;
+                    }
+                }
+
+                if(gap_pair)
+                {
+                    f_xk += (-mu) * f0;
+                    mk_0 += (-mu) * f0;
+                }
                 f_xk += f0 > 0 ? 0 : -f0;
                 mk_0 += f0 > 0 ? 0 : -f0;
             }
-        }
-        //construction of linear programming
-        VectorXd x;
-        solve_linear(triplist, c, Ac, in_opt, x0, x, id_term, id_extra, dx, mk_pk);
 
-        for(int id = 0; id < Conn_.size(); id++)
-        {
-            //clear
-            p.clear();
-            Ia = Conn_[id].first;
-            Ib = Conn_[id].second;
+            //construction of linear programming
+            VectorXd x;
+            timer_solve_linear.begin();
+            solve_linear(triplist, c, Ac, in_opt, x0, x, id_term, id_extra, dx, mk_pk);
+            timer_solve_linear.pause();
 
-            if(Ia == gap_.first && Ib == gap_.second)
-                gap_pair = true;
-            else if(Ia == gap_.second && Ib == gap_.first)
-                gap_pair = true;
-            else
-                gap_pair = false;
-
-            //inital
-            p.push_back(P_[Ia]);
-            p.push_back(P_[Ib]);
-
-            tx = VectorXd::Zero(6);
-            tx.segment(0, 3) = x.segment(3 * Ia, 3);
-            tx.segment(3, 3) = x.segment(3 * Ib, 3);
-
-            double f0 = signed_distance(p, tx);
-            if(gap_pair)
-                f_xkpk += (-mu) * f0;
-            else
-                f_xkpk += f0 > 0? 0 : -f0;
-        }
-
-        //output information
-        double pho = f_xk - f_xkpk == 0 ? 0 : (f_xk - f_xkpk) / (mk_0 - mk_pk);
-
-        std::cout //<< "dx:\t" << (x - x0).transpose() << std::endl
-                  //<< "x:\t" <<   x0.transpose() << std::endl
-                  << "f_xk:\t" << f_xk << std::endl
-                  << "f_xkpk:\t" << f_xkpk << std::endl
-                  << "mk_pk:\t" << mk_pk << std::endl
-                  << "pho:\t" << pho << std::endl
-                  << "dx:\t" << dx << std::endl << std::endl;
-
-        //trust region expanding
-        if(pho < 0.5 || f_xk < f_xkpk)
-        {
-            dx = dx * 0.25;
-        }
-        else
-        {
-            if(pho > 0.75 && (x - x0).norm() >= dx - MIN_TRUST_REGION_SIZE)
+            for(int id = 0; id < Conn_.size(); id++)
             {
-                dx = std::min(2 * dx, MAX_TRUST_REGION_SIZE);
+                //clear
+                p.clear();
+                Ia = Conn_[id].first;
+                Ib = Conn_[id].second;
+
+                gap_pair = false;
+                if(Ia == gap_.first && Ib == gap_.second) gap_pair = true;
+                if(Ia == gap_.second && Ib == gap_.first) gap_pair = true;
+
+                //inital
+                p.push_back(P_[Ia]);
+                p.push_back(P_[Ib]);
+
+                tx = VectorXd::Zero(6);
+                tx.segment(0, 3) = x.segment(3 * Ia, 3);
+                tx.segment(3, 3) = x.segment(3 * Ib, 3);
+
+                double f0 = signed_distance(p, tx);
+                if(gap_pair) f_xkpk += (-mu) * f0;
+                f_xkpk += f0 > 0? 0 : -f0;
+            }
+
+            timer_tot.pause();
+            //output information
+            double pho = f_xk - f_xkpk == 0 ? 0 : (f_xk - f_xkpk) / (mk_0 - mk_pk);
+
+            std::cout //<< "dx:\t" << (x - x0).transpose() << std::endl
+                    //<< "x:\t" <<   x0.transpose() << std::endl
+                    << "time_tot\t" << timer_tot.total() << std::endl
+                    << "time_get_a\t" << timer_get_a.total() << std::endl
+                    << "time_solve\t" << timer_solve_linear.total() << std::endl
+                    << "mu:\t" << mu <<std::endl
+                    << "f_xk:\t" << f_xk << std::endl
+                    << "f_xkpk:\t" << f_xkpk << std::endl
+                    << "mk_pk:\t" << mk_pk << std::endl
+                    << "pho:\t" << pho << std::endl
+                    << "dx:\t" << dx << std::endl << std::endl;
+
+            //trust region expanding
+            if(pho < 0.5 || f_xk < f_xkpk)
+            {
+                dx = dx * 0.25;
+            }
+            else
+            {
+                if(pho > 0.75 && (x - x0).norm() >= dx - MIN_TRUST_REGION_SIZE)
+                {
+                    dx = std::min(2 * dx, MAX_TRUST_REGION_SIZE);
+                }
+            }
+            if(pho > ACCEPT_RATIO && f_xk > f_xkpk)
+            {
+                x0 = x;
             }
         }
-        if(pho > ACCEPT_RATIO && f_xk > f_xkpk)
-        {
-            x0 = x;
-        }
-
-        //if(f_xkpk < ACCEPT_F_XK) break;
     }
 }
 

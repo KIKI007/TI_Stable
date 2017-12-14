@@ -46,7 +46,7 @@ public:
 
         MatrixXd V;
         MatrixXi F;
-        std::string flag = "-p -q30 -a1";
+        std::string flag = "-p -q30 -a0.3";
         igl::triangle::triangulate(rV, E, H, flag, V, F);
         PolygonPoints p;
         std::vector<int> ids;
@@ -63,7 +63,7 @@ public:
                 points.col(jd) = point;
             }
             p.set_points(points);
-            p.do_scale(0.90);
+            p.do_scale(0.99);
             p.set_color();
             P.push_back(p);
         }

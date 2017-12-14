@@ -25,7 +25,7 @@ public:
 
 public:
 
-    void createTriangles(vecPolys &P, vector<pair<int, int>> &Conn)
+    void createTriangles(vecPolys &P, vector<pair<int, int>> &Conn, vector<int> &fixed)
     {
         //firstly add boundary
         add_boundary(P);
@@ -68,6 +68,8 @@ public:
             P.push_back(p);
         }
 
+        for(int id = 0; id < 4; id++)
+        fixed.push_back(id);
 
         build_connect(Conn, P, F);
 

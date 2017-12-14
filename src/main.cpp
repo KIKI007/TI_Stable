@@ -15,6 +15,7 @@
 #include "PolygonsCollisionSolver.h"
 #include "RandomTriangles2D.h"
 #include "RandomRectangles2D.h"
+#include "RandomHexagons2D.h"
 
 igl::viewer::Viewer viewer;
 MatrixXd V, C;
@@ -28,6 +29,7 @@ bool fix_selected(false);
 vector<PolygonPoints> polygons_list;
 vector<pair<int, int>> polyons_collision_pair;
 vector<int> polygons_fixed_id;
+vector<int> polygons_fixed_extra_id;
 pair<int, int> polygons_gap_par;
 
 enum Selected_Mode {
@@ -103,37 +105,53 @@ public:
 }recorder;
 
 
-void generate_random_triangles(vector<PolygonPoints> &P, vector<pair<int, int>>&Conn)
+void generate_random_hexagons(vector<PolygonPoints> &P, vector<pair<int, int>>&Conn, vector<int> &fixeds)
+{
+    P.clear();
+    Conn.clear();
+    x_0.setZero();
+    RandomHexagons2D generator;
+    generator.createHexagons(P, Conn, fixeds);
+    return;
+}
+
+void generate_random_triangles(vector<PolygonPoints> &P, vector<pair<int, int>>&Conn, vector<int> &fixeds)
 {
     P.clear();
     Conn.clear();
     x_0.setZero();
     RandomTriangles2D generator;
-    generator.createTriangles(P, Conn);
+    generator.createTriangles(P, Conn, fixeds);
     return;
 }
 
-void generate_random_rectangles(vector<PolygonPoints> &P, vector<pair<int, int>>&Conn)
+void generate_random_rectangles(vector<PolygonPoints> &P, vector<pair<int, int>>&Conn, vector<int> &fixeds)
 {
     P.clear();
     Conn.clear();
     x_0.setZero();
     RandomRectangles2D generator;
-    generator.createRectangles(P, Conn);
+    generator.createRectangles(P, Conn, fixeds);
     return;
 }
 
+void hexagons_2d_rendering()
+{
+    generate_random_hexagons(polygons_list, polyons_collision_pair, polygons_fixed_id);
+    x_0 = VectorXd(0, 1);
+    set_mesh(polygons_list, viewer, V, F, C);
+}
 
 void rectangles_2d_rendering()
 {
-    generate_random_rectangles(polygons_list, polyons_collision_pair);
+    generate_random_rectangles(polygons_list, polyons_collision_pair, polygons_fixed_id);
     x_0 = VectorXd(0, 1);
     set_mesh(polygons_list, viewer, V, F, C);
 }
 
 void triangles_2d_rendering()
 {
-    generate_random_triangles(polygons_list, polyons_collision_pair);
+    generate_random_triangles(polygons_list, polyons_collision_pair, polygons_fixed_id);
     x_0 = VectorXd(0, 1);
     set_mesh(polygons_list, viewer, V, F, C);
 }
@@ -262,7 +280,7 @@ void opt_solve()
 {
     if(polygons_list.empty())
     {
-        generate_random_rectangles(polygons_list, polyons_collision_pair);
+        generate_random_rectangles(polygons_list, polyons_collision_pair, polygons_fixed_id);
         //generate_random_triangles(polygons_list, polyons_collision_pair);
     }
 
@@ -278,11 +296,11 @@ void opt_solve()
 
     //set fixed
     {
-        solver.setFixed(0);solver.setFixed(1);
-        solver.setFixed(2);solver.setFixed(3);
         for(int id = 0; id < polygons_fixed_id.size(); id++)
             solver.setFixed(polygons_fixed_id[id]);
-        polygons_fixed_id.clear();
+        for(int id = 0; id < polygons_fixed_extra_id.size(); id++)
+            solver.setFixed(polygons_fixed_extra_id[id]);
+        polygons_fixed_extra_id.clear();
         fix_selected = false;
     }
 
@@ -317,6 +335,7 @@ int main() {
         viewer.ngui->addGroup("TI_Stable");
         viewer.ngui->addButton("2D Triangles", triangles_2d_rendering);
         viewer.ngui->addButton("2D Rectangles", rectangles_2d_rendering);
+        viewer.ngui->addButton("2D Hexagons", hexagons_2d_rendering);
         viewer.ngui->addButton("Solve", opt_solve);
         viewer.ngui->addVariable<Selected_Mode>("Selected Mode", [&](Selected_Mode mode){
             clear_color();
@@ -330,8 +349,8 @@ int main() {
         {
             if(selected_mode == FIX) {
                 fix_selected = true;
-                polygons_fixed_id.clear();
-                polygons_fixed_id = recorder.poly_id_;
+                polygons_fixed_extra_id.clear();
+                polygons_fixed_extra_id = recorder.poly_id_;
             }
             else if(selected_mode == GAP)
             {

@@ -63,7 +63,7 @@ public:
                 points.col(jd) = point;
             }
             p.set_points(points);
-            p.do_scale(0.98);
+            p.do_scale(0.99);
             p.set_color();
             P.push_back(p);
         }

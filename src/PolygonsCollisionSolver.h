@@ -36,7 +36,10 @@ public:
 
 private:
 
-    bool get_a_coeff(vecVectorXd &a, vecPolys &P_ORI, VectorXd &x, double &f_xk);
+    bool get_a_coeff(vecVectorXd &a,
+                     vecPolys &P_ORI,
+                     VectorXd &x,
+                     double &f_xk);
 
     void get_a_coeff(VectorXd &a,
                      vecPolys &P_ORI,
@@ -48,7 +51,8 @@ private:
                      VectorXd &x,
                      double &f_xk);
 
-    double penetration_distance(vecPolys p, VectorXd &x);
+    double signed_distance(vecPolys p,
+                           VectorXd &x);
 
     bool solve_linear(std::vector<T> &triplist,
                       std::vector<double> &c,

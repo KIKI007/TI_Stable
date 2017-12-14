@@ -30,12 +30,14 @@ void PolygonsCollisionSolver::setGap(int a, int b)
 
 bool PolygonsCollisionSolver::get_a_coeff(vecVectorXd &a, vector<PolygonPoints> &P_ORI, VectorXd &x, double &f_xk)
 //a is the coefficient of penetration distance function
+    //for 2D case when two faces are parallel, d(P, Q) = min{ d(p, q, n), d(p, r, n)}.
+    //a can be a matrix of size 2 * 7
 //P_ORI is two collision polygons in its origin position
 //x is present rotation and translation
-//x(0 + 3 * i) is theta (rotation angle) in Pi
-//x(1 + 3 * i) is x (translation in x axis) in Pi
-//x(2 + 3 * i) is y (translation in y axis) in Pi
-//f_xk is the penetration distance
+    //x(0 + 3 * i) is theta (rotation angle) in Pi
+    //x(1 + 3 * i) is x (translation in x axis) in Pi
+    //x(2 + 3 * i) is y (translation in y axis) in Pi
+//f_xk is the penetration distance（with sign)
 {
     Vector3d x0[2];
     x0[0] = x.segment(0, 3);
@@ -74,8 +76,11 @@ bool PolygonsCollisionSolver::get_a_coeff(vecVectorXd &a, vector<PolygonPoints> 
     return true;
 }
 
-double PolygonsCollisionSolver::penetration_distance(vecPolys p, VectorXd &x)
-
+double PolygonsCollisionSolver::signed_distance(vecPolys p, VectorXd &x)
+//p has two polygons in its original position and orientation
+//x is a vector of 6 components
+    //x(0~3) for p[0]'s orientation and position
+    //x(3~6) for p[1]'s orientation and position
 {
     Vector3d x0 = x.segment(0, 3);
     Vector3d x1 = x.segment(3, 3);
@@ -100,19 +105,38 @@ bool PolygonsCollisionSolver::solve_linear(std::vector<T> &triplist,
                                            int id_extra,
                                            double dx,
                                            double &mk_pk)
+//solve linear programming
+    // min c^Tx
+    // lc <= Ax <= uc
+    // lx <= x <= ux
+
+// triplist:     is sparse represetation of A
+// vec_c:        is c but only for auxiliary variable (the variable theta, dx, dy term are all 0)
+// Ac is:        the coefficient of lc = uc = Ac
+// in_opt:       is whether one component of x is changable. (some polygons are fixed)
+// x0:           input orginal position and orientation
+// x:            output optimal result
+// id_term:      rows of lc <= Ax <= uc
+// id_extra:     number of auxiliary variable
+// dx:           region size in trust region method
+// mk_pk:        result of c^Tx
 {
+
+    /*               create c^Tx                  */
     Eigen::VectorXd c = VectorXd::Zero(id_extra);
     for(int id = P_.size() * 3; id < id_extra; id++)
     {
         c(id) = vec_c[id - P_.size() * 3];
     }
 
+    /*            create lc <= Ax <= uc            */
     Eigen::SparseMatrix<double> A(id_term, id_extra);
     A.setFromTriplets(triplist.begin(), triplist.end());
 
     Eigen::VectorXd lc(id_term), uc(id_term);
     for(int id = 0; id < Ac.size(); id++) lc(id) = uc(id) = Ac[id];
 
+    /*            create lx <= x <= ux             */
     Eigen::VectorXd lx(id_extra), ux(id_extra);
     for(int id = 0; id < id_extra; id++)
     {
@@ -136,35 +160,40 @@ bool PolygonsCollisionSolver::solve_linear(std::vector<T> &triplist,
         }
     }
 
+    /*            solve linear programming             */
     Eigen::VectorXd ans(id_extra);
     x = VectorXd(P_.size() * 3);
     bool sucess = igl::mosek::mosek_linprog(c, A, lc, uc, lx, ux, ans);
 
-    for(int id = 0; id < P_.size() * 3; id++)
-        x(id) = ans(id);
+    /*              output result                      */
+    for(int id = 0; id < P_.size() * 3; id++) x(id) = ans(id);
 
-    mk_pk = 0;
-    for(int id = 0; id < id_extra; id++)
-    {
-        mk_pk += c(id) * ans(id);
-    }
+    mk_pk = c.dot(ans);
     return sucess;
 }
 
 
-void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
-
-    //parameter for trust region algorithm
-    const int MAX_ITER_TIMES = 100;
+void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx)
+// x0:           input orginal position and orientation
+// dx:           region size in trust region method
+{
+    //const parameter for trust region algorithm
+    const int MAX_ITER_TIMES = 1000;
     const double MAX_TRUST_REGION_SIZE  = 0.01;
     const double MIN_TRUST_REGION_SIZE  = 1e-8;
     const double ACCEPT_RATIO           = 0.5;
-    const double ACCEPT_F_XK            = 1e-6;
+    //const double ACCEPT_F_XK            = 1e-6;
     const double INIT_TRUST_REGION_SIZE = 0.01;
 
+    //variable definition for trust region algorithm
     int         iter_times  = 0;
-    //double      dx          = INIT_TRUST_REGION_SIZE;   //trust region size
     double      mk_0, mk_pk, f_xk, f_xkpk;              //function and model's improvement
+    VectorXd tx0, tx;
+    std::vector<T> triplist;
+    std::vector<double> Ac, c;
+    std::vector<bool> in_opt;                           // wethea a polygon is
+    vecPolys p;                                         // p[0], p[1] are two polygons which has collision constrain
+    vecVectorXd a;                                      // for constructing linear programming
 
     if(x0.isZero())
     {
@@ -177,17 +206,9 @@ void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
     int Ia, Ib;
     double f0;
     bool gap_pair = false;
-    double mu = 0.1;
+    double mu = 1;
 
-    std::vector<T> triplist;
-    std::vector<bool> in_opt; in_opt.resize(P_.size(), true);
-    std::vector<double> Ac;
-    std::vector<double> c;
-
-    VectorXd tx0, tx;
-    vecPolys p;
-    vecVectorXd a;
-
+    in_opt.resize(P_.size(), true);
     for(int id = 0; id < fixed_.size(); id++)
     {
         if(fixed_[id] >= 0 && fixed_[id] < P_.size())
@@ -345,7 +366,7 @@ void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
             tx.segment(0, 3) = x.segment(3 * Ia, 3);
             tx.segment(3, 3) = x.segment(3 * Ib, 3);
 
-            double f0 = penetration_distance(p, tx);
+            double f0 = signed_distance(p, tx);
             if(gap_pair)
                 f_xkpk += (-mu) * f0;
             else
@@ -353,7 +374,7 @@ void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
         }
 
         //output information
-        double pho = (f_xk - f_xkpk) / (mk_0 - mk_pk);
+        double pho = f_xk - f_xkpk == 0 ? 0 : (f_xk - f_xkpk) / (mk_0 - mk_pk);
 
         std::cout //<< "dx:\t" << (x - x0).transpose() << std::endl
                   //<< "x:\t" <<   x0.transpose() << std::endl

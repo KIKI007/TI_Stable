@@ -3,6 +3,8 @@
 #include <igl/viewer/Viewer.h>
 #include <igl/unproject_onto_mesh.h>
 #include <igl/mosek/mosek_linprog.h>
+#include <igl/png/writePNG.h>
+#include <ctime>
 
 /* system */
 #include <sstream>
@@ -12,6 +14,7 @@
 #include "OptSolver.h"
 #include "PolygonsCollisionSolver.h"
 #include "RandomTriangles2D.h"
+#include "RandomRectangles2D.h"
 
 igl::viewer::Viewer viewer;
 MatrixXd V, C;
@@ -19,6 +22,8 @@ MatrixXi F;
 
 VectorXd x_0(0, 1);
 double dx;
+bool gap_selected(false);
+bool fix_selected(false);
 
 vector<PolygonPoints> polygons_list;
 vector<pair<int, int>> polyons_collision_pair;
@@ -106,9 +111,24 @@ void generate_random_triangles(vector<PolygonPoints> &P, vector<pair<int, int>>&
     return;
 }
 
-void polygons_2d_rendering()
+void generate_random_rectangles(vector<PolygonPoints> &P, vector<pair<int, int>>&Conn)
 {
-    //generate_polygons(plist);
+    P.clear();
+    RandomRectangles2D generator;
+    generator.createRectangles(P, Conn);
+    return;
+}
+
+
+void rectangles_2d_rendering()
+{
+    generate_random_rectangles(polygons_list, polyons_collision_pair);
+    x_0 = VectorXd(0, 1);
+    set_mesh(polygons_list, viewer, V, F, C);
+}
+
+void triangles_2d_rendering()
+{
     generate_random_triangles(polygons_list, polyons_collision_pair);
     x_0 = VectorXd(0, 1);
     set_mesh(polygons_list, viewer, V, F, C);
@@ -238,7 +258,8 @@ void opt_solve()
 {
     if(polygons_list.empty())
     {
-        generate_random_triangles(polygons_list, polyons_collision_pair);
+        generate_random_rectangles(polygons_list, polyons_collision_pair);
+        //generate_random_triangles(polygons_list, polyons_collision_pair);
     }
 
     PolygonsCollisionSolver solver;
@@ -258,12 +279,14 @@ void opt_solve()
         for(int id = 0; id < polygons_fixed_id.size(); id++)
             solver.setFixed(polygons_fixed_id[id]);
         polygons_fixed_id.clear();
+        fix_selected = false;
     }
 
     //set gap
     {
         solver.setGap(polygons_gap_par.first, polygons_gap_par.second);
         polygons_gap_par = pair<int, int>(-1, -1);
+        gap_selected = false;
     }
 
     //set polygons
@@ -285,8 +308,11 @@ int main() {
     polygons_gap_par.second = -1;
     viewer.callback_init = [&](igl::viewer::Viewer& viewer)
     {
+        //
+        viewer.ngui->addWindow(Eigen::Vector2i(viewer.ngui->window()->size()[0] + 20, 10));
         viewer.ngui->addGroup("TI_Stable");
-        viewer.ngui->addButton("2D Pattern", polygons_2d_rendering);
+        viewer.ngui->addButton("2D Triangles", triangles_2d_rendering);
+        viewer.ngui->addButton("2D Rectangles", rectangles_2d_rendering);
         viewer.ngui->addButton("Solve", opt_solve);
         viewer.ngui->addVariable<Selected_Mode>("Selected Mode", [&](Selected_Mode mode){
             clear_color();
@@ -294,17 +320,39 @@ int main() {
             selected_mode = mode;}, [&](){
             return selected_mode;
         }) ->setItems({"None", "Move", "Fix", "Gap"});
+
+
         viewer.ngui->addButton("Select", [&]()
         {
             if(selected_mode == FIX) {
+                fix_selected = true;
                 polygons_fixed_id.clear();
                 polygons_fixed_id = recorder.poly_id_;
             }
             else if(selected_mode == GAP)
             {
+                gap_selected = true;
                 recorder.get(polygons_gap_par);
             }
         });
+        viewer.ngui->addVariable<bool>("Fix Selected", fix_selected, false);
+        viewer.ngui->addVariable<bool>("Gap Selected", gap_selected, false);
+        viewer.ngui->addGroup("Screen Capture");
+        viewer.ngui->addButton("capture", [&](){
+            Eigen::Matrix<unsigned char,Eigen::Dynamic,Eigen::Dynamic> R(5120,2880);
+            Eigen::Matrix<unsigned char,Eigen::Dynamic,Eigen::Dynamic> G(5120,2880);
+            Eigen::Matrix<unsigned char,Eigen::Dynamic,Eigen::Dynamic> B(5120,2880);
+            Eigen::Matrix<unsigned char,Eigen::Dynamic,Eigen::Dynamic> A(5120,2880);
+            // Draw the scene in the buffers
+            viewer.core.draw_buffer(viewer.data,viewer.opengl,false,R,G,B,A);
+            // Save it to a PNG
+            std::time_t T = std::time(nullptr);
+            std::string time_str = std::asctime(std::localtime(&T));
+            time_str = "../img/" + time_str + ".png";
+            std::cout << "Write image to " << time_str << std::endl;
+            igl::png::writePNG(R,G,B,A, time_str);
+        });
+
         viewer.screen->performLayout();
         return false;
     };

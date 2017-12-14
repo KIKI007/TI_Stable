@@ -189,7 +189,7 @@ void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx)
     int         iter_times, id_term, id_extra;
     int         Ia, Ib;
     double      mk_0, mk_pk, f_xk, f_xkpk, f0;              //function and model's improvement
-    double mu;
+    double mu, gap_size;
     bool gap_pair;
     VectorXd tx0, tx;
     std::vector<T> triplist;
@@ -242,6 +242,7 @@ void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx)
 
             for(int id = 0; id < Conn_.size(); id++)
             {
+                std::cout << id << std::endl;
                 //clear
                 a.clear();
                 p.clear();
@@ -378,7 +379,11 @@ void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx)
                 tx.segment(3, 3) = x.segment(3 * Ib, 3);
 
                 double f0 = signed_distance(p, tx);
-                if(gap_pair) f_xkpk += (-mu) * f0;
+                if(gap_pair)
+                {
+                    f_xkpk += (-mu) * f0;
+                    gap_size = f0;
+                }
                 f_xkpk += f0 > 0? 0 : -f0;
             }
 
@@ -396,7 +401,8 @@ void PolygonsCollisionSolver::collision_resolve(VectorXd &x0, double &dx)
                     << "f_xkpk:\t" << f_xkpk << std::endl
                     << "mk_pk:\t" << mk_pk << std::endl
                     << "pho:\t" << pho << std::endl
-                    << "dx:\t" << dx << std::endl << std::endl;
+                    << "dx:\t" << dx << std::endl
+                    << "gap_size:\t" << gap_size << std::endl << std::endl;
 
             //trust region expanding
             if(pho < 0.5 || f_xk < f_xkpk)

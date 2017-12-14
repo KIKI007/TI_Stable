@@ -52,7 +52,7 @@ public:
                 ids.push_back(0);ids.push_back(1);ids.push_back(2);ids.push_back(3);ids.push_back(4);ids.push_back(5);
                 PolygonPoints p(ids, points);
 
-                if(id > 0 && jd > 0 && id < N_ - 1 && jd < N_ -1)
+                if(id > 0 && jd > 0 && id < N_ - 1 && jd < N_ - 1)
                 {
                     p.do_scale(0.99);
                     p.set_color();

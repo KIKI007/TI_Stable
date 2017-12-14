@@ -31,7 +31,9 @@ public:
 
     void createHexagons(vecPolys &P, vector<pair<int, int>> &Conn, vector<int> &fixed)
     {
-
+        fixed.clear();
+        Conn.clear();
+        P.clear();
         for(int id = 0; id < N_; id++)
         {
             for(int jd = 0; jd < N_; jd++)

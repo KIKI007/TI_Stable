@@ -27,6 +27,9 @@ public:
 
     void createTriangles(vecPolys &P, vector<pair<int, int>> &Conn, vector<int> &fixed)
     {
+        fixed.clear();
+        Conn.clear();
+        P.clear();
         //firstly add boundary
         add_boundary(P);
 
@@ -46,7 +49,7 @@ public:
 
         MatrixXd V;
         MatrixXi F;
-        std::string flag = "-p -q30 -a0.3";
+        std::string flag = "-p -q30 -a1";
         igl::triangle::triangulate(rV, E, H, flag, V, F);
         PolygonPoints p;
         std::vector<int> ids;

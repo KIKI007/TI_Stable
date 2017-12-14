@@ -108,6 +108,7 @@ public:
 void generate_random_hexagons(vector<PolygonPoints> &P, vector<pair<int, int>>&Conn, vector<int> &fixeds)
 {
     P.clear();
+    fixeds.clear();
     Conn.clear();
     x_0.setZero();
     RandomHexagons2D generator;
@@ -118,6 +119,7 @@ void generate_random_hexagons(vector<PolygonPoints> &P, vector<pair<int, int>>&C
 void generate_random_triangles(vector<PolygonPoints> &P, vector<pair<int, int>>&Conn, vector<int> &fixeds)
 {
     P.clear();
+    fixeds.clear();
     Conn.clear();
     x_0.setZero();
     RandomTriangles2D generator;
@@ -128,6 +130,7 @@ void generate_random_triangles(vector<PolygonPoints> &P, vector<pair<int, int>>&
 void generate_random_rectangles(vector<PolygonPoints> &P, vector<pair<int, int>>&Conn, vector<int> &fixeds)
 {
     P.clear();
+    fixeds.clear();
     Conn.clear();
     x_0.setZero();
     RandomRectangles2D generator;

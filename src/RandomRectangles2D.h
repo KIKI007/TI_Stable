@@ -29,6 +29,9 @@ public:
 
     void createRectangles(vecPolys &P, vector<pair<int, int>> &Conn, vector<int> &fixed)
     {
+        fixed.clear();
+        Conn.clear();
+        P.clear();
         //firstly add boundary
         add_boundary(P);
 

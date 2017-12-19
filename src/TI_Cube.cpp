@@ -189,7 +189,7 @@ void TI_Cube::cube_OXYZ(Vector3d O, Vector3d X, Vector3d Y, Vector3d Z, Polyhedr
     polygon.set_ids(ids);polys.push_back(polygon);
 
     P.add_faces(polys);
-
+    P.set_color(Vector3d(1, 1, 0));
 //    cF <<   0, 2, 4,
 //            4, 1, 0,
 //            1, 4, 7,

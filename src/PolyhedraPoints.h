@@ -7,9 +7,13 @@
 
 #include "PolyhedraBase.h"
 #include "PolygonPoints.h"
+#include <Eigen/Geometry>
 using std::vector;
-class PolyhedraPoints : public PolyhedraBase{
+using Eigen::Vector3d;
+using Eigen::Quaterniond;
+typedef std::vector<Vector3d,Eigen::aligned_allocator<Vector3d> > vecVector3d;
 
+class PolyhedraPoints : public PolyhedraBase{
 public:
     PolyhedraPoints()
     {
@@ -23,25 +27,40 @@ public:
 
     Vector3d point(int ID) {return points_.col(ID % points_.cols());}
 
+    inline int nV(){ return points_.cols();}
+
 public:
 
+
     inline void get_normal(int ID, Vector3d &normal);
+
+    void get_normals(vecVector3d &normals);
+
+    int get_edges(vecVector3d &edges);
 
     inline void get_center(Vector3d &center);
 
     void shrink(double ratio);
+
+    void transformation(Quaterniond quat, Vector3d v);
 
 public:
 
     bool collision(PolyhedraPoints    &B,
                    Vector3d         &nA,
                    Vector3d         &nB,
-                   vector<int>      &pa,
-                   vector<int>      &pb);
+                   vecVector3d      &pa,
+                   vecVector3d      &pb,
+                   double           &signed_dist);
 
-private:
+public:
 
-    void candidate_sat(PolyhedraPoints &B, MatrixXd *axis);
+    double max_project(Vector3d n, vecVector3d &p, double tol = 0.1);
+
+    void candidate_sat(PolyhedraPoints &B,
+                       vecVector3d &axis,
+                       vecVector3d &axisA,
+                       vecVector3d &axisB);
 
 private:
     MatrixXd points_;

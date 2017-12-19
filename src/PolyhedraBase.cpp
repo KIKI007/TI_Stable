@@ -24,6 +24,34 @@ void PolyhedraBase::triangulate(MatrixXi &F)
     }
 }
 
+void PolyhedraBase::int_e() {
+    int nV = vv_.size();
+    vector<bool> visited;
+    visited.resize(nV, false);
+    queue<int> Q; Q.push(0); visited[0] = true;
+    while(nV --)
+    {
+        int u = Q.front(); Q.pop();
+        for(int id = 0; id < vv_[u].size(); id++)
+        {
+            int v = vv_[u][id];
+            if(!visited[v])
+            {
+                Q.push(v);
+                visited[v] = true;
+            }
+            if(u < v)
+            {
+                pair<int, int> E;
+                E.first = u;
+                E.second = v;
+                e_.push_back(E);
+            }
+        }
+    }
+
+}
+
 void PolyhedraBase::int_vv(){
     int nV = 0;
     for(int id = 0; id < fv_.size(); id++)
@@ -62,5 +90,12 @@ void PolyhedraBase::int_vv(){
         }
     }
 
+    return;
+}
+
+void PolyhedraBase::get_edges_id(vector<pair<int, int>> &edges) {
+
+    edges.clear();
+    edges = e_;
     return;
 }

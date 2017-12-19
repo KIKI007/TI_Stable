@@ -6,6 +6,7 @@
 #define TI_STABLE_OPTSOLVER_H
 
 #include "PolygonPoints.h"
+#include "PolyhedraPoints.h"
 #include <igl/viewer/Viewer.h>
 #include <igl/mosek/mosek_linprog.h>
 using Eigen::VectorXd;
@@ -295,5 +296,55 @@ void set_mesh(vector<PolygonPoints> &P, igl::viewer::Viewer &viewer, MatrixXd &V
     viewer.data.set_mesh(V, F);
     viewer.data.set_colors(C);
     viewer.core.align_camera_center(V, F);
+}
+
+void set_mesh(vector<PolyhedraPoints> &P, igl::viewer::Viewer &viewer, MatrixXd &V, MatrixXi &F, MatrixXd &C, bool change_color = true)
+{
+    if(change_color) C.setZero();
+    V.setZero();
+    F.setZero();
+
+    int nV = 0, nF = 0;
+    vector<int> sum_nV;
+    MatrixXd tV;
+    MatrixXi tF;
+
+    for(int id = 0; id < P.size(); id++)
+    {
+        nV += P[id].nV();
+        P[id].triangulate(tF);
+        nF += tF.rows();
+
+        int prev_num_vertices = 0;
+        if(id > 0) prev_num_vertices = sum_nV[id - 1] + P[id - 1].nV();
+        sum_nV.push_back(prev_num_vertices);
+    }
+
+    V = MatrixXd(nV, 3);
+    F = MatrixXi::Zero(nF, 3);
+    if(change_color) C = MatrixXd::Zero(nF, 3);
+    int ID = 0;
+    for(int id = 0; id < P.size(); id++)
+    {
+        for(int jd = 0; jd < P[id].nV(); jd++)
+        {
+            V.row(ID++) = P[id].point(jd);
+        }
+    }
+
+    ID = 0;
+    for(int id = 0; id < P.size(); id++)
+    {
+        P[id].triangulate(tF);
+        for (int jd = 0; jd < tF.rows(); jd++) {
+            F.row(ID) = tF.row(jd) + Eigen::RowVector3i(sum_nV[id], sum_nV[id], sum_nV[id]);
+            if(change_color) C.row(ID) = P[id].get_color(0);
+            ID++;
+        }
+    }
+    viewer.data.clear();
+    viewer.data.set_mesh(V, F);
+    viewer.data.set_colors(C);
+    //viewer.core.align_camera_center(V, F);
 }
 #endif //TI_STABLE_OPTSOLVER_H

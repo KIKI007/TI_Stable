@@ -155,37 +155,40 @@ void TI_Cube::cube_OXYZ(Vector3d O, Vector3d X, Vector3d Y, Vector3d Z, Polyhedr
 
     P.set_points(cV);
 
+    vector<PolygonBase> polys;
     PolygonBase polygon;
     std::vector<int> ids;
 
     ids.push_back(0);ids.push_back(2);
     ids.push_back(4);ids.push_back(1);
-    polygon.set_ids(ids);P.add_face(polygon);
+    polygon.set_ids(ids);polys.push_back(polygon);
 
     ids.clear();
     ids.push_back(1);ids.push_back(4);
     ids.push_back(7);ids.push_back(5);
-    polygon.set_ids(ids);P.add_face(polygon);
+    polygon.set_ids(ids);polys.push_back(polygon);
 
     ids.clear();
     ids.push_back(1);ids.push_back(5);
     ids.push_back(3);ids.push_back(0);
-    polygon.set_ids(ids);P.add_face(polygon);
+    polygon.set_ids(ids);polys.push_back(polygon);
 
     ids.clear();
     ids.push_back(0);ids.push_back(3);
     ids.push_back(6);ids.push_back(2);
-    polygon.set_ids(ids);P.add_face(polygon);
+    polygon.set_ids(ids);polys.push_back(polygon);
 
     ids.clear();
     ids.push_back(3);ids.push_back(5);
     ids.push_back(7);ids.push_back(6);
-    polygon.set_ids(ids);P.add_face(polygon);
+    polygon.set_ids(ids);polys.push_back(polygon);
 
     ids.clear();
     ids.push_back(2);ids.push_back(6);
     ids.push_back(7);ids.push_back(4);
-    polygon.set_ids(ids);P.add_face(polygon);
+    polygon.set_ids(ids);polys.push_back(polygon);
+
+    P.add_faces(polys);
 
 //    cF <<   0, 2, 4,
 //            4, 1, 0,

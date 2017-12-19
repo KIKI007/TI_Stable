@@ -24,9 +24,12 @@ option(LIBIGL_WITH_TRIANGLE         "Use Triangle"       ON)
 option(LIBIGL_WITH_VIEWER           "Use OpenGL viewer"  ON)
 option(LIBIGL_WITH_XML              "Use XML"            OFF)
 option(LIBIGL_WITH_SHAPEOP          "Use ShapeOp"        OFF)
+option(LIBIGL_WITH_LIBCCD          "Use LibCCD"          ON)
 
 ################################################################################
 ### Compile the ShapeOp part ###
+find_package(LIBIGL REQUIRED)
+find_package(FCL REQUIRED)
 if(LIBIGL_WITH_SHAPEOP)
     set(SHAPEOP_DIR "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/ShapeOp")
     add_subdirectory("${SHAPEOP_DIR}")
@@ -34,9 +37,14 @@ if(LIBIGL_WITH_SHAPEOP)
     target_include_directories(ShapeOp PUBLIC "${EIGEN3_INCLUDE_DIR}")
 endif()
 
-find_package(LIBIGL REQUIRED)
+if(LIBIGL_WITH_LIBCCD)
+    set(LIBCCD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/libccd")
+    add_subdirectory("${LIBCCD_DIR}")
+    target_include_directories(ccd PUBLIC "${SHAPEOP_DIR}/libShapeOp/src")
+    target_include_directories(ccd PUBLIC "${NANOGUI_DIR}/ext/eigen")
+endif()
 
 # Add your project file
 file(GLOB SRCFILES src/*.cpp src/*.h)
 add_executable(${PROJECT_NAME}_bin ${SRCFILES})
-target_link_libraries(${PROJECT_NAME}_bin igl::core igl::viewer igl::mosek igl::triangle igl::png)
+target_link_libraries(${PROJECT_NAME}_bin igl::core igl::viewer igl::mosek igl::triangle igl::png ccd)

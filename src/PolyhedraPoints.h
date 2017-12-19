@@ -7,6 +7,7 @@
 
 #include "PolyhedraBase.h"
 #include "PolygonPoints.h"
+using std::vector;
 class PolyhedraPoints : public PolyhedraBase{
 
 public:
@@ -16,52 +17,57 @@ public:
     }
 
 public:
-    void set_points(MatrixXd &points)
-    {
-        points_ = points;
-    }
+    void set_points(MatrixXd &points) { points_ = points; }
 
-    void get_points(MatrixXd &points)
-    {
-        points = points_;
-    }
+    void get_points(MatrixXd &points) { points = points_; }
+
+    Vector3d point(int ID) {return points_.col(ID % points_.cols());}
+
 public:
 
-    inline void get_normal(int ID, Vector3d &normal)
-    {
-        assert(0 <= ID && ID < ids_.size());
-        PolygonBase &face = ids_[ID];
+    inline void get_normal(int ID, Vector3d &normal);
 
-        Vector3d p[3];
-        for(int id = 0; id < 3; id++) p[id] = points_.col(face.ids_[id]);
+    inline void get_center(Vector3d &center);
 
-        normal = (p[2] - p[1]).cross(p[0] - p[1]);
-        normal.normalize();
-    }
+    void shrink(double ratio);
 
-    void center_points(Vector3d &center)
-    {
-        center = Vector3d(0, 0, 0);
-        for(int id = 0; id < points_.cols(); id++)
-            center = center + points_.col(id);
-        center /= points_.cols();
-    }
+public:
 
-    void shrink(double ratio)
-    {
-        Vector3d center;
-        center_points(center);
-        for(int id = 0; id < points_.cols(); id++)
-        {
-            points_.col(id) = (points_.col(id) - center) * ratio + center;
-        }
+    bool collision(PolyhedraPoints    &B,
+                   Vector3d         &nA,
+                   Vector3d         &nB,
+                   vector<int>      &pa,
+                   vector<int>      &pb);
 
-    }
+private:
 
+    void candidate_sat(PolyhedraPoints &B, MatrixXd *axis);
 
 private:
     MatrixXd points_;
 };
+
+inline void PolyhedraPoints::get_normal(int ID, Vector3d &normal) {
+    assert(0 <= ID && ID < fv_.size());
+    PolygonBase &face = fv_[ID];
+
+    Vector3d p[3];
+    for(int id = 0; id < 3; id++) p[id] = points_.col(face.ids_[id]);
+
+    normal = (p[2] - p[1]).cross(p[0] - p[1]);
+    normal.normalize();
+    return;
+}
+
+inline void PolyhedraPoints::get_center(Vector3d &center) {
+    center = Vector3d(0, 0, 0);
+    for(int id = 0; id < points_.cols(); id++)
+        center = center + points_.col(id);
+    center /= points_.cols();
+    return;
+}
+
+
 
 
 #endif //TI_STABLE_POLYHEDRAPOINTS_H

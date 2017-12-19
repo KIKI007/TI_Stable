@@ -1,11 +1,10 @@
 //
 // Created by ziqwang on 04.12.17.
-//
 
 #ifndef TI_STABLE_POLYHEDRA_H
 #define TI_STABLE_POLYHEDRA_H
-
 #include "PolygonBase.h"
+using std::vector;
 class PolyhedraBase {
 
 public:
@@ -15,47 +14,25 @@ public:
     }
 public:
 
-    void add_face(PolygonBase &face)
-    {
-        ids_.push_back(face);
-    }
-
-    size_t nFace()
-    {
-        return ids_.size();
-    }
-
-    void get_face(int ID, PolygonBase &face)
-    {
-        assert(0<= ID && ID < ids_.size());
-        face = ids_[ID];
-    }
+    inline void add_faces(vector<PolygonBase> faces) { fv_ = faces; int_vv();}
 
 public:
 
-    void triangulate(MatrixXi &F)
-    {
-        int nF = 0;
-        for(int id = 0; id < ids_.size(); id++)
-        {
-            nF += ids_[id].nV() - 2;
-        }
+    inline size_t nFace() { return fv_.size(); }
 
-        F = MatrixXi::Zero(nF, 3);
+    inline void get_face(int ID, PolygonBase &face) { assert(0<= ID && ID < fv_.size());face = fv_[ID]; }
 
-        int idO = 0;
-        for(int id = 0; id < ids_.size(); id++)
-        {
-            MatrixXi face;
-            ids_[id].triangulate(face);
-            F.block(idO, 0, ids_[id].nV() - 2, 3) = face;
-            idO += ids_[id].nV() - 2;
-        }
-    }
+public:
+
+    void triangulate(MatrixXi &F);
+
+private:
+    //initialize vertices-vertices which computes vertices' neighbor
+    void int_vv();
 
 protected:
-    std::vector<PolygonBase> ids_;
-
+    vector<PolygonBase> fv_;
+    vector< vector<int>> vv_;
 };
 
 

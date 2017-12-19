@@ -327,6 +327,15 @@ void opt_solve()
     set_mesh(polygons_list, viewer, V, F, C);
 
 }
+
+void cube_3d_rendering()
+{
+    TI_Cube cube(1, 1);
+    std::vector<PolyhedraPoints> polyhedra_list;
+    cube.generate(polyhedra_list);
+}
+
+
 int main() {
     srand(100);
     polygons_gap_par.first = -1;
@@ -335,7 +344,7 @@ int main() {
     {
         //
         viewer.ngui->addWindow(Eigen::Vector2i(viewer.ngui->window()->size()[0] + 20, 10));
-        viewer.ngui->addGroup("TI_Stable");
+        viewer.ngui->addGroup("2D TI Stable");
         viewer.ngui->addButton("2D Triangles", triangles_2d_rendering);
         viewer.ngui->addButton("2D Rectangles", rectangles_2d_rendering);
         viewer.ngui->addButton("2D Hexagons", hexagons_2d_rendering);
@@ -378,7 +387,8 @@ int main() {
             std::cout << "Write image to " << time_str << std::endl;
             igl::png::writePNG(R,G,B,A, time_str);
         });
-
+        viewer.ngui->addGroup("3D TI Stable");
+        viewer.ngui->addButton("3D Cubes", cube_3d_rendering);
         viewer.screen->performLayout();
         return false;
     };

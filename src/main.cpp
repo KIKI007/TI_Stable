@@ -6,9 +6,11 @@
 #include <igl/png/writePNG.h>
 #include <ctime>
 
+
 /* system */
 #include <sstream>
 #include <iostream>
+#include <cmath>
 
 #include "TI_Cube.h"
 #include "ObjectsRendering.h"
@@ -16,6 +18,9 @@
 #include "RandomTriangles2D.h"
 #include "RandomRectangles2D.h"
 #include "RandomHexagons2D.h"
+
+using std::cos;
+using std::sin;
 
 igl::viewer::Viewer viewer;
 MatrixXd V, C;
@@ -27,6 +32,7 @@ double rotation_angle;
 bool gap_selected(false);
 bool fix_selected(false);
 
+vector<PolyhedraPoints> polyhedra_list;
 vector<PolygonPoints> polygons_list;
 vector<pair<int, int>> polyons_collision_pair;
 vector<int> polygons_fixed_id;
@@ -331,8 +337,10 @@ void opt_solve()
 
 void cube_rendering()
 {
-    TI_Cube cube(1, 1);
-    std::vector<PolyhedraPoints> polyhedra_list;
+    TI_Cube cube;
+    polyhedra_list.clear();
+
+
     PolyhedraPoints poly;
     cube.cube_OXYZ(Vector3d(0, 0, 0), Vector3d(1, 0, 0), Vector3d(0, 1, 0), Vector3d(0, 0, 1), poly);
     poly.set_color();
@@ -342,8 +350,9 @@ void cube_rendering()
 
 void cube_3d_rendering(double angle, double dx, double dy, double dz)
 {
-    TI_Cube cube(1, 1);
-    std::vector<PolyhedraPoints> polyhedra_list;
+    TI_Cube cube;
+    polyhedra_list.clear();
+
     PolyhedraPoints poly;
     cube.cube_OXYZ(Vector3d(0, 0, 0), Vector3d(1, 0, 0), Vector3d(0, 1, 0), Vector3d(0, 0, 1), poly);
     poly.set_color();
@@ -358,16 +367,95 @@ void cube_3d_rendering(double angle, double dx, double dy, double dz)
     vecVector3d      pa;
     vecVector3d      pb;
     double           signed_dist;
+
     std::cout << "angle:\t" << angle << std::endl
               << "dx:\t" << dx << std::endl
               << "dy:\t" << dy << std::endl
               << "dz:\t" << dz << std::endl
               << "Collision:\t" << polyhedra_list[0].collision(polyhedra_list[1], nA, nB, pa, pb, signed_dist) << std::endl
               << "Signed Dist:\t" << signed_dist << std::endl;
-
     set_mesh(polyhedra_list, viewer, V, F, C, true);
 }
 
+void test_approximate_distance()
+{
+    if(polyhedra_list.size() != 2)
+        return;
+
+    double eps_ = 0.01;
+
+    double theta_a, theta_b;
+    Vector3d u_a, u_b;
+    Vector3d t_a, t_b;
+
+    theta_a = eps_;
+    theta_b = -eps_;
+    for(int id = 0; id < 3; id++)
+    {
+        t_a[id] = rand() % 100 / 100.0 * eps_;
+        t_b[id] = rand() % 100 / 100.0 * eps_;
+    }
+
+    double alpha, beta;
+    alpha = rand() % 100 / 100.0 * 2 * M_PI;
+    beta =  rand() % 100 / 100.0 * 2 * M_PI;
+    u_a[0] = cos(alpha) * cos(beta);
+    u_a[1] = cos(alpha) * sin(beta);
+    u_a[2] = sin(alpha);
+
+    alpha = rand() % 100 / 100.0 * 2 * M_PI;
+    beta =  rand() % 100 / 100.0 * 2 * M_PI;
+    u_b[0] = cos(alpha) * cos(beta);
+    u_b[1] = cos(alpha) * sin(beta);
+    u_b[2] = sin(alpha);
+
+    VectorXd x(14);
+    x(0) = theta_a;
+    x(7) = theta_b;
+    for(int id = 0; id < 3; id++)
+    {
+        x(id + 1) = u_a[id];
+        x(id + 4) = t_a[id];
+        x(id + 8) = u_b[id];
+        x(id + 11) = t_b[id];
+    }
+
+    Vector3d         nA;
+    Vector3d         nB;
+    vecVector3d      pa;
+    vecVector3d      pb;
+    double           actual;
+
+    polyhedra_list[0].collision(polyhedra_list[1], nA, nB, pa, pb, actual);
+    std::cout << "before n:\t" << polyhedra_list[0].norm_cross_from_polyhedrons(nA, nB).transpose() << std::endl;
+    double approx = polyhedra_list[0].approximate_signed_distance(polyhedra_list[1], x);
+
+    polyhedra_list[0].transformation(Eigen::Quaterniond(cos(theta_a/2),
+                                                        sin(theta_a/2) * u_a[0],
+                                                        sin(theta_a/2) * u_a[1],
+                                                        sin(theta_a/2) * u_a[2]),
+                                     t_a);
+
+    polyhedra_list[1].transformation(Eigen::Quaterniond(cos(theta_b/2),
+                                                        sin(theta_b/2) * u_b[0],
+                                                        sin(theta_b/2) * u_b[1],
+                                                        sin(theta_b/2) * u_b[2]),
+                                     t_b);
+
+
+
+
+    polyhedra_list[0].collision(polyhedra_list[1], nA, nB, pa, pb, actual);
+    std::cout << "after n:\t" << polyhedra_list[0].norm_cross_from_polyhedrons(nA, nB).transpose() << std::endl;
+
+    std::cout << "Approx dist:\t" << approx << std::endl
+              << "Actual:\t" << actual << std::endl
+              << "error:\t " << abs(actual - approx) << std::endl
+              << "percentage:\t " << 100*(1 - std::abs(actual - approx) / std::abs(actual)) << "%" << std::endl << std::endl;
+
+    set_mesh(polyhedra_list, viewer, V, F, C);
+    return;
+}
 
 
 int main() {
@@ -441,6 +529,8 @@ int main() {
             dz = dz_;
             cube_3d_rendering(rotation_angle, dx, dy, dz);}, [&](){
             return dz;})->setSpinnable(true);
+
+        viewer.ngui->addButton("Test approx", test_approximate_distance);
 
         viewer.screen->performLayout();
         return false;

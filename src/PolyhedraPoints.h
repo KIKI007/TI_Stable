@@ -11,6 +11,7 @@
 using std::vector;
 using Eigen::Vector3d;
 using Eigen::Quaterniond;
+using Eigen::VectorXd;
 typedef std::vector<Vector3d,Eigen::aligned_allocator<Vector3d> > vecVector3d;
 
 class PolyhedraPoints : public PolyhedraBase{
@@ -53,7 +54,14 @@ public:
                    vecVector3d      &pb,
                    double           &signed_dist);
 
+    bool collision(PolyhedraPoints    &B,
+                   double           &signed_dist);
+
 public:
+
+    Vector3d norm_cross_from_polyhedrons(Vector3d na,Vector3d nb);
+
+    double approximate_signed_distance(PolyhedraPoints &B, VectorXd &x);
 
     double max_project(Vector3d n, vecVector3d &p, double tol = 0.1);
 

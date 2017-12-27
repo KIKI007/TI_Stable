@@ -61,7 +61,7 @@ void PolyhedraPoints::candidate_sat(PolyhedraPoints &B,
     //build aixs
     for(int id = 0; id < axisA.size(); id++)
     {
-        Vector3d u = axisA[id].isZero() ? (axisB[id]) : (axisB[id].isZero() ? axisA[id] : axisA[id].cross(axisB[id]));
+        Vector3d u = norm_cross_from_polyhedrons(axisA[id], axisB[id]);
         //std::cout << axisA[id].transpose() << "\t" <<  axisB[id].transpose() << std::endl;
         axis.push_back(u);
     }
@@ -80,9 +80,9 @@ void PolyhedraPoints::candidate_sat(PolyhedraPoints &B,
         }
         if(jd == kd)
         {
-            axisA[kd] = axisA[id];
-            axisB[kd] = axisB[id];
-            axis[kd] = axis[id];
+            axisA[kd] = axisA[id]; axisA[kd].normalized();
+            axisB[kd] = axisB[id];axisB[kd].normalized();
+            axis[kd] = axis[id];axis[kd].normalized();
             kd++;
         }
     }
@@ -93,8 +93,10 @@ void PolyhedraPoints::candidate_sat(PolyhedraPoints &B,
     return;
 }
 
+
 bool PolyhedraPoints::collision(PolyhedraPoints &B, Vector3d &nA, Vector3d &nB, vecVector3d &pa, vecVector3d &pb, double &signed_dist)
 {
+    //n^T(q - p)
     bool is_collision = true;
 
     PolyhedraPoints &A = *this;
@@ -118,8 +120,17 @@ bool PolyhedraPoints::collision(PolyhedraPoints &B, Vector3d &nA, Vector3d &nB, 
             {
                 pa = p;
                 pb = q;
-                nA = axisA[id];
-                nB = axisB[id];
+                if(!axisA[id].isZero())
+                {
+                    nA = axisA[id] * (kd ? 1 : -1);
+                    nB = axisB[id];
+                }
+                else
+                {
+                    nA = axisA[id];
+                    nB = axisB[id] * (kd ? 1 : -1);
+                }
+
                 signed_dist = dist;
             }
         }
@@ -165,4 +176,88 @@ void PolyhedraPoints::transformation(Quaterniond quat, Vector3d v)
     }
 
     return;
+}
+
+double PolyhedraPoints::approximate_signed_distance(PolyhedraPoints &B, VectorXd &x) {
+
+    PolyhedraPoints &A = (*this);
+    Vector3d nA, nB;
+    Vector3d cA, cB;
+    Vector3d pA, pB;
+    Vector3d uA, uB;
+
+    vecVector3d pAs, pBs;
+    double signed_dist = 0, dist = 0;
+
+    collision(B, nA, nB, pAs, pBs, signed_dist);
+
+    Vector3d n = norm_cross_from_polyhedrons(nA, nB);
+
+    //std::cout << nA.transpose() << std::endl << nB.transpose() << std::endl;
+    //std::cout << n.dot(pAs[0] - pBs[0]) - signed_dist << std::endl;
+
+    A.get_center(cA); B.get_center(cB);
+    vector<double> approx_dist;
+
+    for(int id = 0; id < pAs.size(); id++)
+    {
+        for(int jd = 0; jd < pBs.size(); jd++)
+        {
+            dist = n.dot(pAs[id] - pBs[jd]);
+            pA = pAs[id] - cA;
+            pB = pBs[jd] - cB;
+            uA = x(0)*x.segment(1, 3);
+            uB = x(7)*x.segment(8, 3);
+
+            dist += pA.cross(n).dot(uA);
+            dist -= pB.cross(n).dot(uB);
+            dist += n.dot(x.segment(4, 3) - x.segment(11, 3));
+
+            if(nA.isZero())
+            {
+                dist += (-nB).cross(uB).dot(pAs[id] - pBs[jd]);
+            }
+            else if(nB.isZero())
+            {
+                dist += (-nA).cross(uA).dot(pAs[id] - pBs[jd]);
+            }
+            else
+            {
+                dist += (-nA).cross(nB.cross(uB)).dot(pAs[id] - pBs[jd]);
+                dist += (-nA).cross(uA).cross(nB).dot(pAs[id] - pBs[jd]);
+            }
+
+            approx_dist.push_back(dist);
+        }
+    }
+
+    if(nA.isZero())
+    {
+        std::cout << "approxB n:\t" << (nB - (nB).cross(uB)).transpose() << std::endl;
+    }
+    else if(nB.isZero())
+    {
+        std::cout << "approxA n:\t" << (nA - (nA).cross(uA)).transpose() << std::endl;
+    }
+    else
+    {
+        std::cout << "approxAB n:\t" << (n  + (-nA).cross(nB.cross(uB)) + (-nA).cross(uA).cross(nB)).transpose() << std::endl;
+    }
+
+    double ans = approx_dist[0];
+    for(double x: approx_dist) ans = x < ans ? x : ans;
+
+    return ans;
+}
+
+Vector3d PolyhedraPoints::norm_cross_from_polyhedrons(Vector3d na, Vector3d nb) {
+    VectorXd u =  na.isZero() ? (nb) : (nb.isZero() ? na : na.cross(nb));
+    u.normalize();
+    return u;
+}
+
+bool PolyhedraPoints::collision(PolyhedraPoints &B, double &signed_dist) {
+    Vector3d nA, nB;
+    vecVector3d pAs, pBs;
+    return collision(B, nA, nB, pAs, pBs, signed_dist);
 }

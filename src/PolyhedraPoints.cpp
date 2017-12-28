@@ -215,16 +215,20 @@ double PolyhedraPoints::approximate_signed_distance(PolyhedraPoints &B, VectorXd
 
             if(nA.isZero())
             {
-                dist += (-nB).cross(uB).dot(pAs[id] - pBs[jd]);
+                //dist += (-nB).cross(uB).dot(pAs[id] - pBs[jd]);
+                dist += n.cross(pAs[id] - pBs[jd]).dot(uB);
             }
             else if(nB.isZero())
             {
-                dist += (-nA).cross(uA).dot(pAs[id] - pBs[jd]);
+                //dist += (-nA).cross(uA).dot(pAs[id] - pBs[jd]);
+                dist += n.cross(pAs[id] - pBs[jd]).dot(uA);
             }
             else
             {
-                dist += (-nA).cross(nB.cross(uB)).dot(pAs[id] - pBs[jd]);
-                dist += (-nA).cross(uA).cross(nB).dot(pAs[id] - pBs[jd]);
+                //dist += (-nA).cross(nB.cross(uB)).dot(pAs[id] - pBs[jd]);
+                //dist += (-nA).cross(uA).cross(nB).dot(pAs[id] - pBs[jd]);
+                dist += (nA.cross(pAs[id] - pBs[jd]).cross(nB)).dot(uB);
+                dist += ((pAs[id] - pBs[jd]).cross(nB).cross(nA)).dot(uA);
             }
 
             approx_dist.push_back(dist);

@@ -47,7 +47,7 @@ void PolyhedronsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
     vecVectorXd coeff_gs;                               // for constructing linear programming
 
     //initializing
-    mu = 1;
+    mu = 0.001;
     if(x0.isZero())
     {
         x0 = VectorXd::Zero(P_.size() * 7);
@@ -61,12 +61,11 @@ void PolyhedronsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
             in_opt[fixed_[id]] = false;
     }
 
-//    for(mu = 1; mu >= 1e-5; mu/= 10.0)
-//    {
+
+    for(; mu >= MIN_TRUST_REGION_SIZE; mu =  mu / 10.0)
+    {
         iter_times = 0;
         dx = INIT_TRUST_REGION_SIZE;
-
-
         while(iter_times < MAX_ITER_TIMES && dx > MIN_TRUST_REGION_SIZE)
         {
             iter_times++;
@@ -87,7 +86,6 @@ void PolyhedronsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
 
                 size_A = 0;
                 size_x = 6 * P_.size();
-
                 c.resize(size_x);
             }
 
@@ -118,15 +116,21 @@ void PolyhedronsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
                         triplist.push_back(T(size_A, 6 * Ia + jd, coeff_gs[kd](1 + jd)));
                         triplist.push_back(T(size_A, 6 * Ib + jd, coeff_gs[kd](7 + jd)));
                     }
-                    triplist.push_back(T(size_A, size_x,  coeff_gs[kd][13]));
+                    triplist.push_back(T(size_A, size_x, coeff_gs[kd][13]));
                     lc.push_back(-coeff_gs[kd](0));
-                    c.push_back(1);
                     size_A++;
                 }
+                c.push_back(1);
                 size_x++;
-
                 f_xk += f0;
                 mk_0 += f0;
+            }
+
+            for(int id = 0; id < P_.size();id++)
+            {
+                c[id * 6 + 5] = mu;
+                f_xk += mu * x0(7 * id + 6);
+                mk_0 += mu * x0(7 * id + 6);
             }
 
             //build build lx, ux
@@ -134,8 +138,16 @@ void PolyhedronsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
             {
                 if(id < P_.size() * 6)
                 {
+                    if(in_opt[id / 6])
+                    {
                         lx.push_back(-dx);
                         ux.push_back(dx);
+                    }
+                    else
+                    {
+                        lx.push_back(0);
+                        ux.push_back(0);
+                    }
                 }
                 else
                 {
@@ -160,6 +172,8 @@ void PolyhedronsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
                 q = q1 * q0;
                 x.segment(id * 7, 4) = Vector4d(q.w(), q.x(), q.y(), q.z());
                 x.segment(id * 7 + 4 , 3) = x0.segment(id * 7 + 4, 3) + tx.segment(id * 6 + 3, 3);
+                f_xkpk += mu * x(id * 7 + 6);
+                mk_pk += mu * x0(7 * id + 6);
             }
 
             //evaluate result
@@ -212,7 +226,7 @@ void PolyhedronsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
                 x0 = x;
             }
         }
-//    }
+    }
 }
 
 void PolyhedronsCollisionSolver::get_g_coeff(vecVectorXd &coeff_g, vecPlyhdrons &P, double &f_xk) {
@@ -313,7 +327,7 @@ bool PolyhedronsCollisionSolver::solve_linear(int n,
     Eigen::VectorXd ans(n);
     x = VectorXd(P_.size() * 6);
     bool sucess = igl::mosek::mosek_linprog(c, A, lc, uc, lx, ux, ans);
-
+    std::cout << sucess << std::endl;
     /*              output result                      */
     for (int id = 0; id < P_.size() * 6; id++) x(id) = ans(id);
     mk_pk = c.dot(ans);

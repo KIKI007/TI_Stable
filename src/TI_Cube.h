@@ -36,7 +36,7 @@ public:
 
     void shrink(MatrixXd &mat, double ratio);
 
-private:
+public:
 
     double cube_length_; //unit mm
 

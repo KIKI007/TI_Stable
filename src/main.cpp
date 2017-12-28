@@ -336,56 +336,60 @@ void opt_solve()
 
 }
 
-void cube_rendering()
+void TI_cube_generation()
 {
-    TI_Cube cube;
+    int N = 15;
+    TI_Cube cube(N, N);
+    cube.tolerance_ = 0.99;
     polyhedra_list.clear();
+    cube.generate(polyhedra_list);
+}
 
-
-    PolyhedraPoints poly;
-    cube.cube_OXYZ(Vector3d(0, 0, 0), Vector3d(1, 0, 0), Vector3d(0, 1, 0), Vector3d(0, 0, 1), poly);
-    poly.set_color();
-    polyhedra_list.push_back(poly);
+void TI_cube_rendering(double angle, double dx, double dy, double dz)
+{
+    int N = 15;
+    TI_cube_generation();
+    polyhedra_list[(N/2) * N + (N / 2)].transformation(Eigen::Quaterniond(std::cos(angle/2), std::sin(angle/2), std::sin(angle/2), std::sin(angle/2)), Vector3d(dx, dy, dz));
     set_mesh(polyhedra_list, viewer, V, F, C, true);
 }
 
-void cube_3d_rendering(double angle, double dx, double dy, double dz)
-{
-    TI_Cube cube;
-    polyhedra_list.clear();
-
-    PolyhedraPoints poly;
-    cube.cube_OXYZ(Vector3d(0, 0, 0), Vector3d(1, 0, 0), Vector3d(0, 1, 0), Vector3d(0, 0, 1), poly);
-    poly.set_color();
-    polyhedra_list.push_back(poly);
-    polyhedra_list.push_back(poly);
-    for(int id = 0; id < 1; id++)
-    {
-        polyhedra_list[id].transformation(Eigen::Quaterniond(std::cos(angle/2), std::sin(angle/2), std::sin(angle/2), std::sin(angle/2)), Vector3d(dx, dy, dz));
-    }
-    Vector3d         nA;
-    Vector3d         nB;
-    vecVector3d      pa;
-    vecVector3d      pb;
-    double           signed_dist;
-
-    std::cout << "angle:\t" << angle << std::endl
-              << "dx:\t" << dx << std::endl
-              << "dy:\t" << dy << std::endl
-              << "dz:\t" << dz << std::endl
-              << "Collision:\t" << polyhedra_list[0].collision(polyhedra_list[1], nA, nB, pa, pb, signed_dist) << std::endl
-              << "Signed Dist:\t" << signed_dist << std::endl;
-    set_mesh(polyhedra_list, viewer, V, F, C, true);
-}
-
-void test_approximate_distance()
+void collision_resolve()
 {
     PolyhedronsCollisionSolver solver;
     solver.setPolyhedrons(polyhedra_list);
-    solver.setConnection(0, 1);
-    x_0.setZero(); double d_x = 0;
+    int N = 15;
+    for(int id = 0; id < N; id++)
+    {
+        for(int jd = 0; jd < N; jd++)
+        {
+            int ID = id * N + jd;
+            //top
+            if(id < N - 1)
+            {
+                solver.setConnection(ID, ID + N);
+                if(id & 1)
+                {
+                    if(jd != 0) solver.setConnection(ID, ID + N - 1);
+                }
+                else
+                {
+                    if(jd != N -1) solver.setConnection(ID, ID + N + 1);
+                }
+            }
+            //right
+            if(jd < N - 1)
+            {
+                solver.setConnection(ID, ID + 1);
+            }
+
+            if(id == 0 || jd == 0 || id == N - 1 || jd == N - 1) {
+                solver.setFixed(ID);
+            }
+        }
+    }
+
+    double d_x = 0;
     solver.collision_resolve(x_0, d_x);
-    std::cout << x_0 << std::endl;
     for(int id = 0; id < polyhedra_list.size(); id++)
     {
         polyhedra_list[id].transformation(solver.vec4quat(x_0.segment(id * 7, 4)), x_0.segment(id * 7 + 4, 3));
@@ -396,10 +400,8 @@ void test_approximate_distance()
 
 int main() {
     srand(100);
-    polygons_gap_par.first = -1;
-    polygons_gap_par.second = -1;
-    dx = 0.8;
-    cube_3d_rendering(rotation_angle, dx, dy, dz);
+    x_0.setZero();
+    TI_cube_rendering(0, 0, 0, 0);
     viewer.callback_init = [&](igl::viewer::Viewer& viewer)
     {
         //
@@ -448,27 +450,26 @@ int main() {
             igl::png::writePNG(R,G,B,A, time_str);
         });
         viewer.ngui->addGroup("3D TI Stable");
-        viewer.ngui->addButton("3D Cubes", cube_rendering);
         viewer.ngui->addVariable<double>("Rotate", [&](double angle){
             rotation_angle = angle;
-            cube_3d_rendering(rotation_angle, dx, dy, dz);}, [&](){
+            TI_cube_rendering(rotation_angle, dx, dy, dz);}, [&](){
             return rotation_angle;})->setSpinnable(true);
 
         viewer.ngui->addVariable<double>("Dx", [&](double dx_){
             dx = dx_;
-            cube_3d_rendering(rotation_angle, dx, dy, dz);}, [&](){
+            TI_cube_rendering(rotation_angle, dx, dy, dz);}, [&](){
             return dx;})->setSpinnable(true);
 
         viewer.ngui->addVariable<double>("Dy", [&](double dy_){
             dy = dy_;
-            cube_3d_rendering(rotation_angle, dx, dy, dz);}, [&](){
+            TI_cube_rendering(rotation_angle, dx, dy, dz);}, [&](){
             return dy;})->setSpinnable(true);
         viewer.ngui->addVariable<double>("Dz", [&](double dz_){
             dz = dz_;
-            cube_3d_rendering(rotation_angle, dx, dy, dz);}, [&](){
+            TI_cube_rendering(rotation_angle, dx, dy, dz);}, [&](){
             return dz;})->setSpinnable(true);
 
-        viewer.ngui->addButton("Test approx", test_approximate_distance);
+        viewer.ngui->addButton("Collision solve", collision_resolve);
 
         viewer.screen->performLayout();
         return false;

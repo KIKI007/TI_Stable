@@ -22,6 +22,7 @@ public:
     }
 
 public:
+
     void set_points(MatrixXd &points) { points_ = points; }
 
     void get_points(MatrixXd &points) { points = points_; }
@@ -32,22 +33,27 @@ public:
 
 public:
 
-
     inline void get_normal(int ID, Vector3d &normal);
 
-    void get_normals(vecVector3d &normals);
+    void get_normals_list(vecVector3d &normals);
 
-    int get_edges(vecVector3d &edges);
+    int get_edges_list(vecVector3d &edges);
 
     inline void get_center(Vector3d &center);
 
+public:
+
     void shrink(double ratio);
 
-    void transformation(Quaterniond quat, Vector3d v);
+    void do_transformation(Quaterniond quat, Vector3d v);
+
+    Vector3d norm_cross_from_polyhedrons(Vector3d na,Vector3d nb);
+
+    double approximate_signed_distance(PolyhedraPoints &B, VectorXd &x);
 
 public:
 
-    bool collision(PolyhedraPoints    &B,
+    bool collision(PolyhedraPoints  &B,
                    Vector3d         &nA,
                    Vector3d         &nB,
                    vecVector3d      &pa,
@@ -57,11 +63,7 @@ public:
     bool collision(PolyhedraPoints    &B,
                    double           &signed_dist);
 
-public:
-
-    Vector3d norm_cross_from_polyhedrons(Vector3d na,Vector3d nb);
-
-    double approximate_signed_distance(PolyhedraPoints &B, VectorXd &x);
+private:
 
     double max_project(Vector3d n, vecVector3d &p, double tol = 0.1);
 

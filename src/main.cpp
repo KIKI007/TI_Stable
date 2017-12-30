@@ -4,6 +4,7 @@
 #include <igl/unproject_onto_mesh.h>
 #include <igl/mosek/mosek_linprog.h>
 #include <igl/png/writePNG.h>
+#include <igl/jet.h>
 #include <ctime>
 
 
@@ -15,10 +16,10 @@
 #include "TI_Cube.h"
 #include "ObjectsRendering.h"
 #include "PolygonsCollisionSolver.h"
+#include "PolyhedronsCollisionSolver.h"
 #include "RandomTriangles2D.h"
 #include "RandomRectangles2D.h"
 #include "RandomHexagons2D.h"
-#include "PolyhedronsCollisionSolver.h"
 
 using std::cos;
 using std::sin;
@@ -28,14 +29,19 @@ MatrixXd V, C;
 MatrixXi F;
 
 VectorXd x_0(0, 1);
-double dx, dy, dz;
-double rotation_angle;
+int TI_3D_N;
+int TI_3D_M;
+double TI_3D_Tolerance;
 bool gap_selected(false);
 bool fix_selected(false);
 
 vector<PolyhedraPoints> polyhedra_list;
 vector<PolygonPoints> polygons_list;
 vector<pair<int, int>> polyons_collision_pair;
+
+vector<pair<int,int>> polyhedrons_collision_pair;
+vector<int> polyhedrons_fixed_list;
+
 vector<int> polygons_fixed_id;
 vector<int> polygons_fixed_extra_id;
 pair<int, int> polygons_gap_par;
@@ -326,7 +332,7 @@ void opt_solve()
     solver.setPolygons(polygons_list);
 
     //solve
-    x_0.setZero();dx = 0;
+    x_0.setZero();double dx = 0;
     solver.collision_resolve(x_0, dx);
 
     //rendering the result
@@ -338,73 +344,109 @@ void opt_solve()
 
 void TI_cube_generation()
 {
-    int N = 15;
-    TI_Cube cube(N, N);
-    cube.tolerance_ = 0.99;
+    TI_Cube cube(TI_3D_M, TI_3D_N);
+    cube.tolerance_ = TI_3D_Tolerance;
+
+    //create polyhedra list
     polyhedra_list.clear();
     cube.generate(polyhedra_list);
+
+    polyhedrons_collision_pair.clear();
+    polyhedrons_fixed_list.clear();
+
+    x_0.setZero();
+    //create pair
+    for(int id = 0; id < TI_3D_N; id++)
+    {
+        for(int jd = 0; jd < TI_3D_M; jd++)
+        {
+            int ID = id * TI_3D_M + jd;
+            //top
+            if(id < TI_3D_N - 1)
+            {
+                polyhedrons_collision_pair.push_back(pair<int, int>(ID, ID + TI_3D_M));
+                if(id & 1)
+                {
+                    if(jd != 0)
+                        polyhedrons_collision_pair.push_back(pair<int, int>(ID, ID + TI_3D_M - 1));
+                }
+                else
+                {
+                    if(jd != TI_3D_M -1)
+                        polyhedrons_collision_pair.push_back(pair<int, int>(ID, ID + TI_3D_M + 1));
+                }
+            }
+            //right
+            if(jd < TI_3D_M - 1)
+            {
+                polyhedrons_collision_pair.push_back(pair<int, int>(ID, ID + 1));
+            }
+
+            if(id == 0 || jd == 0 || id == TI_3D_N - 1 || jd == TI_3D_M - 1) {
+                polyhedrons_fixed_list.push_back(ID);
+            }
+        }
+    }
 }
 
-void TI_cube_rendering(double angle, double dx, double dy, double dz)
+void TI_cube_rendering()
 {
-    int N = 15;
     TI_cube_generation();
-    polyhedra_list[(N/2) * N + (N / 2)].transformation(Eigen::Quaterniond(std::cos(angle/2), std::sin(angle/2), std::sin(angle/2), std::sin(angle/2)), Vector3d(dx, dy, dz));
     set_mesh(polyhedra_list, viewer, V, F, C, true);
 }
 
 void collision_resolve()
 {
-    PolyhedronsCollisionSolver solver;
-    solver.setPolyhedrons(polyhedra_list);
-    int N = 15;
-    for(int id = 0; id < N; id++)
-    {
-        for(int jd = 0; jd < N; jd++)
-        {
-            int ID = id * N + jd;
-            //top
-            if(id < N - 1)
-            {
-                solver.setConnection(ID, ID + N);
-                if(id & 1)
-                {
-                    if(jd != 0) solver.setConnection(ID, ID + N - 1);
-                }
-                else
-                {
-                    if(jd != N -1) solver.setConnection(ID, ID + N + 1);
-                }
-            }
-            //right
-            if(jd < N - 1)
-            {
-                solver.setConnection(ID, ID + 1);
-            }
 
-            if(id == 0 || jd == 0 || id == N - 1 || jd == N - 1) {
-                solver.setFixed(ID);
-            }
-        }
-    }
+    PolyhedronsCollisionSolver solver;
+    if(polyhedra_list.empty()) TI_cube_generation();
+
+    solver.setPolyhedrons(polyhedra_list);
+    solver.setViewer(&viewer);
+
+    for(auto x: polyhedrons_collision_pair) solver.setConnection(x.first, x.second);
+
+    for(auto x : polyhedrons_fixed_list) solver.setFixed(x);
 
     double d_x = 0;
     solver.collision_resolve(x_0, d_x);
+
+    //set color
+    VectorXd zvalue(polyhedra_list.size());
     for(int id = 0; id < polyhedra_list.size(); id++)
     {
-        polyhedra_list[id].transformation(solver.vec4quat(x_0.segment(id * 7, 4)), x_0.segment(id * 7 + 4, 3));
+        zvalue(id) = -x_0(id * 7 + 6);
     }
-    set_mesh(polyhedra_list, viewer, V, F, C);
+
+    MatrixXd Cz;
+    igl::jet(zvalue, true, Cz);
+
+    for(int id = 0; id < polyhedra_list.size(); id++)
+    {
+        polyhedra_list[id].set_color(Cz.row(id));
+        polyhedra_list[id].do_transformation(solver.vec4quat(x_0.segment(id * 7, 4)), x_0.segment(id * 7 + 4, 3));
+    }
+
+    //reset fixed color
+    for(auto id : polyhedrons_fixed_list) polyhedra_list[id].set_color(Vector3d(0.4, 0.4, 0.4));
+
+        set_mesh(polyhedra_list, viewer, V, F, C);
 }
 
 
-int main() {
+void init()
+{
     srand(100);
     x_0.setZero();
-    TI_cube_rendering(0, 0, 0, 0);
+
+    TI_3D_N = 10;
+    TI_3D_M = 10;
+    TI_3D_Tolerance = 0.98;
+}
+int main() {
+    init();
     viewer.callback_init = [&](igl::viewer::Viewer& viewer)
     {
-        //
         viewer.ngui->addWindow(Eigen::Vector2i(viewer.ngui->window()->size()[0] + 20, 10));
         viewer.ngui->addGroup("2D TI Stable");
         viewer.ngui->addButton("2D Triangles", triangles_2d_rendering);
@@ -417,7 +459,6 @@ int main() {
             selected_mode = mode;}, [&](){
             return selected_mode;
         }) ->setItems({"None", "Move", "Fix", "Gap"});
-
 
         viewer.ngui->addButton("Select", [&]()
         {
@@ -434,6 +475,14 @@ int main() {
         });
         viewer.ngui->addVariable<bool>("Fix Selected", fix_selected, false);
         viewer.ngui->addVariable<bool>("Gap Selected", gap_selected, false);
+        viewer.ngui->addGroup("3D TI Stable");
+
+        viewer.ngui->addVariable("Rows", TI_3D_N);
+        viewer.ngui->addVariable("Cols", TI_3D_M);
+        viewer.ngui->addVariable("Tolerance", TI_3D_Tolerance);
+        viewer.ngui->addButton("3D Cubes", TI_cube_rendering);
+        viewer.ngui->addButton("Collision solve", collision_resolve);
+
         viewer.ngui->addGroup("Screen Capture");
         viewer.ngui->addButton("capture", [&](){
             Eigen::Matrix<unsigned char,Eigen::Dynamic,Eigen::Dynamic> R(5120,2880);
@@ -449,33 +498,9 @@ int main() {
             std::cout << "Write image to " << time_str << std::endl;
             igl::png::writePNG(R,G,B,A, time_str);
         });
-        viewer.ngui->addGroup("3D TI Stable");
-        viewer.ngui->addVariable<double>("Rotate", [&](double angle){
-            rotation_angle = angle;
-            TI_cube_rendering(rotation_angle, dx, dy, dz);}, [&](){
-            return rotation_angle;})->setSpinnable(true);
-
-        viewer.ngui->addVariable<double>("Dx", [&](double dx_){
-            dx = dx_;
-            TI_cube_rendering(rotation_angle, dx, dy, dz);}, [&](){
-            return dx;})->setSpinnable(true);
-
-        viewer.ngui->addVariable<double>("Dy", [&](double dy_){
-            dy = dy_;
-            TI_cube_rendering(rotation_angle, dx, dy, dz);}, [&](){
-            return dy;})->setSpinnable(true);
-        viewer.ngui->addVariable<double>("Dz", [&](double dz_){
-            dz = dz_;
-            TI_cube_rendering(rotation_angle, dx, dy, dz);}, [&](){
-            return dz;})->setSpinnable(true);
-
-        viewer.ngui->addButton("Collision solve", collision_resolve);
-
         viewer.screen->performLayout();
         return false;
     };
-    //viewer.callback_mouse_down = &mouse_down;
-    //viewer.callback_key_down = &key_down;
     viewer.launch();
     return 0;
 }

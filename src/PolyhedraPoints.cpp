@@ -14,15 +14,15 @@ void PolyhedraPoints::shrink(double ratio)
     return;
 }
 
-int PolyhedraPoints::get_edges(vecVector3d &edges) {
+int PolyhedraPoints::get_edges_list(vecVector3d &edges) {
     vector<pair<int, int>> edgeIDs;
-    get_edges_id(edgeIDs);
+    PolyhedraBase::get_edges_list(edgeIDs);
     for(int id = 0; id < edgeIDs.size(); id++)
         edges.push_back(point(edgeIDs[id].first) - point(edgeIDs[id].second));
     return edgeIDs.size();
 }
 
-void PolyhedraPoints::get_normals(vecVector3d &normals) {
+void PolyhedraPoints::get_normals_list(vecVector3d &normals) {
     for(int id = 0; id < nFace(); id++)
     {
         normals.push_back(Vector3d(0, 0, 0));
@@ -42,19 +42,19 @@ void PolyhedraPoints::candidate_sat(PolyhedraPoints &B,
     PolyhedraPoints &A = (*this);
 
     //only A normal
-    get_normals(axisA);
+    get_normals_list(axisA);
     axisB.insert(axisB.end(), A.nFace(), Vector3d(0, 0, 0));
 
     //only B normal
     axisA.insert(axisA.end(), B.nFace(), Vector3d(0, 0, 0));
-    B.get_normals(axisB);
+    B.get_normals_list(axisB);
 
     //A and B's edge
     vecVector3d Aedges;
-    A.get_edges(Aedges);
+    A.get_edges_list(Aedges);
     for(int id = 0; id < Aedges.size(); id++)
     {
-        int nE = B.get_edges(axisB);
+        int nE = B.get_edges_list(axisB);
         axisA.insert(axisA.end(), nE, Aedges[id]);
     }
 
@@ -163,7 +163,7 @@ double PolyhedraPoints::max_project(Vector3d n, vecVector3d &p, double tol)
     return proj.front().first;
 }
 
-void PolyhedraPoints::transformation(Quaterniond quat, Vector3d v)
+void PolyhedraPoints::do_transformation(Quaterniond quat, Vector3d v)
 {
     Vector3d center;
     get_center(center);

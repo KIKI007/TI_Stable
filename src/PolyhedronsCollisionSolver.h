@@ -13,6 +13,7 @@
 #include "igl/mosek/mosek_linprog.h"
 #include "PolyhedraPoints.h"
 #include "Timer_evaluation.h"
+#include <igl/viewer/Viewer.h>
 
 using std::vector;
 using Eigen::VectorXd;
@@ -36,6 +37,8 @@ public:
 
     void setGap(int a, int b);
 
+    void setViewer(igl::viewer::Viewer *viewer){viewer_ = viewer;};
+
 public:
 
     void collision_resolve(VectorXd &x, double &dx);
@@ -57,6 +60,13 @@ private:
                       vector<double> &vec_ux,
                       VectorXd &x,
                       double &mk_pk);
+
+    void set_mesh(vector<PolyhedraPoints> &P,
+                  igl::viewer::Viewer &viewer,
+                  MatrixXd &V,
+                  MatrixXi &F,
+                  MatrixXd &C,
+                  bool change_color);
     //double signed_distance(vecPolys p, VectorXd &x0, VectorXd &x);
 private:
 
@@ -67,6 +77,8 @@ private:
     std::vector<int> fixed_;
 
     std::pair<int, int> gap_;
+
+    igl::viewer::Viewer *viewer_;
 };
 
 

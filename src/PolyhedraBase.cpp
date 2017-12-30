@@ -4,7 +4,7 @@
 
 #include "PolyhedraBase.h"
 
-void PolyhedraBase::triangulate(MatrixXi &F)
+void PolyhedraBase::do_triangulate(MatrixXi &F)
 {
     int nF = 0;
     for(int id = 0; id < fv_.size(); id++)
@@ -24,7 +24,7 @@ void PolyhedraBase::triangulate(MatrixXi &F)
     }
 }
 
-void PolyhedraBase::int_e() {
+void PolyhedraBase::init_E() {
     int nV = vv_.size();
     vector<bool> visited;
     visited.resize(nV, false);
@@ -52,7 +52,7 @@ void PolyhedraBase::int_e() {
 
 }
 
-void PolyhedraBase::int_vv(){
+void PolyhedraBase::init_VV(){
     int nV = 0;
     for(int id = 0; id < fv_.size(); id++)
     {
@@ -93,8 +93,8 @@ void PolyhedraBase::int_vv(){
     return;
 }
 
-void PolyhedraBase::get_edges_id(vector<pair<int, int>> &edges) {
-
+void PolyhedraBase::get_edges_list(vector<pair<int, int>> &edges)
+{
     edges.clear();
     edges = e_;
     return;

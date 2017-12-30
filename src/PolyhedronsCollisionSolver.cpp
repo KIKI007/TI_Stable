@@ -25,7 +25,7 @@ void PolyhedronsCollisionSolver::setGap(int a, int b) {
 }
 
 void PolyhedronsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
-    const int MAX_ITER_TIMES = 1000;
+    const int MAX_ITER_TIMES = 10000;
     const double MAX_TRUST_REGION_SIZE  = 0.01;
     const double MIN_TRUST_REGION_SIZE  = 1e-6;
     const double ACCEPT_RATIO           = 0.5;
@@ -35,7 +35,7 @@ void PolyhedronsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
     //variable definition for trust region algorithm
     int         iter_times, size_A, size_x;
     int         Ia, Ib;
-    double      mk_0, mk_pk, f_xk, f_xkpk, f0;              //function and model's improvement
+    double      mk_0, mk_pk, f_xk, f_xkpk, f0, f_collision;              //function and model's improvement
     double mu, gap_size;
     bool gap_pair;
     VectorXd tx0, tx;
@@ -78,7 +78,7 @@ void PolyhedronsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
 
             //initialized
             {
-                mk_0 =  mk_pk =  f_xk = f_xkpk = 0;
+                mk_0 =  mk_pk =  f_xk = f_xkpk = f_collision = 0;
 
                 triplist.clear();
                 lc.clear();c.clear();
@@ -97,11 +97,11 @@ void PolyhedronsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
                 Ia = Conn_[id].first;
                 Ib = Conn_[id].second;
                 f0 = 0;
-                //inital & transformation
+                //inital & do_transformation
                 p.push_back(P_[Ia]);
                 p.push_back(P_[Ib]);
-                p[0].transformation(vec4quat(x0.segment(7 * Ia, 4)), x0.segment(7 * Ia + 4, 3));
-                p[1].transformation(vec4quat(x0.segment(7 * Ib, 4)), x0.segment(7 * Ib + 4, 3));
+                p[0].do_transformation(vec4quat(x0.segment(7 * Ia, 4)), x0.segment(7 * Ia + 4, 3));
+                p[1].do_transformation(vec4quat(x0.segment(7 * Ib, 4)), x0.segment(7 * Ib + 4, 3));
 
                 //get
                 timer_get_a.begin();
@@ -162,7 +162,7 @@ void PolyhedronsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
             solve_linear(size_x, size_A, triplist, c, lc, lx, ux, tx, mk_pk);
             timer_solve_linear.pause();
 
-            //compose transformation
+            //compose do_transformation
             x = VectorXd::Zero(7 * P_.size());
             for(int id = 0; id < P_.size(); id++)
             {
@@ -186,10 +186,11 @@ void PolyhedronsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
 
                 //inital
                 p.push_back(P_[Ia]); p.push_back(P_[Ib]);
-                p[0].transformation(vec4quat(x.segment(7 * Ia, 4)), x.segment(7 * Ia + 4, 3));
-                p[1].transformation(vec4quat(x.segment(7 * Ib, 4)), x.segment(7 * Ib + 4, 3));
+                p[0].do_transformation(vec4quat(x.segment(7 * Ia, 4)), x.segment(7 * Ia + 4, 3));
+                p[1].do_transformation(vec4quat(x.segment(7 * Ib, 4)), x.segment(7 * Ib + 4, 3));
                 double f0; p[0].collision(p[1], f0);
                 f_xkpk += f0 > 0? 0 : -f0;
+                f_collision += f0 > 0? 0 : -f0;
             }
 
             timer_tot.pause();
@@ -207,7 +208,7 @@ void PolyhedronsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
                     << "mk_pk:\t" << mk_pk << std::endl
                     << "pho:\t" << pho << std::endl
                     << "dx:\t" << dx << std::endl
-                    << "gap_size:\t" << gap_size << std::endl << std::endl;
+                    << "f_collision:\t" << f_collision << std::endl << std::endl;
 
             //trust region expanding
             if(pho < 0.5 || f_xk < f_xkpk)
@@ -225,8 +226,94 @@ void PolyhedronsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
             {
                 x0 = x;
             }
+
+            if(iter_times % 10 == 0)
+            {
+                std::cout << "lauch" << std::endl;
+                //set color
+                vecPlyhdrons polyhedra_list = P_;
+                VectorXd zvalue(polyhedra_list.size());
+                for(int id = 0; id < polyhedra_list.size(); id++)
+                {
+                    zvalue(id) = -x0(id * 7 + 6);
+                }
+
+                MatrixXd Cz;
+                igl::jet(zvalue, true, Cz);
+
+                for(int id = 0; id < polyhedra_list.size(); id++)
+                {
+                    polyhedra_list[id].set_color(Cz.row(id));
+                    polyhedra_list[id].do_transformation(vec4quat(x0.segment(id * 7, 4)), x0.segment(id * 7 + 4, 3));
+                }
+
+                //reset fixed color
+                for(auto id : fixed_) polyhedra_list[id].set_color(Vector3d(0.4, 0.4, 0.4));
+
+                MatrixXd V, C;
+                MatrixXi F;
+　
+                set_mesh(polyhedra_list, *viewer_, V, F, C, true);
+                viewer_->draw();
+                glfwSwapBuffers(viewer_->window);
+            }
         }
     }
+}
+
+void PolyhedronsCollisionSolver::set_mesh(vector<PolyhedraPoints> &P,
+                                          igl::viewer::Viewer &viewer,
+                                          MatrixXd &V,
+                                          MatrixXi &F,
+                                          MatrixXd &C,
+                                          bool change_color = true)
+{
+    if(change_color) C.setZero();
+    V.setZero();
+    F.setZero();
+
+    int nV = 0, nF = 0;
+    vector<int> sum_nV;
+    MatrixXd tV;
+    MatrixXi tF;
+
+    for(int id = 0; id < P.size(); id++)
+    {
+        nV += P[id].nV();
+        P[id].do_triangulate(tF);
+        nF += tF.rows();
+
+        int prev_num_vertices = 0;
+        if(id > 0) prev_num_vertices = sum_nV[id - 1] + P[id - 1].nV();
+        sum_nV.push_back(prev_num_vertices);
+    }
+
+    V = MatrixXd(nV, 3);
+    F = MatrixXi::Zero(nF, 3);
+    if(change_color) C = MatrixXd::Zero(nF, 3);
+    int ID = 0;
+    for(int id = 0; id < P.size(); id++)
+    {
+        for(int jd = 0; jd < P[id].nV(); jd++)
+        {
+            V.row(ID++) = P[id].point(jd);
+        }
+    }
+
+    ID = 0;
+    for(int id = 0; id < P.size(); id++)
+    {
+        P[id].do_triangulate(tF);
+        for (int jd = 0; jd < tF.rows(); jd++) {
+            F.row(ID) = tF.row(jd) + Eigen::RowVector3i(sum_nV[id], sum_nV[id], sum_nV[id]);
+            if(change_color) C.row(ID) = P[id].get_color(0);
+            ID++;
+        }
+    }
+    viewer.data.clear();
+    viewer.data.set_mesh(V, F);
+    viewer.data.set_colors(C);
+    //viewer.core.align_camera_center(V, F);
 }
 
 void PolyhedronsCollisionSolver::get_g_coeff(vecVectorXd &coeff_g, vecPlyhdrons &P, double &f_xk) {
@@ -327,7 +414,6 @@ bool PolyhedronsCollisionSolver::solve_linear(int n,
     Eigen::VectorXd ans(n);
     x = VectorXd(P_.size() * 6);
     bool sucess = igl::mosek::mosek_linprog(c, A, lc, uc, lx, ux, ans);
-    std::cout << sucess << std::endl;
     /*              output result                      */
     for (int id = 0; id < P_.size() * 6; id++) x(id) = ans(id);
     mk_pk = c.dot(ans);

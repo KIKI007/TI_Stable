@@ -392,6 +392,11 @@ void TI_cube_generation()
 void TI_cube_rendering()
 {
     TI_cube_generation();
+    int Ia, Ib;
+    Ia = (TI_3D_N / 2) * TI_3D_M + TI_3D_M/2 - 1;
+    Ib = (TI_3D_N / 2) * TI_3D_M + TI_3D_M/2;
+    polyhedra_list[Ia].set_color(Vector3d(1, 0, 0));
+    polyhedra_list[Ib].set_color(Vector3d(0, 0, 1));
     set_mesh(polyhedra_list, viewer, V, F, C, true);
 }
 
@@ -407,6 +412,11 @@ void collision_resolve()
     for(auto x: polyhedrons_collision_pair) solver.setConnection(x.first, x.second);
 
     for(auto x : polyhedrons_fixed_list) solver.setFixed(x);
+
+    int Ia, Ib;
+    Ia = (TI_3D_N / 2) * TI_3D_M + TI_3D_M/2 - 1;
+    Ib = (TI_3D_N / 2) * TI_3D_M + TI_3D_M/2;
+    solver.setGap(Ia, Ib);
 
     double d_x = 0;
     solver.collision_resolve(x_0, d_x);

@@ -3,6 +3,8 @@
 //
 
 #include "PolyhedronsCollisionSolver.h"
+//#define MINIMIZE_Z
+#define MAXIMIZE_GAP
 
 PolyhedronsCollisionSolver::PolyhedronsCollisionSolver() {
     gap_ = std::pair<int, int>(-1, -1);
@@ -47,7 +49,7 @@ void PolyhedronsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
     vecVectorXd coeff_gs;                               // for constructing linear programming
 
     //initializing
-    mu = 0.001;
+    mu = 0.1;
     if(x0.isZero())
     {
         x0 = VectorXd::Zero(P_.size() * 7);
@@ -122,17 +124,41 @@ void PolyhedronsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
                 }
                 c.push_back(1);
                 size_x++;
-                f_xk += f0;
-                mk_0 += f0;
+
+                f_xk += (f0 > 0 ? 0 : -f0);
+                mk_0 += (f0 > 0 ? 0 : -f0);
+
+#ifdef MAXIMIZE_GAP
+                if((gap_.first == Ia && gap_.second == Ib) || (gap_.second == Ia && gap_.first == Ib))
+                {
+                    for(int kd = 0; kd < coeff_gs.size(); kd++)
+                    {
+                        for(int jd = 0; jd < 6; jd++)
+                        {
+                            triplist.push_back(T(size_A, 6 * Ia + jd, coeff_gs[kd](1 + jd)));
+                            triplist.push_back(T(size_A, 6 * Ib + jd, coeff_gs[kd](7 + jd)));
+                        }
+                        triplist.push_back(T(size_A, size_x, -1));
+                        lc.push_back(-coeff_gs[kd](0));
+                        size_A++;
+                    }
+                    c.push_back(-mu);
+                    size_x++;
+
+                    f_xk -= mu * f0;
+                    mk_0 -= mu * f0;
+                }
+#endif
             }
 
+#ifdef MINIMIZE_Z
             for(int id = 0; id < P_.size();id++)
             {
                 c[id * 6 + 5] = mu;
                 f_xk += mu * x0(7 * id + 6);
                 mk_0 += mu * x0(7 * id + 6);
             }
-
+#endif
             //build build lx, ux
             for(int id = 0; id < size_x; id++)
             {
@@ -172,8 +198,10 @@ void PolyhedronsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
                 q = q1 * q0;
                 x.segment(id * 7, 4) = Vector4d(q.w(), q.x(), q.y(), q.z());
                 x.segment(id * 7 + 4 , 3) = x0.segment(id * 7 + 4, 3) + tx.segment(id * 6 + 3, 3);
+#ifdef MINIMIZE_Z
                 f_xkpk += mu * x(id * 7 + 6);
                 mk_pk += mu * x0(7 * id + 6);
+#endif
             }
 
             //evaluate result
@@ -191,6 +219,13 @@ void PolyhedronsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
                 double f0; p[0].collision(p[1], f0);
                 f_xkpk += f0 > 0? 0 : -f0;
                 f_collision += f0 > 0? 0 : -f0;
+
+#ifdef MAXIMIZE_GAP
+                if((gap_.first == Ia && gap_.second == Ib) || (gap_.second == Ia && gap_.first == Ib))
+                {
+                    f_xkpk += -mu * f0;
+                }
+#endif
             }
 
             timer_tot.pause();
@@ -227,7 +262,7 @@ void PolyhedronsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
                 x0 = x;
             }
 
-            if(iter_times % 10 == 0)
+            if(iter_times % 3 == 0)
             {
                 std::cout << "lauch" << std::endl;
                 //set color
@@ -252,7 +287,6 @@ void PolyhedronsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
 
                 MatrixXd V, C;
                 MatrixXi F;
-　
                 set_mesh(polyhedra_list, *viewer_, V, F, C, true);
                 viewer_->draw();
                 glfwSwapBuffers(viewer_->window);
@@ -326,7 +360,7 @@ void PolyhedronsCollisionSolver::get_g_coeff(vecVectorXd &coeff_g, vecPlyhdrons 
     Vector3d pcA, pcB;
     vecVector3d pAs, pBs;
     VectorXd a(13);
-    A.collision(B, nA, nB, pAs, pBs, f_xk); f_xk = f_xk > 0 ? 0 : - f_xk;
+    A.collision(B, nA, nB, pAs, pBs, f_xk);
     A.get_center(cA);B.get_center(cB);
     n = A.norm_cross_from_polyhedrons(nA, nB);
 

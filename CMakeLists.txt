@@ -50,7 +50,7 @@ find_package(LIBIGL REQUIRED)
 #endif()
 
 # Add your project file
-file(GLOB SRCFILES src/*.cpp src/*.h)
-add_executable(${PROJECT_NAME}_bin ${SRCFILES})
+file(GLOB SRCFILES src/*.cpp src/*.h src/construct/*.cpp src/construct/*.h src/construct/glm/*.*)
+add_executable(${PROJECT_NAME}_bin ${SRCFILES} src/TopoLockPolyhedrons.cpp src/TopoLockPolyhedrons.h)
 target_link_libraries(${PROJECT_NAME}_bin igl::core igl::viewer igl::mosek igl::triangle igl::png)
 #target_link_libraries(${PROJECT_NAME}_bin ipopt)

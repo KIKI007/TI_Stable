@@ -21,6 +21,8 @@
 #include "RandomRectangles2D.h"
 #include "RandomHexagons2D.h"
 
+#include "TopoLockPolyhedrons.h"
+
 using std::cos;
 using std::sin;
 
@@ -34,6 +36,9 @@ int TI_3D_M;
 double TI_3D_Tolerance;
 bool gap_selected(false);
 bool fix_selected(false);
+
+float tex;
+float title;
 
 vector<PolyhedraPoints> polyhedra_list;
 vector<PolygonPoints> polygons_list;
@@ -443,6 +448,68 @@ void collision_resolve()
         set_mesh(polyhedra_list, viewer, V, F, C);
 }
 
+void generate_TI_surface()
+{
+    char in_path[100] = "../Surface/CylinderA60_abf.obj";
+    TopoLockPolyhedrons tplocker;
+    tplocker.loadSurface(in_path);
+    tplocker.setPara(tex, title);
+    tplocker.createPolyhedrons(polyhedra_list);
+
+    int Ia = polygons_gap_par.first;
+    int Ib = polygons_gap_par.second;
+    polyhedra_list[Ia].set_color(Vector3d(1, 0, 0));
+
+    polyhedra_list[Ib].set_color(Vector3d(0, 0, 1));
+
+    set_mesh(polyhedra_list, viewer, V, F, C);
+    return;
+}
+
+void gap_enlarge_TI_surface()
+{
+    char in_path[100] = "../Surface/CylinderA60_abf.obj";
+    TopoLockPolyhedrons tplocker;
+    tplocker.loadSurface(in_path);
+    tplocker.setPara(tex, title);
+    tplocker.createPolyhedrons(polyhedra_list);
+
+
+
+    PolyhedronsCollisionSolver solver;
+    solver.setPolyhedrons(polyhedra_list);
+
+    tplocker.set_solver(solver);
+
+    int Ia = polygons_gap_par.first;
+    int Ib = polygons_gap_par.second;
+    solver.setGap(Ia, Ib);
+
+    double d_x = 0;
+    solver.collision_resolve(x_0, d_x);
+
+    //set color
+    VectorXd zvalue(polyhedra_list.size());
+    for(int id = 0; id < polyhedra_list.size(); id++)
+    {
+        zvalue(id) = -x_0(id * 7 + 6);
+    }
+
+    MatrixXd Cz;
+    igl::jet(zvalue, true, Cz);
+
+    for(int id = 0; id < polyhedra_list.size(); id++)
+    {
+        polyhedra_list[id].set_color(Cz.row(id));
+        polyhedra_list[id].do_transformation(solver.vec4quat(x_0.segment(id * 7, 4)), x_0.segment(id * 7 + 4, 3));
+    }
+
+    //reset fixed color
+    for(auto id : polyhedrons_fixed_list) polyhedra_list[id].set_color(Vector3d(0.4, 0.4, 0.4));
+
+    set_mesh(polyhedra_list, viewer, V, F, C);
+    return;
+}
 
 void init()
 {
@@ -452,8 +519,11 @@ void init()
     TI_3D_N = 10;
     TI_3D_M = 10;
     TI_3D_Tolerance = 0.98;
+
+    title =  35.264389;
+    tex = 5;
 }
-int main() {
+int main(int argc, char** argv){
     init();
     viewer.callback_init = [&](igl::viewer::Viewer& viewer)
     {
@@ -485,13 +555,21 @@ int main() {
         });
         viewer.ngui->addVariable<bool>("Fix Selected", fix_selected, false);
         viewer.ngui->addVariable<bool>("Gap Selected", gap_selected, false);
-        viewer.ngui->addGroup("3D TI Stable");
+        viewer.ngui->addGroup("3D Stable");
 
         viewer.ngui->addVariable("Rows", TI_3D_N);
         viewer.ngui->addVariable("Cols", TI_3D_M);
         viewer.ngui->addVariable("Tolerance", TI_3D_Tolerance);
         viewer.ngui->addButton("3D Cubes", TI_cube_rendering);
         viewer.ngui->addButton("Collision solve", collision_resolve);
+
+        viewer.ngui->addGroup("3D TI");
+        viewer.ngui->addVariable<int>("gapA", polygons_gap_par.first);
+        viewer.ngui->addVariable<int>("gapB", polygons_gap_par.second);
+        viewer.ngui->addVariable<float>("texViewSize", tex);
+        viewer.ngui->addVariable<float>("tiltTheta", title);
+        viewer.ngui->addButton("Generate", generate_TI_surface);
+        viewer.ngui->addButton("Analysis", gap_enlarge_TI_surface);
 
         viewer.ngui->addGroup("Screen Capture");
         viewer.ngui->addButton("capture", [&](){
@@ -508,6 +586,7 @@ int main() {
             std::cout << "Write image to " << time_str << std::endl;
             igl::png::writePNG(R,G,B,A, time_str);
         });
+
         viewer.screen->performLayout();
         return false;
     };

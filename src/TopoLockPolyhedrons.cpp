@@ -6,12 +6,14 @@
 #include "construct/Part.h"
 #include "construct/Polygon.h"
 
-TopoLockPolyhedrons::TopoLockPolyhedrons() {
+TopoLockPolyhedrons::TopoLockPolyhedrons(double shrink_ratio) {
     struc_.Clear();
 
     texViewSize_ =  5;
 
     tiltTheta_ = 35.264389;
+
+    shrink_ratio_ = shrink_ratio;
 }
 
 void TopoLockPolyhedrons::loadSurface(char *path_name) {
@@ -52,6 +54,7 @@ void TopoLockPolyhedrons::createPolyhedrons(vecPlyhdrons &Ps) {
             }
             poly.add_faces(faces);
             poly.set_color();
+            poly.shrink(shrink_ratio_);
             Ps.push_back(poly);
         }
     }

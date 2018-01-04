@@ -13,7 +13,7 @@
 class TopoLockPolyhedrons {
 
 public:
-    TopoLockPolyhedrons();
+    TopoLockPolyhedrons(double shrink_ratio);
 
 public:
 
@@ -33,6 +33,8 @@ private:
     float texViewSize_;
 
     float tiltTheta_;
+
+    float shrink_ratio_;
 };
 
 

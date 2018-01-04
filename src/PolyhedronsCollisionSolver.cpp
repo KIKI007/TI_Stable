@@ -63,7 +63,6 @@ void PolyhedronsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
             in_opt[fixed_[id]] = false;
     }
 
-
     for(; mu >= MIN_TRUST_REGION_SIZE; mu =  mu / 10.0)
     {
         iter_times = 0;
@@ -246,7 +245,7 @@ void PolyhedronsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
                     << "f_collision:\t" << f_collision << std::endl << std::endl;
 
             //trust region expanding
-            if(pho < 0.5 || f_xk < f_xkpk)
+            if(pho < 0.5 || f_xk < f_xkpk || f_collision > 1e-5)
             {
                 dx = dx * 0.25;
             }
@@ -257,34 +256,44 @@ void PolyhedronsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
                     dx = std::min(2 * dx, MAX_TRUST_REGION_SIZE);
                 }
             }
-            if(pho > ACCEPT_RATIO && f_xk > f_xkpk)
+            if(pho > ACCEPT_RATIO && f_xk > f_xkpk && f_collision <= 1e-5)
             {
                 x0 = x;
             }
 
-            if(iter_times % 3 == 0)
+            //if(iter_times % 3 == 0)
             {
-                std::cout << "lauch" << std::endl;
                 //set color
                 vecPlyhdrons polyhedra_list = P_;
                 VectorXd zvalue(polyhedra_list.size());
                 for(int id = 0; id < polyhedra_list.size(); id++)
                 {
-                    zvalue(id) = -x0(id * 7 + 6);
+                    //Vector3d center;
+                    //polyhedra_list[id].get_center(center);
+                    if(gap_.first == id || gap_.second == id)
+                        zvalue(id) = 0;
+                    else
+                        zvalue(id) =    x0(id * 7 + 4) * x0(id * 7 + 4)
+                                    + x0(id * 7 + 5) * x0(id * 7 + 5)
+                                    + x0(id * 7 + 6) * x0(id * 7 + 6);
                 }
 
                 MatrixXd Cz;
                 igl::jet(zvalue, true, Cz);
 
-                for(int id = 0; id < polyhedra_list.size(); id++)
-                {
-                    polyhedra_list[id].set_color(Cz.row(id));
+                for(int id = 0; id < polyhedra_list.size(); id++) {
+                    if(gap_.first == id || gap_.second == id)
+                    {
+                        polyhedra_list[id].set_color(Vector3d(1.0, 1.0, 1.0));
+                    }
+                    else{
+                        polyhedra_list[id].set_color(Cz.row(id));
+                    }
                     polyhedra_list[id].do_transformation(vec4quat(x0.segment(id * 7, 4)), x0.segment(id * 7 + 4, 3));
                 }
 
                 //reset fixed color
                 for(auto id : fixed_) polyhedra_list[id].set_color(Vector3d(0.4, 0.4, 0.4));
-
                 MatrixXd V, C;
                 MatrixXi F;
                 set_mesh(polyhedra_list, *viewer_, V, F, C, true);
@@ -334,6 +343,7 @@ void PolyhedronsCollisionSolver::set_mesh(vector<PolyhedraPoints> &P,
         }
     }
 
+
     ID = 0;
     for(int id = 0; id < P.size(); id++)
     {
@@ -344,6 +354,7 @@ void PolyhedronsCollisionSolver::set_mesh(vector<PolyhedraPoints> &P,
             ID++;
         }
     }
+
     viewer.data.clear();
     viewer.data.set_mesh(V, F);
     viewer.data.set_colors(C);

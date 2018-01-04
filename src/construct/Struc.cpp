@@ -508,7 +508,7 @@ void Struc::ComputeBaseMesh(float viewSize, double footInverMat[16])
 
 			Vector3f texCoord = GetTextureCoord(ver, viewSize);
 
-			printf("ver: [%.3f %.3f %.3f]  tex: [%.3f %.3f %.3f] \n", ver.x, ver.y, ver.z, texCoord.x, texCoord.y, texCoord.z);
+			//printf("ver: [%.3f %.3f %.3f]  tex: [%.3f %.3f %.3f] \n", ver.x, ver.y, ver.z, texCoord.x, texCoord.y, texCoord.z);
 			MultiplyPoint(texCoord, footInverMat, texCoord);
 
 			Vector3f ver3D;

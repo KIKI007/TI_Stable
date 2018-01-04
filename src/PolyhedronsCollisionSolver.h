@@ -41,11 +41,15 @@ public:
 
 public:
 
+    void get_fixed_list(vector<int> &fixed){fixed = fixed_;}
+
     void collision_resolve(VectorXd &x, double &dx);
 
     Quaterniond vec4quat(Vector4d u);
 
     Quaterniond vec3quat(Vector3d u);
+
+    void get_polys(vecPlyhdrons &P){P = P_;}
 
 private:
 

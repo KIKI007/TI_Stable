@@ -3,8 +3,8 @@
 //
 
 #include "PolyhedronsCollisionSolver.h"
-//#define MINIMIZE_Z
-#define MAXIMIZE_GAP
+#define MINIMIZE_Z
+//#define MAXIMIZE_GAP
 
 PolyhedronsCollisionSolver::PolyhedronsCollisionSolver() {
     gap_ = std::pair<int, int>(-1, -1);
@@ -29,10 +29,11 @@ void PolyhedronsCollisionSolver::setGap(int a, int b) {
 void PolyhedronsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
     const int MAX_ITER_TIMES = 10000;
     const double MAX_TRUST_REGION_SIZE  = 0.01;
-    const double MIN_TRUST_REGION_SIZE  = 1e-6;
+    const double MIN_TRUST_REGION_SIZE  = 1e-7;
     const double ACCEPT_RATIO           = 0.5;
     //const double ACCEPT_F_XK            = 1e-6;
     const double INIT_TRUST_REGION_SIZE = 0.001;
+    const double COLLISION_TOLERANCE_SIZE = 2.0 * 1e-7;
 
     //variable definition for trust region algorithm
     int         iter_times, size_A, size_x;
@@ -63,7 +64,7 @@ void PolyhedronsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
             in_opt[fixed_[id]] = false;
     }
 
-    for(; mu >= MIN_TRUST_REGION_SIZE; mu =  mu / 10.0)
+    for(; mu >= 1e-5; mu =  mu / 10.0)
     {
         iter_times = 0;
         dx = INIT_TRUST_REGION_SIZE;
@@ -153,9 +154,9 @@ void PolyhedronsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
 #ifdef MINIMIZE_Z
             for(int id = 0; id < P_.size();id++)
             {
-                c[id * 6 + 5] = mu;
-                f_xk += mu * x0(7 * id + 6);
-                mk_0 += mu * x0(7 * id + 6);
+                c[id * 6 + 4] = -mu;
+                f_xk -= mu * x0(7 * id + 5);
+                mk_0 -= mu * x0(7 * id + 5);
             }
 #endif
             //build build lx, ux
@@ -198,11 +199,12 @@ void PolyhedronsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
                 x.segment(id * 7, 4) = Vector4d(q.w(), q.x(), q.y(), q.z());
                 x.segment(id * 7 + 4 , 3) = x0.segment(id * 7 + 4, 3) + tx.segment(id * 6 + 3, 3);
 #ifdef MINIMIZE_Z
-                f_xkpk += mu * x(id * 7 + 6);
-                mk_pk += mu * x0(7 * id + 6);
+                f_xkpk -= mu * x(id * 7 + 5);
+                mk_pk -= mu * x0(7 * id + 5);
 #endif
             }
 
+            f_collision = 0;
             //evaluate result
             for(int id = 0; id < Conn_.size(); id++)
             {
@@ -217,7 +219,7 @@ void PolyhedronsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
                 p[1].do_transformation(vec4quat(x.segment(7 * Ib, 4)), x.segment(7 * Ib + 4, 3));
                 double f0; p[0].collision(p[1], f0);
                 f_xkpk += f0 > 0? 0 : -f0;
-                f_collision += f0 > 0? 0 : -f0;
+                f_collision = f_collision < -f0 ? -f0 : f_collision;
 
 #ifdef MAXIMIZE_GAP
                 if((gap_.first == Ia && gap_.second == Ib) || (gap_.second == Ia && gap_.first == Ib))
@@ -245,18 +247,18 @@ void PolyhedronsCollisionSolver::collision_resolve(VectorXd &x0, double &dx) {
                     << "f_collision:\t" << f_collision << std::endl << std::endl;
 
             //trust region expanding
-            if(pho < 0.5 || f_xk < f_xkpk || f_collision > 1e-5)
+            if(pho < 0.5 || f_xk < f_xkpk || f_collision > COLLISION_TOLERANCE_SIZE)
             {
-                dx = dx * 0.25;
+                dx = dx * 0.99;
             }
             else
             {
                 if(pho > 0.75 && (x - x0).norm() >= dx - MIN_TRUST_REGION_SIZE)
                 {
-                    dx = std::min(2 * dx, MAX_TRUST_REGION_SIZE);
+                    dx = std::min(1.0 / 0.99 * dx, MAX_TRUST_REGION_SIZE);
                 }
             }
-            if(pho > ACCEPT_RATIO && f_xk > f_xkpk && f_collision <= 1e-5)
+            if(pho > ACCEPT_RATIO && f_xk > f_xkpk && f_collision <= COLLISION_TOLERANCE_SIZE)
             {
                 x0 = x;
             }
@@ -462,6 +464,10 @@ bool PolyhedronsCollisionSolver::solve_linear(int n,
     /*              output result                      */
     for (int id = 0; id < P_.size() * 6; id++) x(id) = ans(id);
     mk_pk = c.dot(ans);
+
+    double mk_collision  = 0;
+    for (int id = P_.size() * 6; id < n; id++) if(std::abs(c(id) - 1) < 1e-5) mk_collision += ans(id) * c(id);
+    std::cout << "mk_collision:\t" << mk_collision << std::endl;
     return sucess;
 }
 
